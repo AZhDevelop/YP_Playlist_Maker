@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="font_size_base">22sp</dimen>
+    <dimen name="font_size_list">16sp</dimen>
+    <dimen name="margin_base">16dp</dimen>
+    <dimen name="margin_layout">24dp</dimen>
+    <dimen name="icon_padding">8dp</dimen>
+    <dimen name="toolbar_high">56dp</dimen>
+    <dimen name="relative_high">61dp</dimen>
+    <dimen name="relative_margin_start_top">21dp</dimen>
+    <dimen name="relative_margin_end">12dp</dimen>
+    <dimen name="relative_margin_end_top">19dp</dimen>
+</resources>
