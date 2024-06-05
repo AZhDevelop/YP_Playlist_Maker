@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
         /** Реализация нажатия на кнопку "Поиск" с помощью анонимного класса */
 
-        val searchButton = findViewById<Button>(R.id.search)
+        val searchButton = findViewById<Button>(R.id.btn_search)
         val displaySearchIntent = Intent(this, SearchActivity::class.java)
         val searchButtonClickListener: View.OnClickListener = object : View.OnClickListener {
             override fun onClick(v: View?) {
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
         /** Реализация нажатия на кнопку "Медиатека" с помощью лямбда-выражения */
 
-        val mediaButton = findViewById<Button>(R.id.media)
+        val mediaButton = findViewById<Button>(R.id.btn_media)
         mediaButton.setOnClickListener {
             val displayMediaIntent = Intent(this, MediaActivity::class.java)
             startActivity(displayMediaIntent)
@@ -37,14 +37,14 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
         /** Реализация нажатия на кнопку "Настройки" с помощью MainActivity */
 
-        val settingsButton = findViewById<Button>(R.id.settings)
-        settingsButton.setOnClickListener(this@MainActivity)
+        val settingsButton = findViewById<Button>(R.id.btn_settings)
+        settingsButton.setOnClickListener(this)
 
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.settings -> {
+            R.id.btn_settings -> {
                 val displayIntent = Intent(this, SettingsActivity::class.java)
                 startActivity(displayIntent)
             }

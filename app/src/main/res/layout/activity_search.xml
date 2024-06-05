@@ -1,32 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="@dimen/toolbar_high_56">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_high" >
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_base_16"
+        android:layout_marginTop="@dimen/margin_base_16"
+        android:contentDescription="@string/search_activity_back"
+        android:src="@drawable/ic_back" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_base"
-            android:layout_marginTop="16dp"
-            android:contentDescription="@string/ic_back_description"
-            android:src="@drawable/ic_back" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/toolbar_margin_start_64"
+        android:layout_marginTop="@dimen/toolbar_margin_top_14"
+        android:layout_marginBottom="@dimen/toolbar_margin_bottom_12"
+        android:text="@string/search_activity_header"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_size_base_22" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="12dp"
-            android:text="@string/search"
-            android:textColor="@color/black"
-            android:textSize="@dimen/font_size_base" />
-
-    </FrameLayout>
-
-</LinearLayout>
+</FrameLayout>

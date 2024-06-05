@@ -1,12 +1,25 @@
 <resources>
+
+    <!-- Приложение -->
     <string name="app_name">YP_Playlist_Maker</string>
-    <string name="app_title">Playlist maker</string>
-    <string name="search">Поиск</string>
-    <string name="media">Медиатека</string>
-    <string name="settings">Настройки</string>
-    <string name="dark_mode">Темная тема</string>
-    <string name="share">Поделиться приложением</string>
-    <string name="contact_support">Написать в поддержку</string>
-    <string name="licence_agreement">Пользовательское соглашение</string>
-    <string name="ic_back_description">На главную</string>
+
+    <!-- Экраны -->
+    <string name="main_activity_header">Playlist maker</string>
+    <string name="search_activity_header">Поиск</string>
+    <string name="media_activity_header">Медиатека</string>
+    <string name="settings_activity_header">Настройки</string>
+
+    <!-- Экран поиска -->
+    <string name="search_activity_back">Назад</string>
+
+    <!-- Экран медиа -->
+    <string name="media_activity_back">Назад</string>
+
+    <!-- Экран настроек -->
+    <string name="settings_activity_dark_mode">Темная тема</string>
+    <string name="settings_activity_share">Поделиться приложением</string>
+    <string name="settings_activity_contact_support">Написать в поддержку</string>
+    <string name="settings_activity_licence_agreement">Пользовательское соглашение</string>
+    <string name="settings_activity_back">Назад</string>
+
 </resources>
