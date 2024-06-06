@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_high_56"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_base_16"
+            android:contentDescription="@string/media_activity_back"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/toolbar_margin_start_24"
+            android:text="@string/settings_activity_header"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_size_base_22" />
+
+    </LinearLayout>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_high_64"
+        android:layout_marginTop="@dimen/margin_layout_24"
+        android:paddingStart="@dimen/margin_base_16"
+        android:paddingEnd="8dp"
+        android:text="@string/settings_activity_dark_mode"
+        android:textSize="@dimen/font_size_list_16"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_high_64">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/margin_base_16"
+            android:text="@string/settings_activity_share"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_size_list_16" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/margin_base_16"
+            android:contentDescription="@string/settings_activity_share"
+            android:src="@drawable/ic_share" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_high_64">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/margin_base_16"
+            android:text="@string/settings_activity_contact_support"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_size_list_16" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/margin_base_16"
+            android:contentDescription="@string/settings_activity_contact_support"
+            android:src="@drawable/ic_contact_support" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_high_64">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/margin_base_16"
+            android:text="@string/settings_activity_licence_agreement"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_size_list_16" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/margin_base_16"
+            android:contentDescription="@string/settings_activity_licence_agreement"
+            android:src="@drawable/ic_forward" />
+
+    </FrameLayout>
+
+</LinearLayout>
