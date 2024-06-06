@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/toolbar_high_56">
+    android:layout_height="@dimen/toolbar_high_56"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_base_16"
-        android:layout_marginTop="@dimen/margin_base_16"
         android:contentDescription="@string/media_activity_back"
         android:src="@drawable/ic_back" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/toolbar_margin_start_64"
-        android:layout_marginTop="@dimen/toolbar_margin_top_14"
-        android:layout_marginBottom="@dimen/toolbar_margin_bottom_12"
+        android:layout_marginStart="@dimen/toolbar_margin_start_24"
         android:text="@string/media_activity_header"
         android:textColor="@color/black"
         android:textSize="@dimen/font_size_base_22" />
 
-</FrameLayout>
+</LinearLayout>

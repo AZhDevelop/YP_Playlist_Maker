@@ -10,12 +10,11 @@
     <dimen name="margin_layout_24">24dp</dimen>
     <dimen name="icon_padding_8">8dp</dimen>
     <dimen name="toolbar_high_56">56dp</dimen>
-    <dimen name="line_high_61">61dp</dimen>
-    <dimen name="line_margin_start_top_21">21dp</dimen>
-    <dimen name="line_margin_end_12">12dp</dimen>
-    <dimen name="line_margin_end_top_19">19dp</dimen>
-    <dimen name="toolbar_margin_top_14">14dp</dimen>
-    <dimen name="toolbar_margin_bottom_12">12dp</dimen>
+    <dimen name="line_high_64">64dp</dimen>
     <dimen name="toolbar_margin_start_64">64dp</dimen>
+    <dimen name="toolbar_margin_start_24">24dp</dimen>
+
+    <!-- other -->
+    <dimen name="btn_corner_radius_16">16dp</dimen>
 
 </resources>
