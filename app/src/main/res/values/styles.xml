@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="MainActivityTheme">
+        <item name="android:background">@color/main_background</item>
+    </style>
+
     <style name="MainScreenButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/btn_height_0</item>
