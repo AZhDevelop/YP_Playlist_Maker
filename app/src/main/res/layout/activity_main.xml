@@ -20,26 +20,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_marginVertical="@dimen/margin_layout_24"
+        android:divider="@drawable/divider"
+        android:orientation="vertical"
+        android:showDividers="middle">
 
         <Button
             android:id="@+id/btn_search"
             style="@style/MainScreenButton"
-            android:layout_marginTop="@dimen/margin_layout_24"
             android:text="@string/search_activity_header"
             app:icon="@drawable/ic_search" />
 
         <Button
             android:id="@+id/btn_media"
             style="@style/MainScreenButton"
-            android:layout_marginVertical="@dimen/margin_base_16"
             android:text="@string/media_activity_header"
             app:icon="@drawable/ic_media" />
 
         <Button
             android:id="@+id/btn_settings"
             style="@style/MainScreenButton"
-            android:layout_marginBottom="@dimen/margin_layout_24"
             android:text="@string/settings_activity_header"
             app:icon="@drawable/ic_settings" />
 

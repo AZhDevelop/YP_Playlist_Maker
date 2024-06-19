@@ -16,5 +16,7 @@
 
     <!-- other -->
     <dimen name="btn_corner_radius_16">16dp</dimen>
+    <dimen name="btn_inset_0">0dp</dimen>
+    <dimen name="btn_height_0">0dp</dimen>
 
 </resources>
