@@ -7,25 +7,16 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_high_56"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        style="@style/ToolBar">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_base_16"
+            style="@style/ToolBarIcon"
             android:contentDescription="@string/media_activity_back"
             android:src="@drawable/ic_back" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/toolbar_margin_start_24"
-            android:text="@string/settings_activity_header"
-            android:textColor="@color/black"
-            android:textSize="@dimen/font_size_base_22" />
+            style="@style/ToolBarText"
+            android:text="@string/settings_activity_header" />
 
     </LinearLayout>
 
@@ -37,6 +28,7 @@
         android:paddingEnd="8dp"
         android:text="@string/settings_activity_dark_mode"
         android:textSize="@dimen/font_size_list_16"
+        android:fontFamily="@font/ys_display_regular"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <FrameLayout

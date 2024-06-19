@@ -23,4 +23,27 @@
         <item name="android:insetBottom">@dimen/btn_inset_0</item>
     </style>
 
+    <style name="ToolBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/toolbar_high_56</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="ToolBarIcon" parent="WrapContent">
+        <item name="android:layout_marginStart">@dimen/margin_base_16</item>
+    </style>
+
+    <style name="ToolBarText" parent="WrapContent">
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:layout_marginStart">@dimen/toolbar_margin_start_24</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/font_size_base_22</item>
+    </style>
+
+    <style name="WrapContent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>

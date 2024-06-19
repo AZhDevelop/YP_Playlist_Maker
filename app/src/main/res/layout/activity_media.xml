@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/toolbar_high_56"
-    android:orientation="horizontal"
-    android:gravity="center_vertical">
+    style="@style/ToolBar">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_base_16"
+        style="@style/ToolBarIcon"
         android:contentDescription="@string/media_activity_back"
         android:src="@drawable/ic_back" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/toolbar_margin_start_24"
-        android:text="@string/media_activity_header"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_size_base_22" />
+        style="@style/ToolBarText"
+        android:text="@string/media_activity_header" />
 
 </LinearLayout>
