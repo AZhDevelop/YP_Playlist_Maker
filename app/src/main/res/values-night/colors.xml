@@ -8,12 +8,12 @@
     <color name="yp_gray">#AEAFB4</color>
 
     <!-- icon colors -->
-    <color name="ic_back">@color/yp_black</color>
-    <color name="ic_share">@color/yp_gray</color>
-    <color name="ic_contact_support">@color/yp_gray</color>
-    <color name="ic_forward">@color/yp_gray</color>
+    <color name="ic_back">@color/white</color>
+    <color name="ic_share">@color/white</color>
+    <color name="ic_contact_support">@color/white</color>
+    <color name="ic_forward">@color/white</color>
 
     <!-- other -->
-    <color name="main_background">#3772E7</color>
+    <color name="main_background">@color/black</color>
 
 </resources>

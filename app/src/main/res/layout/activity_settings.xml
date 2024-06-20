@@ -36,19 +36,11 @@
         android:layout_height="@dimen/line_high_64">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/margin_base_16"
-            android:text="@string/settings_activity_share"
-            android:textColor="@color/black"
-            android:textSize="@dimen/font_size_list_16" />
+            style="@style/SettingsMenuText"
+            android:text="@string/settings_activity_share" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="@dimen/margin_base_16"
+            style="@style/SettingsMenuIcon"
             android:contentDescription="@string/settings_activity_share"
             android:src="@drawable/ic_share" />
 
@@ -59,19 +51,11 @@
         android:layout_height="@dimen/line_high_64">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/margin_base_16"
-            android:text="@string/settings_activity_contact_support"
-            android:textColor="@color/black"
-            android:textSize="@dimen/font_size_list_16" />
+            style="@style/SettingsMenuText"
+            android:text="@string/settings_activity_contact_support" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="@dimen/margin_base_16"
+            style="@style/SettingsMenuIcon"
             android:contentDescription="@string/settings_activity_contact_support"
             android:src="@drawable/ic_contact_support" />
 
@@ -82,19 +66,11 @@
         android:layout_height="@dimen/line_high_64">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/margin_base_16"
-            android:text="@string/settings_activity_licence_agreement"
-            android:textColor="@color/black"
-            android:textSize="@dimen/font_size_list_16" />
+            style="@style/SettingsMenuText"
+            android:text="@string/settings_activity_licence_agreement" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="@dimen/margin_base_16"
+            style="@style/SettingsMenuIcon"
             android:contentDescription="@string/settings_activity_licence_agreement"
             android:src="@drawable/ic_forward" />
 
