@@ -6,6 +6,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="yp_black">#1A1B22</color>
     <color name="yp_gray">#AEAFB4</color>
+    <color name="gray">#E6E8EB</color>
 
     <!-- icon colors -->
     <color name="ic_back">@color/yp_black</color>
