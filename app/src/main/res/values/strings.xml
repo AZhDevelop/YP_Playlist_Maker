@@ -22,4 +22,15 @@
     <string name="settings_activity_licence_agreement">Пользовательское соглашение</string>
     <string name="settings_activity_back">Назад</string>
 
+    <!-- Ссылки -->
+    <string name="license_agreement_link">https://yandex.ru/legal/practicum_offer</string>
+    <string name="share_link">https://practicum.yandex.ru/android-developer/?from=catalog</string>
+
+    <!-- Текст -->
+    <string name="contact_support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="contact_support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="contact_support_mailto">mailto: AlexZh495@yandex.ru</string>
+    <string name="share_with">Поделиться с помощью:</string>
+
+
 </resources>
