@@ -21,13 +21,13 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginHorizontal="@dimen/margin_base_16"
         android:layout_marginTop="@dimen/margin_base_8"
-        android:background="@drawable/edit_text">
+        android:background="@drawable/edit_text" >
 
         <EditText
             android:id="@+id/et_search"
@@ -41,6 +41,6 @@
             android:contentDescription="@string/search_activity_clear"
             android:src="@drawable/ic_clear" />
 
-    </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>

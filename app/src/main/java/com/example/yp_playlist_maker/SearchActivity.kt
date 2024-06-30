@@ -11,6 +11,9 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
 class SearchActivity : AppCompatActivity() {
+
+    private var savedSearchText: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -34,8 +37,8 @@ class SearchActivity : AppCompatActivity() {
 
         // Проверяем сохраненное состояние текста и востанавллиевам, если что-то сохранено
         if (savedInstanceState != null) {
-            savedSearchText =
-                savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
+            savedSearchText = savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
+            editText.setText(savedSearchText)
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -64,9 +67,6 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
     }
-
-
-    private var savedSearchText: String = ""
 
     // Сохранение состояние текста
     override fun onSaveInstanceState(outState: Bundle) {
