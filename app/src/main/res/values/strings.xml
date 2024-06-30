@@ -11,6 +11,7 @@
 
     <!-- Экран поиска -->
     <string name="search_activity_back">Назад</string>
+    <string name="search_activity_clear">Очистить</string>
 
     <!-- Экран медиа -->
     <string name="media_activity_back">Назад</string>

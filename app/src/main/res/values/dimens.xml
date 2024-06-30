@@ -6,6 +6,7 @@
     <dimen name="font_size_base_22">22sp</dimen>
 
     <!-- margin/padding -->
+    <dimen name="margin_base_8">8dp</dimen>
     <dimen name="margin_base_16">16dp</dimen>
     <dimen name="margin_layout_24">24dp</dimen>
     <dimen name="icon_padding_8">8dp</dimen>
@@ -13,10 +14,13 @@
     <dimen name="line_high_64">64dp</dimen>
     <dimen name="toolbar_margin_start_64">64dp</dimen>
     <dimen name="toolbar_margin_start_24">24dp</dimen>
+    <dimen name="margin_start_12">12dp</dimen>
 
     <!-- other -->
     <dimen name="btn_corner_radius_16">16dp</dimen>
     <dimen name="btn_inset_0">0dp</dimen>
     <dimen name="btn_height_0">0dp</dimen>
+    <dimen name="btn_height_36">36dp</dimen>
+    <dimen name="btn_weight_0">0dp</dimen>
 
 </resources>
