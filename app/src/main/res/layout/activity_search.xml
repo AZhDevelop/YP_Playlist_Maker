@@ -5,10 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout style="@style/ToolBar"
+    <LinearLayout
+        style="@style/ToolBar"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
+            android:id="@+id/iw_back"
             style="@style/ToolBarIcon"
             android:contentDescription="@string/media_activity_back"
             android:src="@drawable/ic_back" />

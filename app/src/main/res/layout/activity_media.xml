@@ -3,6 +3,7 @@
     style="@style/ToolBar">
 
     <ImageView
+        android:id="@+id/iw_back"
         style="@style/ToolBarIcon"
         android:contentDescription="@string/media_activity_back"
         android:src="@drawable/ic_back" />

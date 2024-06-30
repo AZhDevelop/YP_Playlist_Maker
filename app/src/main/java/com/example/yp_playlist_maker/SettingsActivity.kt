@@ -4,19 +4,22 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.FrameLayout
-import androidx.activity.enableEdgeToEdge
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        val backButton = findViewById<ImageView>(R.id.iw_back)
         val shareButton = findViewById<FrameLayout>(R.id.fl_share)
         val contactSupportButton = findViewById<FrameLayout>(R.id.fl_contact_support)
         val licenseAgreementButton = findViewById<FrameLayout>(R.id.fl_license_agreement)
+
+        backButton.setOnClickListener {
+            finish()
+        }
 
         shareButton.setOnClickListener() {
             val shareIntent = Intent().apply {

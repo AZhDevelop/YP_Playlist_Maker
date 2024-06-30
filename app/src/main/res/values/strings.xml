@@ -32,6 +32,7 @@
     <string name="contact_support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="contact_support_mailto">mailto: AlexZh495@yandex.ru</string>
     <string name="share_with">Поделиться с помощью:</string>
+    <string name="saved_text">Сохраненный текст</string>
 
 
 </resources>
