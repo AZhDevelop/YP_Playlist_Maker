@@ -1,23 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/toolbar_high_56"
-    android:orientation="horizontal"
-    android:gravity="center_vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_base_16"
-        android:contentDescription="@string/media_activity_back"
-        android:src="@drawable/ic_back" />
+    <LinearLayout
+        style="@style/ToolBar"
+        tools:ignore="UseCompoundDrawables">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/iw_back"
+            style="@style/ToolBarIcon"
+            android:contentDescription="@string/media_activity_back"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            style="@style/ToolBarText"
+            android:text="@string/search_activity_header" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/toolbar_margin_start_24"
-        android:text="@string/search_activity_header"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_size_base_22" />
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="@dimen/margin_base_16"
+        android:layout_marginTop="@dimen/margin_base_8"
+        android:background="@drawable/edit_text" >
+
+        <EditText
+            android:id="@+id/et_search"
+            style="@style/SearchBar"
+            android:autofillHints=""
+            tools:ignore="LabelFor" />
+
+        <ImageView
+            android:id="@+id/iw_clear"
+            style="@style/SearchMenuIcon"
+            android:contentDescription="@string/search_activity_clear"
+            android:src="@drawable/ic_clear" />
+
+    </FrameLayout>
 
 </LinearLayout>
