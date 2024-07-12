@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -17,7 +18,7 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         trackName.text = item.trackName
         artistName.text = item.artistName
         trackTime.text = item.trackTime
-        artworkUrl100.setImageURI(item.artworkUrl100.toUri())
+        Glide.with(itemView).load(item.artworkUrl100).into(artworkUrl100)
     }
 
 }
