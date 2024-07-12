@@ -3,9 +3,9 @@ package com.example.yp_playlist_maker
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -18,7 +18,13 @@ class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         trackName.text = item.trackName
         artistName.text = item.artistName
         trackTime.text = item.trackTime
-        Glide.with(itemView).load(item.artworkUrl100).into(artworkUrl100)
+
+        Glide.with(itemView)
+            .load(item.artworkUrl100)
+            .centerCrop()
+            .transform(RoundedCorners(2))
+            .placeholder(R.drawable.image_placeholder)
+            .into(artworkUrl100)
     }
 
 }

@@ -24,9 +24,11 @@
             android:id="@+id/track_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:fontFamily="@font/ys_display_regular"
-            android:textSize="@dimen/font_size_list_16"
+            android:maxLines="1"
             android:textColor="@color/black"
+            android:textSize="@dimen/font_size_list_16"
             tools:text="Название песни" />
 
         <LinearLayout
@@ -36,11 +38,14 @@
 
             <TextView
                 android:id="@+id/track_artist"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
                 android:fontFamily="@font/ys_display_regular"
-                android:textSize="11sp"
+                android:maxLines="1"
                 android:textColor="@color/yp_gray"
+                android:textSize="11sp"
                 tools:text="Исполнитель" />
 
             <ImageView
@@ -55,7 +60,9 @@
                 android:id="@+id/track_length"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:fontFamily="@font/ys_display_regular"
+                android:maxLines="1"
                 android:textColor="@color/yp_gray"
                 android:textSize="11sp"
                 tools:text="1:24" />
