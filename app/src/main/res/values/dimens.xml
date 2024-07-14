@@ -4,6 +4,7 @@
     <!-- font_size -->
     <dimen name="font_size_list_16">16sp</dimen>
     <dimen name="font_size_base_22">22sp</dimen>
+    <dimen name="font_size_base_11">11sp</dimen>
 
     <!-- margin/padding -->
     <dimen name="margin_base_8">8dp</dimen>
@@ -22,5 +23,7 @@
     <dimen name="btn_height_0">0dp</dimen>
     <dimen name="btn_height_36">36dp</dimen>
     <dimen name="btn_weight_0">0dp</dimen>
+    <dimen name="track_icon_size_45">45dp</dimen>
+
 
 </resources>

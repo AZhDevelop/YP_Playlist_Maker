@@ -2,15 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="61dp"
+    android:layout_height="@dimen/line_high_64"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingHorizontal="@dimen/margin_start_12">
 
     <ImageView
         android:id="@+id/track_image"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="@dimen/track_icon_size_45"
+        android:layout_height="@dimen/track_icon_size_45"
         tools:src="@drawable/image_placeholder" />
 
     <LinearLayout
@@ -22,13 +22,7 @@
 
         <TextView
             android:id="@+id/track_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="@font/ys_display_regular"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textSize="@dimen/font_size_list_16"
+            style="@style/TrackName"
             tools:text="Название песни" />
 
         <LinearLayout
@@ -38,33 +32,22 @@
 
             <TextView
                 android:id="@+id/track_artist"
+                style="@style/TrackInfo"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ellipsize="end"
-                android:fontFamily="@font/ys_display_regular"
-                android:maxLines="1"
-                android:textColor="@color/yp_gray"
-                android:textSize="11sp"
                 tools:text="Исполнитель" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginHorizontal="5dp"
-                android:contentDescription="@string/settings_activity_licence_agreement"
-                android:src="@drawable/circle_divider" />
+                android:layout_marginHorizontal="@dimen/margin_base_8"
+                android:contentDescription="@string/point_divider"
+                android:src="@drawable/ic_circle_divider" />
 
             <TextView
                 android:id="@+id/track_length"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="@font/ys_display_regular"
-                android:maxLines="1"
-                android:textColor="@color/yp_gray"
-                android:textSize="11sp"
+                style="@style/TrackInfo"
                 tools:text="1:24" />
 
         </LinearLayout>

@@ -55,16 +55,11 @@ class SearchActivity : AppCompatActivity() {
                     "Guns N' Roses",
                     "5:03",
                     "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"
-                ),
-                Track(
-                    "TrackNameTrackNameTrackNameTrackNameTrackNameTrackNameTrackNameTrackName",
-                    "ArtistNameArtistNameArtistNameArtistNameArtistNameArtistName",
-                    "5:03",
-                    ""
                 )
             )
         )
 
+        // RecyclerView для списка песен
         val recyclerViewTrack = findViewById<RecyclerView>(R.id.rv_track)
         recyclerViewTrack.layoutManager = LinearLayoutManager(this)
         recyclerViewTrack.adapter = trackList
@@ -84,7 +79,8 @@ class SearchActivity : AppCompatActivity() {
 
         // Проверяем сохраненное состояние текста и востанавллиевам, если что-то сохранено
         if (savedInstanceState != null) {
-            savedSearchText = savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
+            savedSearchText =
+                savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
             editText.setText(savedSearchText)
         }
 
