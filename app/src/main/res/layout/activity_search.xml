@@ -33,7 +33,9 @@
             android:id="@+id/et_search"
             style="@style/SearchBar"
             android:autofillHints=""
-            tools:ignore="LabelFor" />
+            tools:ignore="LabelFor"
+            android:imeOptions="actionDone"
+            android:singleLine="true"/>
 
         <ImageView
             android:id="@+id/iw_clear"

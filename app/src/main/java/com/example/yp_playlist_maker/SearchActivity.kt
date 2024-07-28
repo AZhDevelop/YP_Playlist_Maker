@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +60,14 @@ class SearchActivity : AppCompatActivity() {
                 )
             )
         )
+
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val toast = Toast.makeText(applicationContext, "Done clicked", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+            false
+        }
 
         // RecyclerView для списка песен
         val recyclerViewTrack = findViewById<RecyclerView>(R.id.rv_track)
