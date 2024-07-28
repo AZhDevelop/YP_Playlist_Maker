@@ -48,5 +48,6 @@ dependencies {
     implementation(libs.material.v161)
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
-    implementation(kotlin("script-runtime"))
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
 
+    private val url: String = "https://itunes.apple.com"
     private var savedSearchText: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
