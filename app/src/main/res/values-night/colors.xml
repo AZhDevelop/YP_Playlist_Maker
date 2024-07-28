@@ -16,6 +16,7 @@
     <color name="ic_search_small">@color/black</color>
     <color name="ic_clear">@color/black</color>
     <color name="ic_circle_divider">@color/white</color>
+    <color name="img_color">@color/white</color>
 
     <!-- other -->
     <color name="main_background">@color/black</color>
