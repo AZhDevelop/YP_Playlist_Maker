@@ -22,6 +22,7 @@
     </LinearLayout>
 
     <Switch
+        android:id="@+id/theme_switcher"
         android:layout_width="match_parent"
         android:layout_height="@dimen/line_high_64"
         android:layout_marginTop="@dimen/margin_layout_24"
