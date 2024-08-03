@@ -18,23 +18,13 @@ import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
-    private val trackUrl: String = "https://itunes.apple.com"
-    private var savedSearchText: String = ""
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(trackUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val trackService = retrofit.create(TrackApi::class.java)
+    private var savedSearchText: String = EMPTY_STRING
     private val trackList = ArrayList<Track>()
     private val adapter = TrackAdapter()
-
+    private val trackService = TrackService().trackService
     private lateinit var editText: EditText
     private lateinit var clearText: ImageView
     private lateinit var backButton: ImageView
@@ -57,11 +47,17 @@ class SearchActivity : AppCompatActivity() {
         imageViewError = findViewById(R.id.img_search_error)
         reloadButton = findViewById(R.id.btn_reload)
 
+        clearText.visibility = View.INVISIBLE
         placeholder.visibility = View.GONE
         reloadButton.visibility = View.GONE
 
         adapter.data = trackList
 
+        // RecyclerView для списка песен
+        recyclerViewTrack.layoutManager = LinearLayoutManager(this)
+        recyclerViewTrack.adapter = adapter
+
+        // Логика запуска поиска песен с клавиатуры
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 search()
@@ -69,16 +65,12 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
+        // Кнопка перезапуска поиска песен, если отсутствовал интернет
         reloadButton.setOnClickListener {
             search()
         }
 
-        // RecyclerView для списка песен
-        recyclerViewTrack.layoutManager = LinearLayoutManager(this)
-        recyclerViewTrack.adapter = adapter
-
-        clearText.visibility = View.INVISIBLE
-
+        // Закрываем Activity
         backButton.setOnClickListener {
             finish()
         }
@@ -87,7 +79,7 @@ class SearchActivity : AppCompatActivity() {
         clearText.setOnClickListener {
             trackList.clear()
             adapter.notifyDataSetChanged()
-            editText.setText("")
+            editText.setText(EMPTY_STRING)
             it.hideKeyboard()
         }
 
@@ -161,7 +153,7 @@ class SearchActivity : AppCompatActivity() {
                             if (trackList.isEmpty()) {
                                 showMessage(
                                     getString(R.string.nothing_found),
-                                    "",
+                                    EMPTY_STRING,
                                     R.drawable.img_search_error,
                                     false
                                 )
@@ -170,7 +162,7 @@ class SearchActivity : AppCompatActivity() {
 
                         else -> showMessage(
                             getString(R.string.connection_error),
-                            "",
+                            EMPTY_STRING,
                             R.drawable.img_connection_error,
                             true
                         )
@@ -189,7 +181,7 @@ class SearchActivity : AppCompatActivity() {
             })
     }
 
-    // Плейсхолдер
+    // Сообщение об ошибке - песня не нйдена или ошибка подключения
     private fun showMessage(
         text: String,
         additionalMessage: String,
@@ -211,4 +203,9 @@ class SearchActivity : AppCompatActivity() {
             placeholderMessage.visibility = View.GONE
         }
     }
+
+    companion object{
+        private val EMPTY_STRING: String = ""
+    }
 }
+
