@@ -13,6 +13,8 @@
     <string name="search_activity_back">Назад</string>
     <string name="search_activity_clear">Очистить</string>
     <string name="point_divider">Точка разделитель</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="connection_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
 
     <!-- Экран медиа -->
     <string name="media_activity_back">Назад</string>

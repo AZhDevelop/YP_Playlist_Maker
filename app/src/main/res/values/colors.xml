@@ -16,6 +16,7 @@
     <color name="ic_search_small">@color/yp_gray</color>
     <color name="ic_clear">@color/yp_gray</color>
     <color name="ic_circle_divider">@color/yp_gray</color>
+    <color name="img_color">#1A1B22</color>
 
     <!-- other -->
     <color name="main_background">#3772E7</color>
