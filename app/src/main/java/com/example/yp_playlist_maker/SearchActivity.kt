@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,11 +20,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), Listener {
 
     private var savedSearchText: String = EMPTY_STRING
     private val trackList = ArrayList<Track>()
-    private val adapter = TrackAdapter()
+    private val adapter = TrackAdapter(this)
     private val trackService = TrackService().trackService
     private lateinit var editText: EditText
     private lateinit var clearText: ImageView
@@ -206,6 +207,10 @@ class SearchActivity : AppCompatActivity() {
 
     companion object{
         private val EMPTY_STRING: String = ""
+    }
+
+    override fun onClick(track: Track) {
+        Toast.makeText(this, "$track", Toast.LENGTH_SHORT).show()
     }
 }
 
