@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -16,6 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,7 +25,7 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity(), Listener {
 
     private var savedSearchText: String = EMPTY_STRING
-    private val trackList = ArrayList<Track>()
+    private val trackList : ArrayList<Track> = arrayListOf()
     private val adapter = TrackAdapter(this)
     private val trackService = TrackService().trackService
     private lateinit var editText: EditText
@@ -35,9 +37,13 @@ class SearchActivity : AppCompatActivity(), Listener {
     private lateinit var imageViewError: ImageView
     private lateinit var reloadButton: Button
 
+    private val trackHistoryList: ArrayList<Track> = arrayListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        val sharedPreferences = getSharedPreferences("track_list_key", MODE_PRIVATE)
+        val trackHistory = sharedPreferences.getString("track_key", "")
 
         clearText = findViewById(R.id.iw_clear)
         editText = findViewById(R.id.et_search)
@@ -57,6 +63,13 @@ class SearchActivity : AppCompatActivity(), Listener {
         // RecyclerView для списка песен
         recyclerViewTrack.layoutManager = LinearLayoutManager(this)
         recyclerViewTrack.adapter = adapter
+
+        if (trackHistory != "") {
+            val trackHistoryJson = Gson().fromJson(trackHistory, Array<Track>::class.java)
+            trackList.addAll(trackHistoryJson)
+            trackHistoryList.addAll(trackHistoryJson)
+            adapter.notifyDataSetChanged()
+        }
 
         // Логика запуска поиска песен с клавиатуры
         editText.setOnEditorActionListener { _, actionId, _ ->
@@ -206,11 +219,12 @@ class SearchActivity : AppCompatActivity(), Listener {
     }
 
     companion object{
-        private val EMPTY_STRING: String = ""
+        private const val EMPTY_STRING: String = ""
     }
 
     override fun onClick(track: Track) {
-        Toast.makeText(this, "$track", Toast.LENGTH_SHORT).show()
+        val sharedPreferences = getSharedPreferences("track_list_key", MODE_PRIVATE)
+        SearchHistory().saveClickedTrack(sharedPreferences, track, trackHistoryList)
     }
 }
 
