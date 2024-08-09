@@ -9,7 +9,7 @@ const val EMPTY_STRING = ""
 const val TRACK_LIST_KEY = "track_list_key"
 const val TRACK_KEY = "track_key"
 
-class App: Application() {
+class App : Application() {
 
     private var darkTheme: Boolean = false
 

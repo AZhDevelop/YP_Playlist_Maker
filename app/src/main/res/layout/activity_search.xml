@@ -35,6 +35,7 @@
             android:autofillHints=""
             android:imeOptions="actionDone"
             android:singleLine="true"
+            android:textCursorDrawable="@drawable/ic_cursor"
             tools:ignore="LabelFor" />
 
         <ImageView
@@ -59,15 +60,15 @@
             android:id="@+id/rv_track"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/margin_base_16" />
+            android:layout_marginTop="@dimen/margin_base_16"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/btn_clear_history"
             style="@style/ReloadButton"
             android:layout_height="wrap_content"
-            android:text="@string/clear_history"
-            android:layout_marginBottom="14dp"/>
+            android:layout_marginBottom="14dp"
+            android:text="@string/clear_history" />
 
     </LinearLayout>
 
@@ -89,14 +90,13 @@
         <TextView
             android:id="@+id/placeholderMessage"
             style="@style/InfoMessage"
-            tools:text="Ничего не нашлось" />
+            android:text="@string/nothing_found" />
 
         <Button
             android:id="@+id/btn_reload"
             style="@style/ReloadButton"
-            tools:text="Обновить" />
+            android:text="@string/update" />
 
     </LinearLayout>
-
 
 </LinearLayout>

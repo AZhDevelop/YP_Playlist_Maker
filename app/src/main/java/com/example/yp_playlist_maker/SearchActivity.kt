@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -13,7 +12,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +23,7 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity(), Listener {
 
     private var savedSearchText: String = EMPTY_STRING
-    private val trackList : ArrayList<Track> = arrayListOf()
+    private val trackList: ArrayList<Track> = arrayListOf()
     private val adapter = TrackAdapter(this)
     private val trackService = TrackService().trackService
     private lateinit var editText: EditText
@@ -38,7 +36,6 @@ class SearchActivity : AppCompatActivity(), Listener {
     private lateinit var reloadButton: Button
     private lateinit var searchTextMessage: TextView
     private lateinit var clearHistoryButton: Button
-
     private val trackHistoryList: ArrayList<Track> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,8 +78,6 @@ class SearchActivity : AppCompatActivity(), Listener {
         editText.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus && editText.text.isEmpty() && trackList.isNotEmpty()) {
                 enableSearchHistoryVisibility()
-            } else {
-                disableSearchHistoryVisibility()
             }
         }
 
@@ -136,6 +131,10 @@ class SearchActivity : AppCompatActivity(), Listener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearText.visibility = clearButtonVisibility(s)
                 savedSearchText = editText.text.toString()
+                disableSearchHistoryVisibility()
+                if (editText.text.isEmpty() && trackList.isNotEmpty()) {
+                    enableSearchHistoryVisibility()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
