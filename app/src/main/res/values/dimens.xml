@@ -16,6 +16,7 @@
     <dimen name="toolbar_margin_start_64">64dp</dimen>
     <dimen name="toolbar_margin_start_24">24dp</dimen>
     <dimen name="margin_start_12">12dp</dimen>
+    <dimen name="margin_top_102">102dp</dimen>
 
     <!-- other -->
     <dimen name="btn_corner_radius_16">16dp</dimen>
@@ -24,6 +25,7 @@
     <dimen name="btn_height_36">36dp</dimen>
     <dimen name="btn_weight_0">0dp</dimen>
     <dimen name="track_icon_size_45">45dp</dimen>
+    <dimen name="layout_width_312">312dp</dimen>
 
 
 </resources>

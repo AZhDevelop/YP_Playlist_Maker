@@ -45,19 +45,39 @@
 
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_track"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_base_16" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_search_history"
+            style="@style/InfoMessage"
+            android:text="@string/search_history" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_track"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/margin_base_16" />
+
+        <Button
+            android:id="@+id/btn_clear_history"
+            style="@style/ReloadButton"
+            android:layout_height="wrap_content"
+            android:text="@string/clear_history"
+            android:layout_marginBottom="14dp"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/placeholder"
-        android:layout_width="312dp"
+        android:layout_width="@dimen/layout_width_312"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center"
-        android:layout_marginTop="102dp">
+        android:layout_marginTop="@dimen/margin_top_102"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/img_search_error"
@@ -74,7 +94,7 @@
         <Button
             android:id="@+id/btn_reload"
             style="@style/ReloadButton"
-            android:text="Обновить" />
+            tools:text="Обновить" />
 
     </LinearLayout>
 

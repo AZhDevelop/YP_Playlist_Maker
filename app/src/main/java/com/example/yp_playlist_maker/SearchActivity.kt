@@ -36,6 +36,8 @@ class SearchActivity : AppCompatActivity(), Listener {
     private lateinit var placeholderMessage: TextView
     private lateinit var imageViewError: ImageView
     private lateinit var reloadButton: Button
+    private lateinit var searchTextMessage: TextView
+    private lateinit var clearHistoryButton: Button
 
     private val trackHistoryList: ArrayList<Track> = arrayListOf()
 
@@ -53,10 +55,15 @@ class SearchActivity : AppCompatActivity(), Listener {
         placeholderMessage = findViewById(R.id.placeholderMessage)
         imageViewError = findViewById(R.id.img_search_error)
         reloadButton = findViewById(R.id.btn_reload)
+        searchTextMessage = findViewById(R.id.tv_search_history)
+        clearHistoryButton = findViewById(R.id.btn_clear_history)
 
         clearText.visibility = View.INVISIBLE
         placeholder.visibility = View.GONE
         reloadButton.visibility = View.GONE
+        clearHistoryButton.visibility = View.GONE
+        searchTextMessage.visibility = View.GONE
+        recyclerViewTrack.visibility = View.GONE
 
         adapter.data = trackList
 
@@ -69,6 +76,14 @@ class SearchActivity : AppCompatActivity(), Listener {
             trackList.addAll(trackHistoryJson)
             trackHistoryList.addAll(trackHistoryJson)
             adapter.notifyDataSetChanged()
+        }
+
+        editText.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && editText.text.isEmpty() && trackList.isNotEmpty()) {
+                enableSearchHistoryVisibility()
+            } else {
+                disableSearchHistoryVisibility()
+            }
         }
 
         // Логика запуска поиска песен с клавиатуры
@@ -95,6 +110,15 @@ class SearchActivity : AppCompatActivity(), Listener {
             adapter.notifyDataSetChanged()
             editText.setText(EMPTY_STRING)
             it.hideKeyboard()
+        }
+
+        clearHistoryButton.setOnClickListener {
+            sharedPreferences.edit()
+                .clear()
+                .apply()
+            trackList.clear()
+            adapter.notifyDataSetChanged()
+            disableSearchHistoryVisibility()
         }
 
         // Проверяем сохраненное состояние текста и востанавллиевам, если что-то сохранено
@@ -163,6 +187,7 @@ class SearchActivity : AppCompatActivity(), Listener {
                                 trackList.addAll(response.body()?.results!!)
                                 adapter.notifyDataSetChanged()
                                 placeholder.visibility = View.GONE
+                                recyclerViewTrack.visibility = View.VISIBLE
                             }
                             if (trackList.isEmpty()) {
                                 showMessage(
@@ -221,6 +246,18 @@ class SearchActivity : AppCompatActivity(), Listener {
     override fun onClick(track: Track) {
         val sharedPreferences = getSharedPreferences(TRACK_LIST_KEY, MODE_PRIVATE)
         SearchHistory().saveClickedTrack(sharedPreferences, track, trackHistoryList)
+    }
+
+    private fun enableSearchHistoryVisibility() {
+        searchTextMessage.visibility = View.VISIBLE
+        clearHistoryButton.visibility = View.VISIBLE
+        recyclerViewTrack.visibility = View.VISIBLE
+    }
+
+    private fun disableSearchHistoryVisibility() {
+        searchTextMessage.visibility = View.GONE
+        clearHistoryButton.visibility = View.GONE
+        recyclerViewTrack.visibility = View.GONE
     }
 }
 
