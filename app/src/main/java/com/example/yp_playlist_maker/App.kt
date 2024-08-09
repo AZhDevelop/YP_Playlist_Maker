@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatDelegate
 
 const val THEME_PREFERENCES = "theme_preferences"
 const val PREFERENCES_KEY = "app_theme"
+const val EMPTY_STRING = ""
+const val TRACK_LIST_KEY = "track_list_key"
+const val TRACK_KEY = "track_key"
 
 class App: Application() {
 

@@ -42,8 +42,8 @@ class SearchActivity : AppCompatActivity(), Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        val sharedPreferences = getSharedPreferences("track_list_key", MODE_PRIVATE)
-        val trackHistory = sharedPreferences.getString("track_key", "")
+        val sharedPreferences = getSharedPreferences(TRACK_LIST_KEY, MODE_PRIVATE)
+        val trackHistory = sharedPreferences.getString(TRACK_KEY, EMPTY_STRING)
 
         clearText = findViewById(R.id.iw_clear)
         editText = findViewById(R.id.et_search)
@@ -218,12 +218,8 @@ class SearchActivity : AppCompatActivity(), Listener {
         }
     }
 
-    companion object{
-        private const val EMPTY_STRING: String = ""
-    }
-
     override fun onClick(track: Track) {
-        val sharedPreferences = getSharedPreferences("track_list_key", MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(TRACK_LIST_KEY, MODE_PRIVATE)
         SearchHistory().saveClickedTrack(sharedPreferences, track, trackHistoryList)
     }
 }
