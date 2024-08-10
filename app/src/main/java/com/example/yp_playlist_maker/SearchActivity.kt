@@ -259,4 +259,3 @@ class SearchActivity : AppCompatActivity(), Listener {
         recyclerViewTrack.visibility = View.GONE
     }
 }
-
