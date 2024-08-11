@@ -3,11 +3,13 @@ package com.example.yp_playlist_maker
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 
-const val THEME_PREFERENCES = "theme_preferences"
-const val PREFERENCES_KEY = "app_theme"
-const val EMPTY_STRING = ""
-const val TRACK_LIST_KEY = "track_list_key"
-const val TRACK_KEY = "track_key"
+const val THEME_PREFERENCES: String = "theme_preferences"
+const val PREFERENCES_KEY: String = "app_theme"
+const val EMPTY_STRING: String = ""
+const val TRACK_LIST_KEY: String = "track_list_key"
+const val TRACK_KEY: String = "track_key"
+const val TRACK_HISTORY_SIZE: Int = 10
+const val ZERO_INDEX: Int = 0
 
 class App : Application() {
 

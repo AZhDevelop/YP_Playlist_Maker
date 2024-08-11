@@ -10,27 +10,19 @@ class SearchHistory : Application() {
     fun saveClickedTrack(
         sharedPreferences: SharedPreferences,
         track: Track,
-        trackList: ArrayList<Track>
+        trackHistoryList: ArrayList<Track>
     ) {
-        if ((trackList.size == 10) and (track in trackList)) {
-            trackList.remove(track)
-            trackList.add(0, track)
-        } else if (trackList.size == 10) {
-            trackList.removeLast()
-            if (track in trackList) {
-                trackList.remove(track)
-                trackList.add(0, track)
-            } else {
-                trackList.add(0, track)
-            }
-        } else if (track in trackList) {
-            trackList.remove(track)
-            trackList.add(0, track)
+        if (track in trackHistoryList) {
+            trackHistoryList.remove(track)
+            trackHistoryList.add(ZERO_INDEX, track)
+        } else if (trackHistoryList.size == TRACK_HISTORY_SIZE) {
+            trackHistoryList.removeLast()
+            trackHistoryList.add(ZERO_INDEX, track)
         } else {
-            trackList.add(0, track)
+            trackHistoryList.add(ZERO_INDEX, track)
         }
         sharedPreferences.edit()
-            .putString(TRACK_KEY, Gson().toJson(trackList))
+            .putString(TRACK_KEY, Gson().toJson(trackHistoryList))
             .apply()
     }
 
