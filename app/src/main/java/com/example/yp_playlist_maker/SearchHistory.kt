@@ -10,7 +10,8 @@ class SearchHistory : Application() {
     fun saveClickedTrack(
         sharedPreferences: SharedPreferences,
         track: Track,
-        trackHistoryList: ArrayList<Track>
+        trackHistoryList: ArrayList<Track>,
+        gson: Gson
     ) {
         if (track in trackHistoryList) {
             trackHistoryList.remove(track)
@@ -22,7 +23,7 @@ class SearchHistory : Application() {
             trackHistoryList.add(ZERO_INDEX, track)
         }
         sharedPreferences.edit()
-            .putString(TRACK_KEY, Gson().toJson(trackHistoryList))
+            .putString(TRACK_KEY, gson.toJson(trackHistoryList))
             .apply()
     }
 

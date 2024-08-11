@@ -38,6 +38,7 @@ class SearchActivity : AppCompatActivity(), Listener {
     private lateinit var searchTextMessage: TextView
     private lateinit var clearHistoryButton: Button
     private val trackHistoryList: ArrayList<Track> = arrayListOf()
+    private val gson: Gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +71,7 @@ class SearchActivity : AppCompatActivity(), Listener {
         recyclerViewTrack.adapter = adapter
 
         if (trackHistory != "") {
-            val trackHistoryJson = Gson().fromJson(trackHistory, Array<Track>::class.java)
+            val trackHistoryJson = gson.fromJson(trackHistory, Array<Track>::class.java)
             trackList.addAll(trackHistoryJson)
             trackHistoryList.addAll(trackHistoryJson)
             adapter.notifyDataSetChanged()
@@ -250,7 +251,7 @@ class SearchActivity : AppCompatActivity(), Listener {
 
     override fun onClick(track: Track) {
         val sharedPreferences = getSharedPreferences(TRACK_LIST_KEY, MODE_PRIVATE)
-        SearchHistory().saveClickedTrack(sharedPreferences, track, trackHistoryList)
+        SearchHistory().saveClickedTrack(sharedPreferences, track, trackHistoryList, gson)
     }
 
     private fun enableSearchHistoryVisibility() {
