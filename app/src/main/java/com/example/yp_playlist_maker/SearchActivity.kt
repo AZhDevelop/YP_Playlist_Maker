@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -112,6 +113,7 @@ class SearchActivity : AppCompatActivity(), Listener {
                 .clear()
                 .apply()
             trackList.clear()
+            trackHistoryList.clear()
             adapter.notifyDataSetChanged()
             disableSearchHistoryVisibility()
         }
@@ -132,7 +134,11 @@ class SearchActivity : AppCompatActivity(), Listener {
                 clearText.visibility = clearButtonVisibility(s)
                 savedSearchText = editText.text.toString()
                 disableSearchHistoryVisibility()
-                if (editText.text.isEmpty() && trackList.isNotEmpty()) {
+                if (editText.text.isEmpty() && trackHistoryList.isNotEmpty()) {
+                    Log.d("search", "$trackHistoryList")
+                    trackList.clear()
+                    trackList.addAll(trackHistoryList)
+                    adapter.notifyDataSetChanged()
                     enableSearchHistoryVisibility()
                 }
             }
