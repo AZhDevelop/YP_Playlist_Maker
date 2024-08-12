@@ -19,7 +19,8 @@
     <color name="img_color">@color/white</color>
 
     <!-- other -->
-    <color name="main_background">@color/black</color>
+    <color name="menu_background">#1A1B22</color>
+    <color name="main_background">#1A1B22</color>
     <color name="search_hint">@color/yp_black</color>
 
 </resources>

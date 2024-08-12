@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/ToolBar">
+    style="@style/ToolBar"
+    android:background="@color/main_background">
 
     <ImageView
         android:id="@+id/iw_back"
