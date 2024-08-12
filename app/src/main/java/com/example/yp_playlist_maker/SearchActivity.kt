@@ -142,6 +142,9 @@ class SearchActivity : AppCompatActivity() {
                     adapter.notifyDataSetChanged()
                     enableSearchHistoryVisibility()
                 }
+                if (editText.text.isEmpty() && placeholder.visibility == View.VISIBLE) {
+                    placeholder.visibility = View.GONE
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
