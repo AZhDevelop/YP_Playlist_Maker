@@ -21,11 +21,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SearchActivity : AppCompatActivity(), Listener {
+class SearchActivity : AppCompatActivity() {
 
     private var savedSearchText: String = EMPTY_STRING
     private val trackList: ArrayList<Track> = arrayListOf()
-    private val adapter = TrackAdapter(this)
+    private val adapter = TrackAdapter()
     private val trackService = TrackService().trackService
     private lateinit var editText: EditText
     private lateinit var clearText: ImageView
@@ -149,6 +149,11 @@ class SearchActivity : AppCompatActivity(), Listener {
             }
         }
         editText.addTextChangedListener(simpleTextWatcher)
+
+        adapter.onTrackClick = {
+            SearchHistory().saveClickedTrack(sharedPreferences, it, trackHistoryList, gson)
+        }
+
     }
 
     // Функция контроля состояния видимости кнопки "Очистить строку" в поисковой строке
@@ -247,11 +252,6 @@ class SearchActivity : AppCompatActivity(), Listener {
         } else {
             placeholderMessage.visibility = View.GONE
         }
-    }
-
-    override fun onClick(track: Track) {
-        val sharedPreferences = getSharedPreferences(TRACK_LIST_KEY, MODE_PRIVATE)
-        SearchHistory().saveClickedTrack(sharedPreferences, track, trackHistoryList, gson)
     }
 
     private fun enableSearchHistoryVisibility() {

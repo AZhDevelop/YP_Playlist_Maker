@@ -15,7 +15,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val artworkUrl100: ImageView = itemView.findViewById(R.id.track_image)
     private val trackImageCornerRadius: Int = 2
 
-    fun bind(item: Track, listener: Listener) {
+    fun bind(item: Track) {
 
         trackName.text = item.trackName
         artistName.text = item.artistName
@@ -29,12 +29,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .into(artworkUrl100)
 
         artistName.requestLayout()
-
-        itemView.setOnClickListener {
-            listener.onClick(item)
-        }
     }
-
 }
 
 
