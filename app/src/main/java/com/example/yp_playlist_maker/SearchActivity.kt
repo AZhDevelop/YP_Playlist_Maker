@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -39,6 +40,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearHistoryButton: Button
     private val trackHistoryList: ArrayList<Track> = arrayListOf()
     private val gson: Gson = Gson()
+    private var updateTrackHistory: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,8 +157,24 @@ class SearchActivity : AppCompatActivity() {
 
         adapter.onTrackClick = {
             SearchHistory().saveClickedTrack(sharedPreferences, it, trackHistoryList, gson)
+            val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
+            startActivity(displayAudioPlayer)
+            if (editText.text.isEmpty()) {
+                updateTrackHistory = true
+            }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        if (updateTrackHistory) {
+            trackList.clear()
+            trackList.addAll(trackHistoryList)
+            adapter.notifyDataSetChanged()
+            updateTrackHistory = false
+            Log.d("status", "Track history updated")
+        }
+        Log.d("status", "onResume")
     }
 
     // Функция контроля состояния видимости кнопки "Очистить строку" в поисковой строке
