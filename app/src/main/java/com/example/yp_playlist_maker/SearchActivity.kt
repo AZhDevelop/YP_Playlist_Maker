@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -138,7 +137,6 @@ class SearchActivity : AppCompatActivity() {
                 savedSearchText = editText.text.toString()
                 disableSearchHistoryVisibility()
                 if (editText.text.isEmpty() && trackHistoryList.isNotEmpty()) {
-                    Log.d("search", "$trackHistoryList")
                     trackList.clear()
                     trackList.addAll(trackHistoryList)
                     adapter.notifyDataSetChanged()
@@ -158,6 +156,19 @@ class SearchActivity : AppCompatActivity() {
         adapter.onTrackClick = {
             SearchHistory().saveClickedTrack(sharedPreferences, it, trackHistoryList, gson)
             val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
+            displayAudioPlayer.apply {
+                putExtra(Track.TRACK_NAME, it.trackName)
+                putExtra(Track.ARTIST_NAME, it.artistName)
+                putExtra(Track.TRACK_TIME_MILLIS, Converter().convertMillis(it.trackTimeMillis))
+                putExtra(Track.ARTWORK_URL_500, it.artworkUrl100
+                    .replaceAfterLast('/',"512x512bb.jpg"))
+                putExtra(Track.COLLECTION_NAME, it.collectionName)
+                putExtra(Track.RELEASE_DATE, it.releaseDate
+                    .replaceAfter("-","")
+                    .replace("-", ""))
+                putExtra(Track.PRIMARY_GENRE_NAME, it.primaryGenreName)
+                putExtra(Track.COUNTRY, it.country)
+            }
             startActivity(displayAudioPlayer)
             if (editText.text.isEmpty()) {
                 updateTrackHistory = true
@@ -172,9 +183,7 @@ class SearchActivity : AppCompatActivity() {
             trackList.addAll(trackHistoryList)
             adapter.notifyDataSetChanged()
             updateTrackHistory = false
-            Log.d("status", "Track history updated")
         }
-        Log.d("status", "onResume")
     }
 
     // Функция контроля состояния видимости кнопки "Очистить строку" в поисковой строке
