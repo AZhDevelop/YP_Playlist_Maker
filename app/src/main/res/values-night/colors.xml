@@ -18,9 +18,15 @@
     <color name="ic_circle_divider">@color/white</color>
     <color name="img_color">@color/white</color>
 
+    <!-- button colors -->
+    <color name="btn_add_to_playlist">@color/white</color>
+    <color name="btn_like">@color/white</color>
+    <color name="btn_play">@color/white</color>
+
     <!-- other -->
     <color name="menu_background">#1A1B22</color>
     <color name="main_background">#1A1B22</color>
     <color name="search_hint">@color/yp_black</color>
+    <color name="track_value_color">@color/white</color>
 
 </resources>
