@@ -157,17 +157,7 @@ class SearchActivity : AppCompatActivity() {
             SearchHistory().saveClickedTrack(sharedPreferences, it, trackHistoryList, gson)
             val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
             displayAudioPlayer.apply {
-                putExtra(Track.TRACK_NAME, it.trackName)
-                putExtra(Track.ARTIST_NAME, it.artistName)
-                putExtra(Track.TRACK_TIME_MILLIS, Converter().convertMillis(it.trackTimeMillis))
-                putExtra(Track.ARTWORK_URL_500, it.artworkUrl100
-                    .replaceAfterLast('/',"512x512bb.jpg"))
-                putExtra(Track.COLLECTION_NAME, it.collectionName)
-                putExtra(Track.RELEASE_DATE, it.releaseDate
-                    .replaceAfter("-","")
-                    .replace("-", ""))
-                putExtra(Track.PRIMARY_GENRE_NAME, it.primaryGenreName)
-                putExtra(Track.COUNTRY, it.country)
+                putExtra(AudioPlayerActivity.INTENT_PUTTED_TRACK, it)
             }
             startActivity(displayAudioPlayer)
             if (editText.text.isEmpty()) {
