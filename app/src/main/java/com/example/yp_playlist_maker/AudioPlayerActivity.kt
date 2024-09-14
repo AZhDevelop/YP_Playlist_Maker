@@ -1,9 +1,11 @@
 package com.example.yp_playlist_maker
 
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class AudioPlayerActivity : AppCompatActivity() {
+
+    private var playerState = STATE_DEFAULT
+    private var mediaPlayer = MediaPlayer()
+    private var url: String = ""
+    private lateinit var play: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +43,11 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
 
         val trackAlbumIntent = getTrackExtra?.collectionName
+        url = getTrackExtra?.previewUrl.toString()
+        play = findViewById(R.id.play)
+
+        preparePlayer()
+        play.setOnClickListener { playbackControl() }
 
         Glide.with(this)
             .load(getTrackExtra?.artworkUrl100
@@ -69,9 +81,59 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun preparePlayer() {
+        mediaPlayer.setDataSource(url)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            play.isEnabled = true
+            playerState = STATE_PREPARED
+        }
+        mediaPlayer.setOnCompletionListener {
+            play.setImageResource(R.drawable.btn_pause_light_mode)
+            playerState = STATE_PREPARED
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playerState = STATE_PLAYING
+        play.setImageResource(R.drawable.btn_pause_light_mode)
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        playerState = STATE_PAUSED
+        play.setImageResource(R.drawable.btn_play)
+    }
+
+    private fun playbackControl() {
+        when(playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
+            }
+        }
+    }
+
     companion object {
         const val PLAYER_IMAGE_RADIUS: Int = 8
         const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
     }
 
 }
