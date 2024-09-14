@@ -3,19 +3,37 @@ package com.example.yp_playlist_maker
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
+
+    companion object {
+        const val PLAYER_IMAGE_RADIUS: Int = 8
+        const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val MILLIS_500 = 500L
+        private const val DEFAULT_TIME = "00:00"
+    }
 
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
     private var url: String = ""
     private lateinit var play: ImageView
+    private lateinit var timer: TextView
+    private lateinit var mainThreadHandler: Handler
+    private lateinit var runnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +61,14 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackAlbumIntent = getTrackExtra?.collectionName
         url = getTrackExtra?.previewUrl.toString()
         play = findViewById(R.id.play)
+
+        mainThreadHandler = Handler(Looper.getMainLooper())
+        runnable = Runnable {
+            val trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition).toString()
+            timer.text = trackTime
+            mainThreadHandler.postDelayed(runnable, MILLIS_500)
+        }
+        timer = findViewById(R.id.play_time)
 
         preparePlayer()
         play.setOnClickListener { playbackControl() }
@@ -89,6 +115,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         mediaPlayer.setOnCompletionListener {
             play.setImageResource(R.drawable.btn_play)
             playerState = STATE_PREPARED
+            mainThreadHandler.removeCallbacks(runnable)
+            timer.text = DEFAULT_TIME
         }
     }
 
@@ -108,20 +136,13 @@ class AudioPlayerActivity : AppCompatActivity() {
         when(playerState) {
             STATE_PLAYING -> {
                 pausePlayer()
+                mainThreadHandler.removeCallbacks(runnable)
             }
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer()
+                mainThreadHandler.post(runnable)
             }
         }
-    }
-
-    companion object {
-        const val PLAYER_IMAGE_RADIUS: Int = 8
-        const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
     }
 
     override fun onPause() {
@@ -132,6 +153,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
+        mainThreadHandler.removeCallbacks(runnable)
     }
 
 }
