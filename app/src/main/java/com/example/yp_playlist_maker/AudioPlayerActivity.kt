@@ -38,9 +38,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackAlbumIntent = getTrackExtra?.collectionName
 
         Glide.with(this)
-            .load(intent.getStringExtra(getTrackExtra?.artworkUrl100
+            .load(getTrackExtra?.artworkUrl100
                 .toString()
-                .replaceAfterLast('/',"512x512bb.jpg")))
+                .replaceAfterLast('/',"512x512bb.jpg"))
             .centerCrop()
             .transform(RoundedCorners(Converter().dpToPx(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)
