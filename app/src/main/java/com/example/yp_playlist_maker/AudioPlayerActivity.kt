@@ -3,9 +3,7 @@ package com.example.yp_playlist_maker
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -89,7 +87,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             playerState = STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            play.setImageResource(R.drawable.btn_pause_light_mode)
+            play.setImageResource(R.drawable.btn_play)
             playerState = STATE_PREPARED
         }
     }
@@ -97,7 +95,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun startPlayer() {
         mediaPlayer.start()
         playerState = STATE_PLAYING
-        play.setImageResource(R.drawable.btn_pause_light_mode)
+        play.setImageResource(R.drawable.btn_pause)
     }
 
     private fun pausePlayer() {

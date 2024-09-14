@@ -23,6 +23,7 @@
     <color name="btn_add_to_playlist">@color/yp_black</color>
     <color name="btn_like">@color/yp_black</color>
     <color name="btn_play">@color/yp_black</color>
+    <color name="btn_pause">@color/yp_black</color>
 
     <!-- other -->
     <color name="menu_background">#3772E7</color>
