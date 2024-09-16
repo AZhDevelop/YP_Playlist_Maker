@@ -51,7 +51,7 @@ class SearchActivity : AppCompatActivity() {
     private var updateTrackHistory: Boolean = false
     private lateinit var progressBar: ProgressBar
     private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { search() }
+    private val searchRunnable = Runnable { if (editText.text.isNotEmpty()) { search() } }
     private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -161,8 +161,6 @@ class SearchActivity : AppCompatActivity() {
                     placeholder.visibility = View.GONE
                 }
                 if (editText.text.isNotEmpty()) {
-                    trackList.clear()
-                    adapter.notifyDataSetChanged()
                     searchDebounce()
                 }
             }
