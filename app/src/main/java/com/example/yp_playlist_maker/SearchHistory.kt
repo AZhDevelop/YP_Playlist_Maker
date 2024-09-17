@@ -2,7 +2,6 @@ package com.example.yp_playlist_maker
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import com.google.gson.Gson
 
 class SearchHistory : Application() {

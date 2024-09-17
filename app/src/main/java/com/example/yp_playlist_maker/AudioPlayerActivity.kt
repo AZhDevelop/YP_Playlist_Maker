@@ -1,39 +1,28 @@
 package com.example.yp_playlist_maker
 
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
 
     companion object {
         const val PLAYER_IMAGE_RADIUS: Int = 8
         const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val MILLIS_500 = 500L
-        private const val DEFAULT_TIME = "00:00"
+        private const val EMPTY_STRING = ""
+        private const val ALPHA_25 = 0.25F
     }
 
-    private var playerState = STATE_DEFAULT
-    private var mediaPlayer = MediaPlayer()
-    private var url: String = ""
-    private lateinit var play: ImageView
+    private var url: String = EMPTY_STRING
+    private lateinit var play: Button
     private lateinit var timer: TextView
-    private lateinit var mainThreadHandler: Handler
-    private lateinit var runnable: Runnable
+    private lateinit var playTrack: PlayTrack
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,17 +50,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackAlbumIntent = getTrackExtra?.collectionName
         url = getTrackExtra?.previewUrl.toString()
         play = findViewById(R.id.play)
-
-        mainThreadHandler = Handler(Looper.getMainLooper())
-        runnable = Runnable {
-            val trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition).toString()
-            timer.text = trackTime
-            mainThreadHandler.postDelayed(runnable, MILLIS_500)
-        }
+        play.alpha = ALPHA_25
         timer = findViewById(R.id.play_time)
+        playTrack = PlayTrack(url, play, timer)
 
-        preparePlayer()
-        play.setOnClickListener { playbackControl() }
+        playTrack.preparePlayer()
+        play.setOnClickListener { playTrack.playbackControl() }
 
         Glide.with(this)
             .load(getTrackExtra?.artworkUrl100
@@ -105,55 +89,15 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            play.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            play.setImageResource(R.drawable.btn_play)
-            playerState = STATE_PREPARED
-            mainThreadHandler.removeCallbacks(runnable)
-            timer.text = DEFAULT_TIME
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playerState = STATE_PLAYING
-        play.setImageResource(R.drawable.btn_pause)
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playerState = STATE_PAUSED
-        play.setImageResource(R.drawable.btn_play)
-    }
-
-    private fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-                mainThreadHandler.removeCallbacks(runnable)
-            }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-                mainThreadHandler.post(runnable)
-            }
-        }
-    }
-
     override fun onStop() {
         super.onStop()
-        pausePlayer()
+        playTrack.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
-        mainThreadHandler.removeCallbacks(runnable)
+        playTrack.releasePlayer()
+        playTrack.threadRemoveCallbacks()
     }
 
 }

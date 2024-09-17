@@ -34,8 +34,4 @@ class App : Application() {
             }
         )
     }
-
-    public companion object {
-
-    }
 }
