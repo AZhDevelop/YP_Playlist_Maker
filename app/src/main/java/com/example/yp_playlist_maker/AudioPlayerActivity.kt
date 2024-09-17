@@ -1,28 +1,21 @@
 package com.example.yp_playlist_maker
 
-import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    companion object {
-        const val PLAYER_IMAGE_RADIUS: Int = 8
-        const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
-        private const val EMPTY_STRING = ""
-        private const val ALPHA_25 = 0.25F
-    }
-
     private var url: String = EMPTY_STRING
     private lateinit var play: Button
     private lateinit var timer: TextView
     private lateinit var playTrack: PlayTrack
+    private val converter = Converter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +32,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackGenre = findViewById<TextView>(R.id.genre_value)
         val trackCountry = findViewById<TextView>(R.id.country_value)
 
-        val getTrackExtra =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                intent.getParcelableExtra(INTENT_PUTTED_TRACK, Track::class.java)
-            }
-            else{
-                intent.getParcelableExtra(INTENT_PUTTED_TRACK) as Track?
-            }
+        val getTrackExtra = IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
 
         val trackAlbumIntent = getTrackExtra?.collectionName
         url = getTrackExtra?.previewUrl.toString()
@@ -62,17 +49,17 @@ class AudioPlayerActivity : AppCompatActivity() {
                 .toString()
                 .replaceAfterLast('/',"512x512bb.jpg"))
             .centerCrop()
-            .transform(RoundedCorners(Converter().dpToPx(PLAYER_IMAGE_RADIUS)))
+            .transform(RoundedCorners(converter.dpToPx(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)
             .into(trackImage)
 
         trackNameTextView.text = getTrackExtra?.trackName
         artistNameTextView.text = getTrackExtra?.artistName
-        trackDuration.text = Converter().convertMillis((getTrackExtra?.trackTimeMillis.toString()))
+        trackDuration.text = converter.convertMillis((getTrackExtra?.trackTimeMillis.toString()))
 
         if (trackAlbumIntent.isNullOrEmpty()) {
-            trackAlbum.visibility = View.GONE
-            trackAlbumValue.visibility = View.GONE
+            trackAlbum.gone()
+            trackAlbumValue.gone()
         } else {
             trackAlbumValue.text = trackAlbumIntent
         }
@@ -98,5 +85,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onDestroy()
         playTrack.releasePlayer()
         playTrack.threadRemoveCallbacks()
+    }
+
+    companion object {
+        const val PLAYER_IMAGE_RADIUS: Int = 8
+        const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
+        private const val EMPTY_STRING = ""
+        private const val ALPHA_25 = 0.25F
     }
 }

@@ -14,16 +14,6 @@ class PlayTrack(
     private val timer: TextView)
 {
 
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val DEFAULT_TIME = "00:00"
-        private const val MILLIS_500 = 500L
-        private const val ALPHA_100 = 1F
-    }
-
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
     private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
@@ -91,6 +81,16 @@ class PlayTrack(
 
     private fun threadPost() {
         mainThreadHandler.post(runnable)
+    }
+
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val DEFAULT_TIME = "00:00"
+        private const val MILLIS_500 = 500L
+        private const val ALPHA_100 = 1F
     }
 
 }

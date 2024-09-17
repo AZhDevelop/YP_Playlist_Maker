@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker
 
 import android.app.Application
+import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 
 const val THEME_PREFERENCES: String = "theme_preferences"
@@ -10,6 +11,18 @@ const val TRACK_LIST_KEY: String = "track_list_key"
 const val TRACK_KEY: String = "track_key"
 const val TRACK_HISTORY_SIZE: Int = 10
 const val ZERO_INDEX: Int = 0
+
+fun View.gone() {
+    visibility = View.GONE
+}
+
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+fun View.invisible() {
+    visibility = View.INVISIBLE
+}
 
 class App : Application() {
 
