@@ -1,14 +1,21 @@
 package com.example.yp_playlist_maker
 
 import android.os.Bundle
-import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class AudioPlayerActivity : AppCompatActivity() {
+
+    private var url: String = EMPTY_STRING
+    private lateinit var play: Button
+    private lateinit var timer: TextView
+    private lateinit var playTrack: PlayTrack
+    private val converter = Converter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,34 +31,66 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackYear = findViewById<TextView>(R.id.year_value)
         val trackGenre = findViewById<TextView>(R.id.genre_value)
         val trackCountry = findViewById<TextView>(R.id.country_value)
-        val trackImageCornerRadius = 8
-        val trackAlbumIntent = intent.getStringExtra(Track.COLLECTION_NAME)
+
+        val getTrackExtra = IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
+
+        val trackAlbumIntent = getTrackExtra?.collectionName
+        url = getTrackExtra?.previewUrl.toString()
+        play = findViewById(R.id.play)
+        play.alpha = ALPHA_25
+        timer = findViewById(R.id.play_time)
+        playTrack = PlayTrack(url, play, timer)
+
+        playTrack.preparePlayer()
+        play.setOnClickListener { playTrack.playbackControl() }
 
         Glide.with(this)
-            .load(intent.getStringExtra(Track.ARTWORK_URL_500))
+            .load(getTrackExtra?.artworkUrl100
+                .toString()
+                .replaceAfterLast('/',"512x512bb.jpg"))
             .centerCrop()
-            .transform(RoundedCorners(Converter().dpToPx(trackImageCornerRadius)))
+            .transform(RoundedCorners(converter.dpToPx(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)
             .into(trackImage)
 
-        trackNameTextView.text = intent.getStringExtra(Track.TRACK_NAME)
-        artistNameTextView.text = intent.getStringExtra(Track.ARTIST_NAME)
-        trackDuration.text = intent.getStringExtra(Track.TRACK_TIME_MILLIS)
+        trackNameTextView.text = getTrackExtra?.trackName
+        artistNameTextView.text = getTrackExtra?.artistName
+        trackDuration.text = converter.convertMillis((getTrackExtra?.trackTimeMillis.toString()))
 
         if (trackAlbumIntent.isNullOrEmpty()) {
-            trackAlbum.visibility = View.GONE
-            trackAlbumValue.visibility = View.GONE
+            trackAlbum.gone()
+            trackAlbumValue.gone()
         } else {
             trackAlbumValue.text = trackAlbumIntent
         }
 
-        trackYear.text = intent.getStringExtra(Track.RELEASE_DATE)
-        trackGenre.text = intent.getStringExtra(Track.PRIMARY_GENRE_NAME)
-        trackCountry.text = intent.getStringExtra(Track.COUNTRY)
+        trackYear.text = getTrackExtra?.releaseDate
+            .toString()
+            .replaceAfter("-","")
+            .replace("-", "")
+        trackGenre.text = getTrackExtra?.primaryGenreName
+        trackCountry.text = getTrackExtra?.country
 
         backButton.setOnClickListener {
             finish()
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        playTrack.pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        playTrack.releasePlayer()
+        playTrack.threadRemoveCallbacks()
+    }
+
+    companion object {
+        const val PLAYER_IMAGE_RADIUS: Int = 8
+        const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
+        private const val EMPTY_STRING = ""
+        private const val ALPHA_25 = 0.25F
+    }
 }
