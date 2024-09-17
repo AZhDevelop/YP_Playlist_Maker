@@ -24,5 +24,4 @@ class TrackAdapter : RecyclerView.Adapter<TrackViewHolder>() {
             onTrackClick?.invoke(data[position])
         }
     }
-
 }

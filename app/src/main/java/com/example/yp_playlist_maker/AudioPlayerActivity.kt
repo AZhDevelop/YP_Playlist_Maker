@@ -99,5 +99,4 @@ class AudioPlayerActivity : AppCompatActivity() {
         playTrack.releasePlayer()
         playTrack.threadRemoveCallbacks()
     }
-
 }

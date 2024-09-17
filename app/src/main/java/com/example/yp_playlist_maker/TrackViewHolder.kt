@@ -34,8 +34,3 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         const val TRACK_IMAGE_RADIUS = 2
     }
 }
-
-
-
-
-

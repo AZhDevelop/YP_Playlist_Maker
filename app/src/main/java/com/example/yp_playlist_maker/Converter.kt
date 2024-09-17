@@ -16,5 +16,4 @@ class Converter {
     fun convertMillis(time: String): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time.toInt()).toString()
     }
-
 }
