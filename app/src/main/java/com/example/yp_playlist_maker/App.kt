@@ -4,8 +4,6 @@ import android.app.Application
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 
-const val THEME_PREFERENCES: String = "theme_preferences"
-const val PREFERENCES_KEY: String = "app_theme"
 const val EMPTY_STRING: String = ""
 const val TRACK_LIST_KEY: String = "track_list_key"
 const val TRACK_KEY: String = "track_key"
@@ -31,8 +29,9 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        darkTheme = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE)
-            .getBoolean(PREFERENCES_KEY, false)
+        val getThemeColor = Creator.provideAppThemeInteractor(this)
+
+        darkTheme = getThemeColor.getSwitcherStatus()
         switchTheme(darkTheme)
 
     }
@@ -47,4 +46,6 @@ class App : Application() {
             }
         )
     }
+
+
 }

@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
+import com.example.yp_playlist_maker.domain.models.AppThemeParams
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -21,17 +22,16 @@ class SettingsActivity : AppCompatActivity() {
         val contactSupportButton = findViewById<FrameLayout>(R.id.fl_contact_support)
         val licenseAgreementButton = findViewById<FrameLayout>(R.id.fl_license_agreement)
         val themeSwitcher = findViewById<Switch>(R.id.theme_switcher)
-        val sharedPrefs = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE)
+
+        val appTheme = Creator.provideAppThemeInteractor(this)
 
         // Достаем значение true или false из памяти и меняем состояние Switch
-        themeSwitcher.isChecked = sharedPrefs.getBoolean(PREFERENCES_KEY, false)
+        themeSwitcher.isChecked = appTheme.getSwitcherStatus()
 
         // Переключаем тему с помощью Switch и сохраняем значение в памяти
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
-            sharedPrefs.edit()
-                .putBoolean(PREFERENCES_KEY, checked)
-                .apply()
+            appTheme.saveSwitcherStatus(AppThemeParams(checked))
         }
 
         backButton.setOnClickListener {
