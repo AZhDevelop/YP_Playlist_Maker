@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.presentation.settings_activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,7 +8,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
+import com.example.yp_playlist_maker.Creator
+import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.domain.models.app_theme.AppThemeParams
+import com.example.yp_playlist_maker.presentation.application.App
 
 class SettingsActivity : AppCompatActivity() {
 

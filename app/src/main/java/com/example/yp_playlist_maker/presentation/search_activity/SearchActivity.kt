@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.presentation.search_activity
 
 import android.content.Context
 import android.content.Intent
@@ -19,6 +19,19 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.SearchHistory
+import com.example.yp_playlist_maker.domain.models.track.Track
+import com.example.yp_playlist_maker.presentation.track.TrackAdapter
+import com.example.yp_playlist_maker.TrackResponse
+import com.example.yp_playlist_maker.TrackService
+import com.example.yp_playlist_maker.presentation.application.EMPTY_STRING
+import com.example.yp_playlist_maker.presentation.application.TRACK_KEY
+import com.example.yp_playlist_maker.presentation.application.TRACK_LIST_KEY
+import com.example.yp_playlist_maker.presentation.application.gone
+import com.example.yp_playlist_maker.presentation.application.invisible
+import com.example.yp_playlist_maker.presentation.application.visible
+import com.example.yp_playlist_maker.presentation.audio_player_activity.AudioPlayerActivity
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback

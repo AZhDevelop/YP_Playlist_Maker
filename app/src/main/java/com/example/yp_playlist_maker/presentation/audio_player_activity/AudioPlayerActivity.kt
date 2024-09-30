@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.presentation.audio_player_activity
 
 import android.os.Bundle
 import android.widget.Button
@@ -8,6 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.yp_playlist_maker.Converter
+import com.example.yp_playlist_maker.PlayTrack
+import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.domain.models.track.Track
+import com.example.yp_playlist_maker.presentation.application.gone
 
 class AudioPlayerActivity : AppCompatActivity() {
 
