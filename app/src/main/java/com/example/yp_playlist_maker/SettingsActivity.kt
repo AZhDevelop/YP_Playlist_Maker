@@ -8,7 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
-import com.example.yp_playlist_maker.domain.models.AppThemeParams
+import com.example.yp_playlist_maker.domain.models.app_theme.AppThemeParams
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -26,12 +26,12 @@ class SettingsActivity : AppCompatActivity() {
         val appTheme = Creator.provideAppThemeInteractor(this)
 
         // Достаем значение true или false из памяти и меняем состояние Switch
-        themeSwitcher.isChecked = appTheme.getSwitcherStatus()
+        themeSwitcher.isChecked = appTheme.getAppTheme()
 
         // Переключаем тему с помощью Switch и сохраняем значение в памяти
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
-            appTheme.saveSwitcherStatus(AppThemeParams(checked))
+            appTheme.saveAppTheme(AppThemeParams(checked))
         }
 
         backButton.setOnClickListener {

@@ -31,7 +31,7 @@ class App : Application() {
 
         val getThemeColor = Creator.provideAppThemeInteractor(this)
 
-        darkTheme = getThemeColor.getSwitcherStatus()
+        darkTheme = getThemeColor.getAppTheme()
         switchTheme(darkTheme)
 
     }

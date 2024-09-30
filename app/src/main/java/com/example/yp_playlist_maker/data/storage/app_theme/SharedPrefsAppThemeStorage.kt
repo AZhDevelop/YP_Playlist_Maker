@@ -1,23 +1,23 @@
-package com.example.yp_playlist_maker.data
+package com.example.yp_playlist_maker.data.storage.app_theme
 
 import android.content.Context
-import com.example.yp_playlist_maker.domain.api.AppThemeRepository
-import com.example.yp_playlist_maker.domain.models.AppThemeParams
+import com.example.yp_playlist_maker.data.dto.app_theme.AppThemeParamsDto
+import com.example.yp_playlist_maker.domain.models.app_theme.AppThemeParams
 
 const val THEME_PREFERENCES: String = "theme_preferences"
 const val THEME_PREFERENCES_KEY: String = "theme_preferences_key"
 
-class AppThemeImpl(context: Context) : AppThemeRepository {
+class SharedPrefsAppThemeStorage(context: Context): AppThemeStorage {
 
     private val sharedPreferences = context.getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE)
 
-    override fun saveSwitcherStatus(params: AppThemeParams) {
+    override fun saveAppTheme(params: AppThemeParamsDto) {
         sharedPreferences.edit()
             .putBoolean(THEME_PREFERENCES_KEY, params.switcherStatus)
             .apply()
     }
 
-    override fun getSwitcherStatus(): Boolean {
+    override fun getAppTheme(): Boolean {
         return sharedPreferences.getBoolean(THEME_PREFERENCES_KEY, false)
     }
 }
