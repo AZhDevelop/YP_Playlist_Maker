@@ -10,7 +10,17 @@ class TrackInteractorImpl(private val repository: TrackRepository) : TrackIntera
 
     override fun searchTrack(expression: String, consumer: TrackInteractor.TrackConsumer) {
         executor.execute {
-            consumer.consume(repository.searchTrack(expression))
+            try {
+                val response = repository.searchTrack(expression)
+                if (response.isEmpty()) {
+                    consumer.consume(emptyList())
+                } else {
+                    consumer.consume(response)
+                }
+            } catch (e: Exception) {
+                consumer.error("Connection Error")
+            }
+
         }
     }
 

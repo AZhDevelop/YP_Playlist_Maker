@@ -25,7 +25,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 )
             }
         } else {
-            return  emptyList()
+            return emptyList()
         }
     }
 

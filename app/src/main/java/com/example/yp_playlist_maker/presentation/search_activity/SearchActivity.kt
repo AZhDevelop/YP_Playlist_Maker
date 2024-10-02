@@ -261,36 +261,19 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            override fun error(errorMessage: String) {
+                runOnUiThread{
+                    showMessage(
+                        getString(R.string.connection_error),
+                        EMPTY_STRING,
+                        R.drawable.img_connection_error,
+                        true
+                    )
+                }
+            }
         })
     }
-
-
-
-
-//
-//                        }
-//
-//                        else -> showMessage(
-//                            getString(R.string.connection_error),
-//                            EMPTY_STRING,
-//                            R.drawable.img_connection_error,
-//                            true
-//                        )
-//
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
-//                    showMessage(
-//                        getString(R.string.connection_error),
-//                        t.message.toString(),
-//                        R.drawable.img_connection_error,
-//                        true
-//                    )
-//                }
-
-//            })
-//    }
 
     // Сообщение об ошибке - песня не нйдена или ошибка подключения
     private fun showMessage(

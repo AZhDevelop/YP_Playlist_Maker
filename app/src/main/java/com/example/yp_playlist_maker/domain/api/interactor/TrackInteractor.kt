@@ -8,6 +8,7 @@ interface TrackInteractor {
 
     interface TrackConsumer {
         fun consume(foundTrack: List<Track>)
+        fun error(errorMessage: String)
     }
 
 }

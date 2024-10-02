@@ -13,7 +13,7 @@ class RetrofitNetworkClient : NetworkClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val trackService: TrackApi = retrofit.create(TrackApi::class.java)
+    private val trackService: TrackApi = retrofit.create(TrackApi::class.java)
 
     override fun doRequest(dto: Any): Response {
         if (dto is TrackSearchRequest) {
