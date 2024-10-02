@@ -19,12 +19,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.yp_playlist_maker.Creator
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.SearchHistory
 import com.example.yp_playlist_maker.domain.models.Track
 import com.example.yp_playlist_maker.presentation.track.TrackAdapter
 import com.example.yp_playlist_maker.data.dto.TrackSearchResponse
 import com.example.yp_playlist_maker.data.network.RetrofitNetworkClient
+import com.example.yp_playlist_maker.domain.api.interactor.TrackInteractor
 import com.example.yp_playlist_maker.presentation.application.EMPTY_STRING
 import com.example.yp_playlist_maker.presentation.application.TRACK_KEY
 import com.example.yp_playlist_maker.presentation.application.TRACK_LIST_KEY
@@ -42,7 +44,7 @@ class SearchActivity : AppCompatActivity() {
     private var savedSearchText: String = EMPTY_STRING
     private var trackList: ArrayList<Track> = arrayListOf()
     private val adapter = TrackAdapter()
-    private val retrofitNetworkClient = RetrofitNetworkClient().trackService
+    private val trackService = Creator.provideTrackInteractor()
     private lateinit var editText: EditText
     private lateinit var clearText: ImageView
     private lateinit var backButton: ImageView
@@ -238,53 +240,57 @@ class SearchActivity : AppCompatActivity() {
 
         progressBar.visible()
 
-        retrofitNetworkClient.search(editText.text.toString())
-            .enqueue(object : Callback<TrackSearchResponse> {
-                override fun onResponse(
-                    call: Call<TrackSearchResponse>,
-                    response: Response<TrackSearchResponse>
-                ) {
+        trackService.searchTrack(editText.text.toString(), object : TrackInteractor.TrackConsumer {
+            override fun consume(foundTrack: List<Track>) {
+                runOnUiThread {
                     progressBar.gone()
-                    when (response.code()) {
-                        200 -> {
-                            trackList.clear()
-                            if (response.body()?.results?.isNotEmpty() == true) {
-                                trackList.addAll(response.body()?.results!!)
-                                adapter.notifyDataSetChanged()
-                                placeholder.gone()
-                                recyclerViewTrack.visible()
-                            }
-                            if (trackList.isEmpty()) {
-                                showMessage(
-                                    getString(R.string.nothing_found),
-                                    EMPTY_STRING,
-                                    R.drawable.img_search_error,
-                                    false
-                                )
-                            }
-                        }
-
-                        else -> showMessage(
-                            getString(R.string.connection_error),
+                    trackList.clear()
+                    if (foundTrack.isNotEmpty()) {
+                        trackList.addAll(foundTrack)
+                        adapter.notifyDataSetChanged()
+                        placeholder.gone()
+                        recyclerViewTrack.visible()
+                    }
+                    if (trackList.isEmpty()) {
+                        showMessage(
+                            getString(R.string.nothing_found),
                             EMPTY_STRING,
-                            R.drawable.img_connection_error,
-                            true
+                            R.drawable.img_search_error,
+                            false
                         )
-
                     }
                 }
-
-                override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
-                    showMessage(
-                        getString(R.string.connection_error),
-                        t.message.toString(),
-                        R.drawable.img_connection_error,
-                        true
-                    )
-                }
-
-            })
+            }
+        })
     }
+
+
+
+
+//
+//                        }
+//
+//                        else -> showMessage(
+//                            getString(R.string.connection_error),
+//                            EMPTY_STRING,
+//                            R.drawable.img_connection_error,
+//                            true
+//                        )
+//
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
+//                    showMessage(
+//                        getString(R.string.connection_error),
+//                        t.message.toString(),
+//                        R.drawable.img_connection_error,
+//                        true
+//                    )
+//                }
+
+//            })
+//    }
 
     // Сообщение об ошибке - песня не нйдена или ошибка подключения
     private fun showMessage(
