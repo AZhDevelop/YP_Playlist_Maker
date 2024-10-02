@@ -23,8 +23,8 @@ import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.SearchHistory
 import com.example.yp_playlist_maker.domain.models.Track
 import com.example.yp_playlist_maker.presentation.track.TrackAdapter
-import com.example.yp_playlist_maker.TrackResponse
-import com.example.yp_playlist_maker.TrackService
+import com.example.yp_playlist_maker.data.dto.TrackSearchResponse
+import com.example.yp_playlist_maker.data.network.RetrofitNetworkClient
 import com.example.yp_playlist_maker.presentation.application.EMPTY_STRING
 import com.example.yp_playlist_maker.presentation.application.TRACK_KEY
 import com.example.yp_playlist_maker.presentation.application.TRACK_LIST_KEY
@@ -42,7 +42,7 @@ class SearchActivity : AppCompatActivity() {
     private var savedSearchText: String = EMPTY_STRING
     private var trackList: ArrayList<Track> = arrayListOf()
     private val adapter = TrackAdapter()
-    private val trackService = TrackService().trackService
+    private val retrofitNetworkClient = RetrofitNetworkClient().trackService
     private lateinit var editText: EditText
     private lateinit var clearText: ImageView
     private lateinit var backButton: ImageView
@@ -238,11 +238,11 @@ class SearchActivity : AppCompatActivity() {
 
         progressBar.visible()
 
-        trackService.search(editText.text.toString())
-            .enqueue(object : Callback<TrackResponse> {
+        retrofitNetworkClient.search(editText.text.toString())
+            .enqueue(object : Callback<TrackSearchResponse> {
                 override fun onResponse(
-                    call: Call<TrackResponse>,
-                    response: Response<TrackResponse>
+                    call: Call<TrackSearchResponse>,
+                    response: Response<TrackSearchResponse>
                 ) {
                     progressBar.gone()
                     when (response.code()) {
@@ -274,7 +274,7 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
                     showMessage(
                         getString(R.string.connection_error),
                         t.message.toString(),

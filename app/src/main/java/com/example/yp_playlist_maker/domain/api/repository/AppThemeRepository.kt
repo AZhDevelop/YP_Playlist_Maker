@@ -1,8 +1,8 @@
-package com.example.yp_playlist_maker.domain.api.app_theme
+package com.example.yp_playlist_maker.domain.api.repository
 
 import com.example.yp_playlist_maker.domain.models.AppThemeParams
 
-interface AppThemeInteractor {
+interface AppThemeRepository {
 
     fun saveAppTheme(params: AppThemeParams)
 

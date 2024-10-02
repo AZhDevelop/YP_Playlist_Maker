@@ -1,7 +1,7 @@
 package com.example.yp_playlist_maker.data.impl
 
 import android.content.Context
-import com.example.yp_playlist_maker.domain.api.app_theme.AppThemeRepository
+import com.example.yp_playlist_maker.domain.api.repository.AppThemeRepository
 import com.example.yp_playlist_maker.domain.models.AppThemeParams
 
 class AppThemeImpl(context: Context) : AppThemeRepository {
