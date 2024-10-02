@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.SearchHistory
-import com.example.yp_playlist_maker.domain.models.track.Track
+import com.example.yp_playlist_maker.domain.models.Track
 import com.example.yp_playlist_maker.presentation.track.TrackAdapter
 import com.example.yp_playlist_maker.TrackResponse
 import com.example.yp_playlist_maker.TrackService

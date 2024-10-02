@@ -2,7 +2,7 @@ package com.example.yp_playlist_maker
 
 import android.app.Application
 import android.content.SharedPreferences
-import com.example.yp_playlist_maker.domain.models.track.Track
+import com.example.yp_playlist_maker.domain.models.Track
 import com.example.yp_playlist_maker.presentation.application.TRACK_HISTORY_SIZE
 import com.example.yp_playlist_maker.presentation.application.TRACK_KEY
 import com.example.yp_playlist_maker.presentation.application.ZERO_INDEX

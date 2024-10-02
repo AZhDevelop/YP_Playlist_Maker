@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.Converter
 import com.example.yp_playlist_maker.PlayTrack
 import com.example.yp_playlist_maker.R
-import com.example.yp_playlist_maker.domain.models.track.Track
+import com.example.yp_playlist_maker.domain.models.Track
 import com.example.yp_playlist_maker.presentation.application.gone
 
 class AudioPlayerActivity : AppCompatActivity() {
