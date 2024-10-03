@@ -1,18 +1,15 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.domain.impl
 
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import android.widget.Button
-import android.widget.TextView
+import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.domain.api.interactor.PlayTrackInteractor
+import com.example.yp_playlist_maker.domain.models.PlayerParams
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayTrack(
-    private val url: String,
-    private val play: Button,
-    private val timer: TextView)
-{
+class PlayTrackInteractorImpl(private val playerParams: PlayerParams) : PlayTrackInteractor {
 
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
@@ -22,39 +19,39 @@ class PlayTrack(
         trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
             .format(mediaPlayer.currentPosition)
             .toString()
-        timer.text = trackTime
+        playerParams.timer.text = trackTime
         threadPostDelayed()
     }
 
-    fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
+    override fun preparePlayer() {
+        mediaPlayer.setDataSource(playerParams.url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            play.isEnabled = true
-            play.alpha = ALPHA_100
+            playerParams.play.isEnabled = true
+            playerParams.play.alpha = ALPHA_100
             playerState = STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            play.setBackgroundResource(R.drawable.btn_play)
+            playerParams.play.setBackgroundResource(R.drawable.btn_play)
             playerState = STATE_PREPARED
             threadRemoveCallbacks()
-            timer.text = DEFAULT_TIME
+            playerParams.timer.text = DEFAULT_TIME
         }
     }
 
-    private fun startPlayer() {
+    override fun startPlayer() {
         mediaPlayer.start()
         playerState = STATE_PLAYING
-        play.setBackgroundResource(R.drawable.btn_pause)
+        playerParams.play.setBackgroundResource(R.drawable.btn_pause)
     }
 
-    fun pausePlayer() {
+    override fun pausePlayer() {
         mediaPlayer.pause()
         playerState = STATE_PAUSED
-        play.setBackgroundResource(R.drawable.btn_play)
+        playerParams.play.setBackgroundResource(R.drawable.btn_play)
     }
 
-    fun playbackControl() {
+    override fun playbackControl() {
         when(playerState) {
             STATE_PLAYING -> {
                 pausePlayer()
@@ -67,19 +64,19 @@ class PlayTrack(
         }
     }
 
-    fun releasePlayer() {
+    override fun releasePlayer() {
         mediaPlayer.release()
     }
 
-    fun threadRemoveCallbacks() {
+    override fun threadRemoveCallbacks() {
         mainThreadHandler.removeCallbacks(runnable)
     }
 
-    private fun threadPostDelayed() {
+    override fun threadPostDelayed() {
         mainThreadHandler.postDelayed(runnable, MILLIS_500)
     }
 
-    private fun threadPost() {
+    override fun threadPost() {
         mainThreadHandler.post(runnable)
     }
 

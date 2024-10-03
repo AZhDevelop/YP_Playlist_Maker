@@ -9,9 +9,11 @@ import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.Converter
-import com.example.yp_playlist_maker.PlayTrack
+import com.example.yp_playlist_maker.Creator
 import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.domain.models.PlayerParams
 import com.example.yp_playlist_maker.domain.models.Track
+import com.example.yp_playlist_maker.domain.use_case.PlayTrackUseCase
 import com.example.yp_playlist_maker.presentation.application.gone
 
 class AudioPlayerActivity : AppCompatActivity() {
@@ -19,8 +21,9 @@ class AudioPlayerActivity : AppCompatActivity() {
     private var url: String = EMPTY_STRING
     private lateinit var play: Button
     private lateinit var timer: TextView
-    private lateinit var playTrack: PlayTrack
     private val converter = Converter()
+    private lateinit var playTrack: PlayTrackUseCase
+    private lateinit var playerParams: PlayerParams
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,18 +39,19 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackYear = findViewById<TextView>(R.id.year_value)
         val trackGenre = findViewById<TextView>(R.id.genre_value)
         val trackCountry = findViewById<TextView>(R.id.country_value)
-
         val getTrackExtra = IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
-
         val trackAlbumIntent = getTrackExtra?.collectionName
+
         url = getTrackExtra?.previewUrl.toString()
         play = findViewById(R.id.play)
         play.alpha = ALPHA_25
         timer = findViewById(R.id.play_time)
-        playTrack = PlayTrack(url, play, timer)
+
+        playerParams = PlayerParams(url, play, timer)
+        playTrack = Creator.providePlayTrackUseCase(playerParams)
 
         playTrack.preparePlayer()
-        play.setOnClickListener { playTrack.playbackControl() }
+        play.setOnClickListener { playTrack.playBackControl() }
 
         Glide.with(this)
             .load(getTrackExtra?.artworkUrl100
@@ -83,7 +87,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        playTrack.pausePlayer()
+        playTrack.pause()
     }
 
     override fun onDestroy() {
