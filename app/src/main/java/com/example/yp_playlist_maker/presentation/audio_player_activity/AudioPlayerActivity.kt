@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.yp_playlist_maker.Converter
-import com.example.yp_playlist_maker.Creator
+import com.example.yp_playlist_maker.domain.use_case.Converter
+import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.domain.models.PlayerParams
 import com.example.yp_playlist_maker.domain.models.Track
@@ -54,9 +54,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         play.setOnClickListener { playTrack.playBackControl() }
 
         Glide.with(this)
-            .load(getTrackExtra?.artworkUrl100
-                .toString()
-                .replaceAfterLast('/',"512x512bb.jpg"))
+            .load(converter.convertUrl(getTrackExtra?.artworkUrl100.toString()))
             .centerCrop()
             .transform(RoundedCorners(converter.dpToPx(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)

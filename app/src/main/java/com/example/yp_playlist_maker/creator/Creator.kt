@@ -1,10 +1,9 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.creator
 
 import android.content.Context
 import com.example.yp_playlist_maker.data.impl.AppThemeImpl
 import com.example.yp_playlist_maker.data.impl.SearchHistoryRepositoryImpl
 import com.example.yp_playlist_maker.data.impl.TrackRepositoryImpl
-import com.example.yp_playlist_maker.data.network.NetworkClient
 import com.example.yp_playlist_maker.data.network.RetrofitNetworkClient
 import com.example.yp_playlist_maker.domain.api.interactor.AppThemeInteractor
 import com.example.yp_playlist_maker.domain.api.interactor.PlayTrackInteractor

@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.domain.use_case
 
 import android.content.res.Resources
 import android.util.DisplayMetrics
@@ -15,5 +15,9 @@ class Converter {
 
     fun convertMillis(time: String): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time.toInt()).toString()
+    }
+
+    fun convertUrl(url: String): String {
+        return url.replaceAfterLast('/',"512x512bb.jpg")
     }
 }

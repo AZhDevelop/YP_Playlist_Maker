@@ -19,7 +19,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.yp_playlist_maker.Creator
+import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.domain.api.interactor.TrackInteractor
 import com.example.yp_playlist_maker.domain.models.Track
