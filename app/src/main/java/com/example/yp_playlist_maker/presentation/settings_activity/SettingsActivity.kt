@@ -51,9 +51,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         contactSupportButton.setOnClickListener {
-            val shareIntent = Intent().apply {
-                action = Intent.ACTION_SENDTO
-                data = Uri.parse(getString(R.string.contact_support_mailto))
+            val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse(getString(R.string.mailto))
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.my_email)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_support_subject))
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.contact_support_message))
             }
