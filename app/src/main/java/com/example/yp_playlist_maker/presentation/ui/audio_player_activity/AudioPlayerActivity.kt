@@ -8,12 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.yp_playlist_maker.domain.use_case.Converter
-import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.creator.Creator
+import com.example.yp_playlist_maker.domain.api.interactor.PlayTrackInteractor
 import com.example.yp_playlist_maker.domain.models.PlayerParams
 import com.example.yp_playlist_maker.domain.models.Track
-import com.example.yp_playlist_maker.domain.use_case.PlayTrackUseCase
+import com.example.yp_playlist_maker.presentation.converter.Converter
 import com.example.yp_playlist_maker.presentation.application.gone
 
 class AudioPlayerActivity : AppCompatActivity() {
@@ -22,7 +22,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var play: Button
     private lateinit var timer: TextView
     private val converter = Converter()
-    private lateinit var playTrack: PlayTrackUseCase
+    private lateinit var playTrack: PlayTrackInteractor
     private lateinit var playerParams: PlayerParams
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,10 +48,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         timer = findViewById(R.id.play_time)
 
         playerParams = PlayerParams(url, play, timer)
-        playTrack = Creator.providePlayTrackUseCase(playerParams)
+        playTrack = Creator.providePlayTrackInteractor(playerParams)
 
         playTrack.preparePlayer()
-        play.setOnClickListener { playTrack.playBackControl() }
+        play.setOnClickListener { playTrack.playbackControl() }
 
         Glide.with(this)
             .load(converter.convertUrl(getTrackExtra?.artworkUrl100.toString()))
@@ -85,7 +85,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        playTrack.pause()
+        playTrack.pausePlayer()
     }
 
     override fun onDestroy() {
