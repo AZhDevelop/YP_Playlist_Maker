@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker.presentation.settings_activity
+package com.example.yp_playlist_maker.presentation.ui.settings_activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.domain.models.AppThemeParams
-import com.example.yp_playlist_maker.presentation.application.App
+import com.example.yp_playlist_maker.presentation.ui.application.App
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -26,7 +26,7 @@ class SettingsActivity : AppCompatActivity() {
         val licenseAgreementButton = findViewById<FrameLayout>(R.id.fl_license_agreement)
         val themeSwitcher = findViewById<Switch>(R.id.theme_switcher)
 
-        val appTheme = Creator.provideAppThemeInteractor(this)
+        val appTheme = Creator.provideAppThemeInteractor()
 
         // Достаем значение true или false из памяти и меняем состояние Switch
         themeSwitcher.isChecked = appTheme.getAppTheme()

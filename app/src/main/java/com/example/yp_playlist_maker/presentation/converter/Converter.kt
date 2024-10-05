@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker.domain.use_case
+package com.example.yp_playlist_maker.presentation.converter
 
 import android.content.res.Resources
 import android.util.DisplayMetrics
@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.math.roundToInt
 
-class Converter {
+object Converter {
 
     fun dpToPx(value : Int): Int {
         val displayMetrics = Resources.getSystem().displayMetrics

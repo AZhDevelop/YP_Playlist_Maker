@@ -1,13 +1,13 @@
-package com.example.yp_playlist_maker.presentation.main_activity
+package com.example.yp_playlist_maker.presentation.ui.main_activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.yp_playlist_maker.presentation.media_activity.MediaActivity
+import com.example.yp_playlist_maker.presentation.ui.media_activity.MediaActivity
 import com.example.yp_playlist_maker.R
-import com.example.yp_playlist_maker.presentation.search_activity.SearchActivity
-import com.example.yp_playlist_maker.presentation.settings_activity.SettingsActivity
+import com.example.yp_playlist_maker.presentation.ui.search_activity.SearchActivity
+import com.example.yp_playlist_maker.presentation.ui.settings_activity.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

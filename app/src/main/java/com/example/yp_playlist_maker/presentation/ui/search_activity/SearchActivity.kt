@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker.presentation.search_activity
+package com.example.yp_playlist_maker.presentation.ui.search_activity
 
 import android.content.Context
 import android.content.Intent
@@ -17,18 +17,18 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.domain.api.interactor.TrackInteractor
 import com.example.yp_playlist_maker.domain.models.Track
-import com.example.yp_playlist_maker.presentation.application.EMPTY_STRING
-import com.example.yp_playlist_maker.presentation.application.gone
-import com.example.yp_playlist_maker.presentation.application.invisible
-import com.example.yp_playlist_maker.presentation.application.visible
-import com.example.yp_playlist_maker.presentation.audio_player_activity.AudioPlayerActivity
-import com.example.yp_playlist_maker.presentation.track.TrackAdapter
+import com.example.yp_playlist_maker.presentation.ui.application.gone
+import com.example.yp_playlist_maker.presentation.ui.application.invisible
+import com.example.yp_playlist_maker.presentation.ui.application.visible
+import com.example.yp_playlist_maker.presentation.ui.audio_player_activity.AudioPlayerActivity
+import com.example.yp_playlist_maker.presentation.ui.track.TrackAdapter
 
 class SearchActivity : AppCompatActivity() {
 
@@ -57,7 +57,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val trackHistoryInteractor = Creator.provideSeacrhHistoryInteractor(this)
+        val trackHistoryInteractor = Creator.provideSeacrhHistoryInteractor()
         val trackHistory = trackHistoryInteractor.getHistory()
 
         super.onCreate(savedInstanceState)
@@ -103,6 +103,7 @@ class SearchActivity : AppCompatActivity() {
         // Логика запуска поиска песен с клавиатуры
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                checkPlaceholder()
                 search()
             }
             false
@@ -110,8 +111,8 @@ class SearchActivity : AppCompatActivity() {
 
         // Кнопка перезапуска поиска песен, если отсутствовал интернет
         reloadButton.setOnClickListener {
+            checkPlaceholder()
             search()
-            placeholder.gone()
         }
 
         // Закрываем Activity
@@ -157,8 +158,8 @@ class SearchActivity : AppCompatActivity() {
                     adapter.notifyDataSetChanged()
                     enableSearchHistoryVisibility()
                 }
-                if (editText.text.isEmpty() && placeholder.visibility == View.VISIBLE) {
-                    placeholder.gone()
+                if (editText.text.isEmpty()) {
+                    checkPlaceholder()
                 }
                 if (editText.text.isNotEmpty()) {
                     searchDebounce()
@@ -238,7 +239,7 @@ class SearchActivity : AppCompatActivity() {
                     if (foundTrack.isNotEmpty()) {
                         trackList.addAll(foundTrack)
                         adapter.notifyDataSetChanged()
-                        placeholder.gone()
+                        checkPlaceholder()
                         recyclerViewTrack.visible()
                     }
                     if (trackList.isEmpty()) {
@@ -304,9 +305,7 @@ class SearchActivity : AppCompatActivity() {
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-        if (placeholder.visibility == View.VISIBLE) {
-            placeholder.gone()
-        }
+        checkPlaceholder()
     }
 
     private fun clickDebounce() : Boolean {
@@ -318,8 +317,15 @@ class SearchActivity : AppCompatActivity() {
         return current
     }
 
+    private fun checkPlaceholder() {
+        if (placeholder.isVisible) {
+            placeholder.gone()
+        }
+    }
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val EMPTY_STRING: String = ""
     }
 }

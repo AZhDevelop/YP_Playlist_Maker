@@ -2,6 +2,7 @@ package com.example.yp_playlist_maker.creator
 
 import android.content.Context
 import com.example.yp_playlist_maker.data.impl.AppThemeImpl
+import com.example.yp_playlist_maker.data.impl.PlayTrackRepositoryImpl
 import com.example.yp_playlist_maker.data.impl.SearchHistoryRepositoryImpl
 import com.example.yp_playlist_maker.data.impl.TrackRepositoryImpl
 import com.example.yp_playlist_maker.data.network.RetrofitNetworkClient
@@ -10,6 +11,7 @@ import com.example.yp_playlist_maker.domain.api.interactor.PlayTrackInteractor
 import com.example.yp_playlist_maker.domain.api.interactor.SearchHistoryInteractor
 import com.example.yp_playlist_maker.domain.api.interactor.TrackInteractor
 import com.example.yp_playlist_maker.domain.api.repository.AppThemeRepository
+import com.example.yp_playlist_maker.domain.api.repository.PlayTrackRepository
 import com.example.yp_playlist_maker.domain.api.repository.SearchHistoryRepository
 import com.example.yp_playlist_maker.domain.api.repository.TrackRepository
 import com.example.yp_playlist_maker.domain.impl.AppThemeInteractorImpl
@@ -17,17 +19,22 @@ import com.example.yp_playlist_maker.domain.impl.PlayTrackInteractorImpl
 import com.example.yp_playlist_maker.domain.impl.SearchHistoryInteractorImpl
 import com.example.yp_playlist_maker.domain.impl.TrackInteractorImpl
 import com.example.yp_playlist_maker.domain.models.PlayerParams
-import com.example.yp_playlist_maker.domain.use_case.PlayTrackUseCase
 
 object Creator {
 
-    // Тема приложения
-    private fun getAppThemeRepository(context: Context): AppThemeRepository {
-        return AppThemeImpl(context)
+    private lateinit var appContext: Context
+
+    fun init(context: Context) {
+        appContext = context.applicationContext
     }
 
-    fun provideAppThemeInteractor(context: Context): AppThemeInteractor {
-        return AppThemeInteractorImpl(getAppThemeRepository(context))
+    // Тема приложения
+    private fun getAppThemeRepository(): AppThemeRepository {
+        return AppThemeImpl(appContext)
+    }
+
+    fun provideAppThemeInteractor(): AppThemeInteractor {
+        return AppThemeInteractorImpl(getAppThemeRepository())
     }
 
     // Поиск трека, работа с сетью
@@ -40,21 +47,21 @@ object Creator {
     }
 
     // История поиска треков
-    private fun getSearchHistoryRepository(context: Context) : SearchHistoryRepository {
-        return SearchHistoryRepositoryImpl(context)
+    private fun getSearchHistoryRepository() : SearchHistoryRepository {
+        return SearchHistoryRepositoryImpl(appContext)
     }
 
-    fun provideSeacrhHistoryInteractor(context: Context) : SearchHistoryInteractor {
-        return SearchHistoryInteractorImpl(getSearchHistoryRepository(context))
+    fun provideSeacrhHistoryInteractor() : SearchHistoryInteractor {
+        return SearchHistoryInteractorImpl(getSearchHistoryRepository())
     }
 
     // Взаимодействие с плеером
-    private fun getPlayTrackInteractor(playerParams: PlayerParams) : PlayTrackInteractor {
-        return PlayTrackInteractorImpl(playerParams)
+    private fun getPlayTrackRepository(playerParams: PlayerParams) : PlayTrackRepository {
+        return PlayTrackRepositoryImpl(playerParams)
     }
 
-    fun providePlayTrackUseCase(playerParams: PlayerParams) : PlayTrackUseCase {
-        return PlayTrackUseCase(getPlayTrackInteractor(playerParams))
+    fun providePlayTrackInteractor(playerParams: PlayerParams) : PlayTrackInteractor {
+        return PlayTrackInteractorImpl(getPlayTrackRepository(playerParams))
     }
 
 }

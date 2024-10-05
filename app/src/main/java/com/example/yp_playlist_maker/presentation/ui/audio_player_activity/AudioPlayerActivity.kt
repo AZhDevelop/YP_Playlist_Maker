@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker.presentation.audio_player_activity
+package com.example.yp_playlist_maker.presentation.ui.audio_player_activity
 
 import android.os.Bundle
 import android.widget.Button
@@ -14,14 +14,13 @@ import com.example.yp_playlist_maker.domain.api.interactor.PlayTrackInteractor
 import com.example.yp_playlist_maker.domain.models.PlayerParams
 import com.example.yp_playlist_maker.domain.models.Track
 import com.example.yp_playlist_maker.presentation.converter.Converter
-import com.example.yp_playlist_maker.presentation.application.gone
+import com.example.yp_playlist_maker.presentation.ui.application.gone
 
 class AudioPlayerActivity : AppCompatActivity() {
 
     private var url: String = EMPTY_STRING
     private lateinit var play: Button
     private lateinit var timer: TextView
-    private val converter = Converter()
     private lateinit var playTrack: PlayTrackInteractor
     private lateinit var playerParams: PlayerParams
 
@@ -54,15 +53,15 @@ class AudioPlayerActivity : AppCompatActivity() {
         play.setOnClickListener { playTrack.playbackControl() }
 
         Glide.with(this)
-            .load(converter.convertUrl(getTrackExtra?.artworkUrl100.toString()))
+            .load(Converter.convertUrl(getTrackExtra?.artworkUrl100.toString()))
             .centerCrop()
-            .transform(RoundedCorners(converter.dpToPx(PLAYER_IMAGE_RADIUS)))
+            .transform(RoundedCorners(Converter.dpToPx(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)
             .into(trackImage)
 
         trackNameTextView.text = getTrackExtra?.trackName
         artistNameTextView.text = getTrackExtra?.artistName
-        trackDuration.text = converter.convertMillis((getTrackExtra?.trackTimeMillis.toString()))
+        trackDuration.text = Converter.convertMillis((getTrackExtra?.trackTimeMillis.toString()))
 
         if (trackAlbumIntent.isNullOrEmpty()) {
             trackAlbum.gone()
