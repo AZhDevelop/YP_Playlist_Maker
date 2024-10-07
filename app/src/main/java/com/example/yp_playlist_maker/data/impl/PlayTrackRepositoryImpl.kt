@@ -43,16 +43,17 @@ class PlayTrackRepositoryImpl(private val playerParams: PlayerParams): PlayTrack
         onStart.invoke()
     }
 
-    override fun pausePlayer() {
+    override fun pausePlayer(onPause: () -> Unit) {
         mediaPlayer.pause()
         playerState = STATE_PAUSED
-        playerParams.play.setBackgroundResource(R.drawable.btn_play)
+        onPause.invoke()
+//        playerParams.play.setBackgroundResource(R.drawable.btn_play)
     }
 
-    override fun playbackControl(onStart: () -> Unit) {
+    override fun playbackControl(onStart: () -> Unit, onPause: () -> Unit) {
         when(playerState) {
             STATE_PLAYING -> {
-                pausePlayer()
+                pausePlayer(onPause)
                 threadRemoveCallbacks()
             }
             STATE_PREPARED, STATE_PAUSED -> {

@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.presentation.ui.audio_player_activity
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -23,6 +24,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var timer: TextView
     private lateinit var playTrack: PlayTrackInteractor
     private lateinit var playerParams: PlayerParams
+    private lateinit var onPause: () -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         val onStart: () -> Unit = {
             playerParams.play.setBackgroundResource(R.drawable.btn_pause)
         }
+        onPause = {
+            playerParams.play.setBackgroundResource(R.drawable.btn_play)
+        }
 
         url = getTrackExtra?.previewUrl.toString()
         play = findViewById(R.id.play)
@@ -64,7 +69,9 @@ class AudioPlayerActivity : AppCompatActivity() {
 
 
         playTrack.preparePlayer(url, onPrepare, onComplete)
-        play.setOnClickListener { playTrack.playbackControl(onStart) }
+        play.setOnClickListener {
+            playTrack.playbackControl(onStart, onPause)
+        }
 
         Glide.with(this)
             .load(Converter.convertUrl(getTrackExtra?.artworkUrl100.toString()))
@@ -98,7 +105,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        playTrack.pausePlayer()
+        playTrack.pausePlayer(onPause)
     }
 
     override fun onDestroy() {
