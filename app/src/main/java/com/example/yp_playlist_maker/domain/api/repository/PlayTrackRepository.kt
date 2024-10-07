@@ -6,15 +6,15 @@ interface PlayTrackRepository {
         url: String,
         onPrepare: () -> Unit,
         onComplete: () -> Unit,
-        onTrackUpdate: (String) -> Unit
+        onTimeUpdate: (String) -> Unit
     )
 
     fun startPlayer(onStart: () -> Unit)
     fun pausePlayer(onPause: () -> Unit)
-    fun playbackControl(onStart: () -> Unit, onPause: () -> Unit, onTrackUpdate: (String) -> Unit)
+    fun playbackControl(onStart: () -> Unit, onPause: () -> Unit, onTimeUpdate: (String) -> Unit)
     fun releasePlayer()
-    fun threadRemoveCallbacks(onTrackUpdate: (String) -> Unit)
-    fun threadPostDelayed(onTrackUpdate: (String) -> Unit)
-    fun threadPost(onTrackUpdate: (String) -> Unit)
+    fun threadRemoveCallbacks(onTimeUpdate: (String) -> Unit)
+    fun threadPostDelayed(onTimeUpdate: (String) -> Unit)
+    fun threadPost(onTimeUpdate: (String) -> Unit)
 
 }

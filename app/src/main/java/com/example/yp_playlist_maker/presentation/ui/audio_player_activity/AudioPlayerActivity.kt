@@ -22,7 +22,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var timer: TextView
     private lateinit var playTrack: PlayTrackInteractor
     private lateinit var onPause: () -> Unit
-    private lateinit var onTrackUpdate: (String) -> Unit
+    private lateinit var onTimeUpdate: (String) -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +56,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         onPause = {
             play.setBackgroundResource(R.drawable.btn_play)
         }
-        onTrackUpdate = { time ->
+        onTimeUpdate = { time ->
             timer.text = time
         }
 
@@ -67,9 +67,9 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         playTrack = Creator.providePlayTrackInteractor()
 
-        playTrack.preparePlayer(url, onPrepare, onComplete, onTrackUpdate)
+        playTrack.preparePlayer(url, onPrepare, onComplete, onTimeUpdate)
         play.setOnClickListener {
-            playTrack.playbackControl(onStart, onPause, onTrackUpdate)
+            playTrack.playbackControl(onStart, onPause, onTimeUpdate)
         }
 
         Glide.with(this)
@@ -110,7 +110,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         playTrack.releasePlayer()
-        playTrack.threadRemoveCallbacks(onTrackUpdate)
+        playTrack.threadRemoveCallbacks(onTimeUpdate)
     }
 
     companion object {

@@ -7,7 +7,7 @@ import com.example.yp_playlist_maker.domain.api.repository.PlayTrackRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayTrackRepositoryImpl: PlayTrackRepository {
+class PlayTrackRepositoryImpl : PlayTrackRepository {
 
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
@@ -15,20 +15,25 @@ class PlayTrackRepositoryImpl: PlayTrackRepository {
     private var trackTime: String = ""
     private var receiveCallbacks = true
 
-    private fun getRunnable(onTrackUpdate: (String) -> Unit) : Runnable {
+    private fun getRunnable(onTimeUpdate: (String) -> Unit): Runnable {
         val runnable = Runnable {
             if (receiveCallbacks) {
                 trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
                     .format(mediaPlayer.currentPosition)
                     .toString()
-                onTrackUpdate.invoke(trackTime)
-                threadPostDelayed(onTrackUpdate)
+                onTimeUpdate.invoke(trackTime)
+                threadPostDelayed(onTimeUpdate)
             }
         }
         return runnable
     }
 
-    override fun preparePlayer(url: String, onPrepare: () -> Unit, onComplete: () -> Unit, onTrackUpdate: (String) -> Unit) {
+    override fun preparePlayer(
+        url: String,
+        onPrepare: () -> Unit,
+        onComplete: () -> Unit,
+        onTrackUpdate: (String) -> Unit
+    ) {
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
@@ -55,15 +60,20 @@ class PlayTrackRepositoryImpl: PlayTrackRepository {
         onPause.invoke()
     }
 
-    override fun playbackControl(onStart: () -> Unit, onPause: () -> Unit, onTrackUpdate: (String) -> Unit) {
-        when(playerState) {
+    override fun playbackControl(
+        onStart: () -> Unit,
+        onPause: () -> Unit,
+        onTimeUpdate: (String) -> Unit
+    ) {
+        when (playerState) {
             STATE_PLAYING -> {
                 pausePlayer(onPause)
-                threadRemoveCallbacks(onTrackUpdate)
+                threadRemoveCallbacks(onTimeUpdate)
             }
+
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer(onStart)
-                threadPost(onTrackUpdate)
+                threadPost(onTimeUpdate)
             }
         }
     }
@@ -72,17 +82,17 @@ class PlayTrackRepositoryImpl: PlayTrackRepository {
         mediaPlayer.release()
     }
 
-    override fun threadRemoveCallbacks(onTrackUpdate: (String) -> Unit) {
-        mainThreadHandler.removeCallbacks(getRunnable(onTrackUpdate))
+    override fun threadRemoveCallbacks(onTimeUpdate: (String) -> Unit) {
+        mainThreadHandler.removeCallbacks(getRunnable(onTimeUpdate))
         receiveCallbacks = false
     }
 
-    override fun threadPostDelayed(onTrackUpdate: (String) -> Unit) {
-        mainThreadHandler.postDelayed(getRunnable(onTrackUpdate), MILLIS_500)
+    override fun threadPostDelayed(onTimeUpdate: (String) -> Unit) {
+        mainThreadHandler.postDelayed(getRunnable(onTimeUpdate), MILLIS_500)
     }
 
-    override fun threadPost(onTrackUpdate: (String) -> Unit) {
-        mainThreadHandler.post(getRunnable(onTrackUpdate))
+    override fun threadPost(onTimeUpdate: (String) -> Unit) {
+        mainThreadHandler.post(getRunnable(onTimeUpdate))
     }
 
     companion object {
