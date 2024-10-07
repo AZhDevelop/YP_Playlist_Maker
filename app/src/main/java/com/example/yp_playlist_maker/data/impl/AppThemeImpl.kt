@@ -6,7 +6,8 @@ import com.example.yp_playlist_maker.domain.models.AppThemeParams
 
 class AppThemeImpl(context: Context) : AppThemeRepository {
 
-    private val sharedPreferences = context.getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE)
+    private val sharedPreferences =
+        context.getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE)
 
     override fun saveAppTheme(params: AppThemeParams) {
         sharedPreferences.edit()

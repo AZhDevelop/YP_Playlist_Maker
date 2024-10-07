@@ -14,7 +14,6 @@ class PlayTrackRepositoryImpl : PlayTrackRepository {
     private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
     private var trackTime: String = ""
     private var receiveCallbacks = true
-    private lateinit var runnable: Runnable
 
     override fun preparePlayer(
         url: String,

@@ -7,7 +7,8 @@ import com.google.gson.Gson
 
 class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
 
-    private val sharedPreferences = context.getSharedPreferences(TRACK_LIST_KEY, Context.MODE_PRIVATE)
+    private val sharedPreferences =
+        context.getSharedPreferences(TRACK_LIST_KEY, Context.MODE_PRIVATE)
     private val gson: Gson = Gson()
 
     override fun saveClickedTrack(track: Track, trackHistoryList: ArrayList<Track>) {
@@ -43,7 +44,7 @@ class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
             .apply()
     }
 
-    companion object{
+    companion object {
         private const val TRACK_LIST_KEY: String = "track_list_key"
         private const val TRACK_KEY: String = "track_key"
         private const val EMPTY_STRING: String = ""
