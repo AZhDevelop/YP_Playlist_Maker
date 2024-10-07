@@ -41,6 +41,18 @@ class AudioPlayerActivity : AppCompatActivity() {
         val getTrackExtra = IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
         val trackAlbumIntent = getTrackExtra?.collectionName
 
+        val onPrepare: () -> Unit = {
+            playerParams.play.isEnabled = true
+            playerParams.play.alpha = ALPHA_100
+        }
+        val onComplete: () -> Unit = {
+            playerParams.play.setBackgroundResource(R.drawable.btn_play)
+            playerParams.timer.text = DEFAULT_TIME
+        }
+        val onStart: () -> Unit = {
+            playerParams.play.setBackgroundResource(R.drawable.btn_pause)
+        }
+
         url = getTrackExtra?.previewUrl.toString()
         play = findViewById(R.id.play)
         play.alpha = ALPHA_25
@@ -49,17 +61,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         playerParams = PlayerParams(url, play, timer)
         playTrack = Creator.providePlayTrackInteractor(playerParams)
 
-        playTrack.preparePlayer(url,
-            {
-                playerParams.play.isEnabled = true
-                playerParams.play.alpha = ALPHA_100
-        },
-            {
-                playerParams.play.setBackgroundResource(R.drawable.btn_play)
-                playerParams.timer.text = DEFAULT_TIME
-            }
-        )
-        play.setOnClickListener { playTrack.playbackControl() }
+
+
+        playTrack.preparePlayer(url, onPrepare, onComplete)
+        play.setOnClickListener { playTrack.playbackControl(onStart) }
 
         Glide.with(this)
             .load(Converter.convertUrl(getTrackExtra?.artworkUrl100.toString()))

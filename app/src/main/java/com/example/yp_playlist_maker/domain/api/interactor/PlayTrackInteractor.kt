@@ -4,7 +4,7 @@ interface PlayTrackInteractor {
 
     fun preparePlayer(url: String, onPrepare: () -> Unit, onComplete: () -> Unit)
     fun pausePlayer()
-    fun playbackControl()
+    fun playbackControl(onStart: () -> Unit)
     fun releasePlayer()
     fun threadRemoveCallbacks()
 

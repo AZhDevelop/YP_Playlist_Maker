@@ -13,8 +13,8 @@ class PlayTrackInteractorImpl(private val repository: PlayTrackRepository) : Pla
         repository.pausePlayer()
     }
 
-    override fun playbackControl() {
-        repository.playbackControl()
+    override fun playbackControl(onStart: () -> Unit) {
+        repository.playbackControl(onStart)
     }
 
     override fun releasePlayer() {
