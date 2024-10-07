@@ -14,25 +14,13 @@ class PlayTrackRepositoryImpl : PlayTrackRepository {
     private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
     private var trackTime: String = ""
     private var receiveCallbacks = true
-
-    private fun getRunnable(onTimeUpdate: (String) -> Unit): Runnable {
-        val runnable = Runnable {
-            if (receiveCallbacks) {
-                trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
-                    .format(mediaPlayer.currentPosition)
-                    .toString()
-                onTimeUpdate.invoke(trackTime)
-                threadPostDelayed(onTimeUpdate)
-            }
-        }
-        return runnable
-    }
+    private lateinit var runnable: Runnable
 
     override fun preparePlayer(
         url: String,
         onPrepare: () -> Unit,
         onComplete: () -> Unit,
-        onTrackUpdate: (String) -> Unit
+        onTimeUpdate: (String) -> Unit
     ) {
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
@@ -43,7 +31,7 @@ class PlayTrackRepositoryImpl : PlayTrackRepository {
         mediaPlayer.setOnCompletionListener {
             onComplete.invoke()
             playerState = STATE_PREPARED
-            threadRemoveCallbacks(onTrackUpdate)
+            threadRemoveCallbacks(onTimeUpdate)
         }
     }
 
@@ -83,16 +71,22 @@ class PlayTrackRepositoryImpl : PlayTrackRepository {
     }
 
     override fun threadRemoveCallbacks(onTimeUpdate: (String) -> Unit) {
-        mainThreadHandler.removeCallbacks(getRunnable(onTimeUpdate))
+        mainThreadHandler.removeCallbacks { threadPostDelayed(onTimeUpdate) }
         receiveCallbacks = false
     }
 
     override fun threadPostDelayed(onTimeUpdate: (String) -> Unit) {
-        mainThreadHandler.postDelayed(getRunnable(onTimeUpdate), MILLIS_500)
+        if (receiveCallbacks) {
+            trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
+                .format(mediaPlayer.currentPosition)
+                .toString()
+            onTimeUpdate.invoke(trackTime)
+            mainThreadHandler.postDelayed({ threadPostDelayed(onTimeUpdate) }, MILLIS_500)
+        }
     }
 
     override fun threadPost(onTimeUpdate: (String) -> Unit) {
-        mainThreadHandler.post(getRunnable(onTimeUpdate))
+        mainThreadHandler.post { threadPostDelayed(onTimeUpdate) }
     }
 
     companion object {
