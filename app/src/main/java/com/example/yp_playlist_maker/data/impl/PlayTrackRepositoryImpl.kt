@@ -3,27 +3,32 @@ package com.example.yp_playlist_maker.data.impl
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.domain.api.repository.PlayTrackRepository
-import com.example.yp_playlist_maker.domain.models.PlayerParams
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayTrackRepositoryImpl(private val playerParams: PlayerParams): PlayTrackRepository {
+class PlayTrackRepositoryImpl: PlayTrackRepository {
 
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
     private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
     private var trackTime: String = ""
-    private var runnable = Runnable {
-        trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
-            .format(mediaPlayer.currentPosition)
-            .toString()
-        playerParams.timer.text = trackTime
-        threadPostDelayed()
+    private var receiveCallbacks = true
+
+    private fun getRunnable(onTrackUpdate: (String) -> Unit) : Runnable {
+        val runnable = Runnable {
+            if (receiveCallbacks) {
+                trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
+                    .format(mediaPlayer.currentPosition)
+                    .toString()
+                onTrackUpdate.invoke(trackTime)
+                threadPostDelayed(onTrackUpdate)
+            }
+        }
+        return runnable
     }
 
-    override fun preparePlayer(url: String, onPrepare: () -> Unit, onComplete: () -> Unit) {
+    override fun preparePlayer(url: String, onPrepare: () -> Unit, onComplete: () -> Unit, onTrackUpdate: (String) -> Unit) {
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
@@ -33,11 +38,12 @@ class PlayTrackRepositoryImpl(private val playerParams: PlayerParams): PlayTrack
         mediaPlayer.setOnCompletionListener {
             onComplete.invoke()
             playerState = STATE_PREPARED
-            threadRemoveCallbacks()
+            threadRemoveCallbacks(onTrackUpdate)
         }
     }
 
     override fun startPlayer(onStart: () -> Unit) {
+        receiveCallbacks = true
         mediaPlayer.start()
         playerState = STATE_PLAYING
         onStart.invoke()
@@ -47,18 +53,17 @@ class PlayTrackRepositoryImpl(private val playerParams: PlayerParams): PlayTrack
         mediaPlayer.pause()
         playerState = STATE_PAUSED
         onPause.invoke()
-//        playerParams.play.setBackgroundResource(R.drawable.btn_play)
     }
 
-    override fun playbackControl(onStart: () -> Unit, onPause: () -> Unit) {
+    override fun playbackControl(onStart: () -> Unit, onPause: () -> Unit, onTrackUpdate: (String) -> Unit) {
         when(playerState) {
             STATE_PLAYING -> {
                 pausePlayer(onPause)
-                threadRemoveCallbacks()
+                threadRemoveCallbacks(onTrackUpdate)
             }
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer(onStart)
-                threadPost()
+                threadPost(onTrackUpdate)
             }
         }
     }
@@ -67,17 +72,17 @@ class PlayTrackRepositoryImpl(private val playerParams: PlayerParams): PlayTrack
         mediaPlayer.release()
     }
 
-    override fun threadRemoveCallbacks() {
-        mainThreadHandler.removeCallbacks(runnable)
+    override fun threadRemoveCallbacks(onTrackUpdate: (String) -> Unit) {
+        mainThreadHandler.removeCallbacks(getRunnable(onTrackUpdate))
+        receiveCallbacks = false
     }
 
-    override fun threadPostDelayed() {
-        mainThreadHandler.postDelayed(runnable, MILLIS_500
-        )
+    override fun threadPostDelayed(onTrackUpdate: (String) -> Unit) {
+        mainThreadHandler.postDelayed(getRunnable(onTrackUpdate), MILLIS_500)
     }
 
-    override fun threadPost() {
-        mainThreadHandler.post(runnable)
+    override fun threadPost(onTrackUpdate: (String) -> Unit) {
+        mainThreadHandler.post(getRunnable(onTrackUpdate))
     }
 
     companion object {

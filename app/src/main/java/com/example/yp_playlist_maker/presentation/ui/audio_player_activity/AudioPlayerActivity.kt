@@ -1,7 +1,6 @@
 package com.example.yp_playlist_maker.presentation.ui.audio_player_activity
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,7 +11,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.domain.api.interactor.PlayTrackInteractor
-import com.example.yp_playlist_maker.domain.models.PlayerParams
 import com.example.yp_playlist_maker.domain.models.Track
 import com.example.yp_playlist_maker.presentation.converter.Converter
 import com.example.yp_playlist_maker.presentation.ui.application.gone
@@ -23,8 +21,8 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var play: Button
     private lateinit var timer: TextView
     private lateinit var playTrack: PlayTrackInteractor
-    private lateinit var playerParams: PlayerParams
     private lateinit var onPause: () -> Unit
+    private lateinit var onTrackUpdate: (String) -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,22 +38,26 @@ class AudioPlayerActivity : AppCompatActivity() {
         val trackYear = findViewById<TextView>(R.id.year_value)
         val trackGenre = findViewById<TextView>(R.id.genre_value)
         val trackCountry = findViewById<TextView>(R.id.country_value)
-        val getTrackExtra = IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
+        val getTrackExtra =
+            IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
         val trackAlbumIntent = getTrackExtra?.collectionName
 
         val onPrepare: () -> Unit = {
-            playerParams.play.isEnabled = true
-            playerParams.play.alpha = ALPHA_100
+            play.isEnabled = true
+            play.alpha = ALPHA_100
         }
         val onComplete: () -> Unit = {
-            playerParams.play.setBackgroundResource(R.drawable.btn_play)
-            playerParams.timer.text = DEFAULT_TIME
+            play.setBackgroundResource(R.drawable.btn_play)
+            timer.text = DEFAULT_TIME
         }
         val onStart: () -> Unit = {
-            playerParams.play.setBackgroundResource(R.drawable.btn_pause)
+            play.setBackgroundResource(R.drawable.btn_pause)
         }
         onPause = {
-            playerParams.play.setBackgroundResource(R.drawable.btn_play)
+            play.setBackgroundResource(R.drawable.btn_play)
+        }
+        onTrackUpdate = { time ->
+            timer.text = time
         }
 
         url = getTrackExtra?.previewUrl.toString()
@@ -63,14 +65,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         play.alpha = ALPHA_25
         timer = findViewById(R.id.play_time)
 
-        playerParams = PlayerParams(url, play, timer)
-        playTrack = Creator.providePlayTrackInteractor(playerParams)
+        playTrack = Creator.providePlayTrackInteractor()
 
-
-
-        playTrack.preparePlayer(url, onPrepare, onComplete)
+        playTrack.preparePlayer(url, onPrepare, onComplete, onTrackUpdate)
         play.setOnClickListener {
-            playTrack.playbackControl(onStart, onPause)
+            playTrack.playbackControl(onStart, onPause, onTrackUpdate)
         }
 
         Glide.with(this)
@@ -93,7 +92,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         trackYear.text = getTrackExtra?.releaseDate
             .toString()
-            .replaceAfter("-","")
+            .replaceAfter("-", "")
             .replace("-", "")
         trackGenre.text = getTrackExtra?.primaryGenreName
         trackCountry.text = getTrackExtra?.country
@@ -111,7 +110,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         playTrack.releasePlayer()
-        playTrack.threadRemoveCallbacks()
+        playTrack.threadRemoveCallbacks(onTrackUpdate)
     }
 
     companion object {

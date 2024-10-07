@@ -18,7 +18,6 @@ import com.example.yp_playlist_maker.domain.impl.AppThemeInteractorImpl
 import com.example.yp_playlist_maker.domain.impl.PlayTrackInteractorImpl
 import com.example.yp_playlist_maker.domain.impl.SearchHistoryInteractorImpl
 import com.example.yp_playlist_maker.domain.impl.TrackInteractorImpl
-import com.example.yp_playlist_maker.domain.models.PlayerParams
 
 object Creator {
 
@@ -56,12 +55,12 @@ object Creator {
     }
 
     // Взаимодействие с плеером
-    private fun getPlayTrackRepository(playerParams: PlayerParams) : PlayTrackRepository {
-        return PlayTrackRepositoryImpl(playerParams)
+    private fun getPlayTrackRepository() : PlayTrackRepository {
+        return PlayTrackRepositoryImpl()
     }
 
-    fun providePlayTrackInteractor(playerParams: PlayerParams) : PlayTrackInteractor {
-        return PlayTrackInteractorImpl(getPlayTrackRepository(playerParams))
+    fun providePlayTrackInteractor() : PlayTrackInteractor {
+        return PlayTrackInteractorImpl(getPlayTrackRepository())
     }
 
 }
