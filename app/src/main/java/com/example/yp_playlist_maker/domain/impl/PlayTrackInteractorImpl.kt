@@ -5,8 +5,8 @@ import com.example.yp_playlist_maker.domain.api.repository.PlayTrackRepository
 
 class PlayTrackInteractorImpl(private val repository: PlayTrackRepository) : PlayTrackInteractor {
 
-    override fun preparePlayer() {
-        repository.preparePlayer()
+    override fun preparePlayer(url: String, onPrepare: () -> Unit, onComplete: () -> Unit) {
+        repository.preparePlayer(url, onPrepare, onComplete)
     }
 
     override fun pausePlayer() {

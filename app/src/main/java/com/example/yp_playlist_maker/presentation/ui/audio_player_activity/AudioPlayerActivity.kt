@@ -49,7 +49,16 @@ class AudioPlayerActivity : AppCompatActivity() {
         playerParams = PlayerParams(url, play, timer)
         playTrack = Creator.providePlayTrackInteractor(playerParams)
 
-        playTrack.preparePlayer()
+        playTrack.preparePlayer(url,
+            {
+                playerParams.play.isEnabled = true
+                playerParams.play.alpha = ALPHA_100
+        },
+            {
+                playerParams.play.setBackgroundResource(R.drawable.btn_play)
+                playerParams.timer.text = DEFAULT_TIME
+            }
+        )
         play.setOnClickListener { playTrack.playbackControl() }
 
         Glide.with(this)
@@ -98,5 +107,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
         private const val EMPTY_STRING = ""
         private const val ALPHA_25 = 0.25F
+        private const val DEFAULT_TIME = "00:00"
+        private const val ALPHA_100 = 1F
     }
 }

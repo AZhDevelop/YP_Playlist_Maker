@@ -9,7 +9,7 @@ import com.example.yp_playlist_maker.domain.models.PlayerParams
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayTrackRepositoryImpl(private val playerParams : PlayerParams) : PlayTrackRepository {
+class PlayTrackRepositoryImpl(private val playerParams: PlayerParams): PlayTrackRepository {
 
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
@@ -23,19 +23,17 @@ class PlayTrackRepositoryImpl(private val playerParams : PlayerParams) : PlayTra
         threadPostDelayed()
     }
 
-    override fun preparePlayer() {
-        mediaPlayer.setDataSource(playerParams.url)
+    override fun preparePlayer(url: String, onPrepare: () -> Unit, onComplete: () -> Unit) {
+        mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            playerParams.play.isEnabled = true
-            playerParams.play.alpha = ALPHA_100
+            onPrepare.invoke()
             playerState = STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            playerParams.play.setBackgroundResource(R.drawable.btn_play)
+            onComplete.invoke()
             playerState = STATE_PREPARED
             threadRemoveCallbacks()
-            playerParams.timer.text = DEFAULT_TIME
         }
     }
 
@@ -86,9 +84,7 @@ class PlayTrackRepositoryImpl(private val playerParams : PlayerParams) : PlayTra
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-        private const val DEFAULT_TIME = "00:00"
         private const val MILLIS_500 = 500L
-        private const val ALPHA_100 = 1F
     }
 
 }
