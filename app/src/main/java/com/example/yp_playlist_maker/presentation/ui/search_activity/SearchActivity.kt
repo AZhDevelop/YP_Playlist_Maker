@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -20,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.yp_playlist_maker.creator.Creator
+import com.example.yp_playlist_maker.util.Creator
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.domain.api.interactor.TrackInteractor
 import com.example.yp_playlist_maker.domain.models.Track
@@ -232,58 +233,38 @@ class SearchActivity : AppCompatActivity() {
         progressBar.visible()
 
         trackService.searchTrack(editText.text.toString(), object : TrackInteractor.TrackConsumer {
-            override fun consume(foundTrack: List<Track>) {
+            override fun consume(foundTrack: List<Track>?, errorMessage: String?) {
                 handler.post {
                     progressBar.gone()
                     trackList.clear()
-                    if (foundTrack.isNotEmpty()) {
+                    if (foundTrack != null) {
                         trackList.addAll(foundTrack)
                         adapter.notifyDataSetChanged()
                         checkPlaceholder()
                         recyclerViewTrack.visible()
                     }
-                    if (trackList.isEmpty()) {
-                        showMessage(
-                            getString(R.string.nothing_found),
-                            EMPTY_STRING,
-                            R.drawable.img_search_error,
-                            false
-                        )
+                    if (errorMessage != null) {
+                        showMessage(errorMessage)
                     }
-                }
-            }
-
-            override fun error(errorMessage: String) {
-                handler.post {
-                    showMessage(
-                        getString(R.string.connection_error),
-                        EMPTY_STRING,
-                        R.drawable.img_connection_error,
-                        true
-                    )
                 }
             }
         })
     }
 
     // Сообщение об ошибке - песня не нйдена или ошибка подключения
-    private fun showMessage(
-        text: String,
-        additionalMessage: String,
-        image: Int,
-        showButton: Boolean
-    ) {
+    private fun showMessage(text: String) {
         if (text.isNotEmpty()) {
             progressBar.gone()
             placeholder.visible()
             trackList.clear()
             adapter.notifyDataSetChanged()
             placeholderMessage.text = text
-            imageViewError.setImageResource(image)
-            if (showButton) {
-                reloadButton.visible()
-            } else {
+            if (text == SEARCH_ERROR) {
+                imageViewError.setImageResource(R.drawable.img_search_error)
                 reloadButton.gone()
+            } else {
+                imageViewError.setImageResource(R.drawable.img_connection_error)
+                reloadButton.visible()
             }
         } else {
             placeholderMessage.gone()
@@ -327,5 +308,6 @@ class SearchActivity : AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""
+        private const val SEARCH_ERROR = "Ничего не нашлось"
     }
 }

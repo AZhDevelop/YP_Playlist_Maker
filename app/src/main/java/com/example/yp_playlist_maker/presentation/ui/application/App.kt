@@ -3,7 +3,7 @@ package com.example.yp_playlist_maker.presentation.ui.application
 import android.app.Application
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.yp_playlist_maker.creator.Creator
+import com.example.yp_playlist_maker.util.Creator
 
 fun View.gone() {
     visibility = View.GONE

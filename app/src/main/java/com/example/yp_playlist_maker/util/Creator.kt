@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker.creator
+package com.example.yp_playlist_maker.util
 
 import android.content.Context
 import com.example.yp_playlist_maker.data.impl.AppThemeImpl
@@ -38,7 +38,7 @@ object Creator {
 
     // Поиск трека, работа с сетью
     private fun getTrackRepository() : TrackRepository {
-        return TrackRepositoryImpl(RetrofitNetworkClient())
+        return TrackRepositoryImpl(RetrofitNetworkClient(appContext))
     }
 
     fun provideTrackInteractor() : TrackInteractor {

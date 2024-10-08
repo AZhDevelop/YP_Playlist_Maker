@@ -9,7 +9,7 @@ import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
-import com.example.yp_playlist_maker.creator.Creator
+import com.example.yp_playlist_maker.util.Creator
 import com.example.yp_playlist_maker.domain.api.interactor.PlayTrackInteractor
 import com.example.yp_playlist_maker.domain.models.Track
 import com.example.yp_playlist_maker.presentation.converter.Converter
