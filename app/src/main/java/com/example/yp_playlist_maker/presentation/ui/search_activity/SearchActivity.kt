@@ -233,7 +233,7 @@ class SearchActivity : AppCompatActivity() {
 
         trackService.searchTrack(editText.text.toString(), object : TrackInteractor.TrackConsumer {
             override fun consume(foundTrack: List<Track>) {
-                runOnUiThread {
+                handler.post {
                     progressBar.gone()
                     trackList.clear()
                     if (foundTrack.isNotEmpty()) {
@@ -254,7 +254,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun error(errorMessage: String) {
-                runOnUiThread{
+                handler.post {
                     showMessage(
                         getString(R.string.connection_error),
                         EMPTY_STRING,
