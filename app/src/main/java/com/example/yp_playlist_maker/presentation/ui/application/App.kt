@@ -1,16 +1,9 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.presentation.ui.application
 
 import android.app.Application
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-
-const val THEME_PREFERENCES: String = "theme_preferences"
-const val PREFERENCES_KEY: String = "app_theme"
-const val EMPTY_STRING: String = ""
-const val TRACK_LIST_KEY: String = "track_list_key"
-const val TRACK_KEY: String = "track_key"
-const val TRACK_HISTORY_SIZE: Int = 10
-const val ZERO_INDEX: Int = 0
+import com.example.yp_playlist_maker.creator.Creator
 
 fun View.gone() {
     visibility = View.GONE
@@ -30,9 +23,13 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
 
-        darkTheme = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE)
-            .getBoolean(PREFERENCES_KEY, false)
+        Creator.init(this)
+
+        val getThemeColor = Creator.provideAppThemeInteractor()
+
+        darkTheme = getThemeColor.getAppTheme()
         switchTheme(darkTheme)
 
     }
@@ -47,4 +44,10 @@ class App : Application() {
             }
         )
     }
+
+    companion object {
+        lateinit var instance: App
+            private set
+    }
+
 }

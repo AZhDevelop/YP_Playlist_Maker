@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.domain.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

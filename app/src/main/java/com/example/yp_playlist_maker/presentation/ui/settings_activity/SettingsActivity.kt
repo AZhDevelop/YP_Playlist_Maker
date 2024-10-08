@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.presentation.ui.settings_activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,6 +8,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
+import com.example.yp_playlist_maker.creator.Creator
+import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.domain.models.AppThemeParams
+import com.example.yp_playlist_maker.presentation.ui.application.App
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -21,17 +25,16 @@ class SettingsActivity : AppCompatActivity() {
         val contactSupportButton = findViewById<FrameLayout>(R.id.fl_contact_support)
         val licenseAgreementButton = findViewById<FrameLayout>(R.id.fl_license_agreement)
         val themeSwitcher = findViewById<Switch>(R.id.theme_switcher)
-        val sharedPrefs = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE)
+
+        val appTheme = Creator.provideAppThemeInteractor()
 
         // Достаем значение true или false из памяти и меняем состояние Switch
-        themeSwitcher.isChecked = sharedPrefs.getBoolean(PREFERENCES_KEY, false)
+        themeSwitcher.isChecked = appTheme.getAppTheme()
 
         // Переключаем тему с помощью Switch и сохраняем значение в памяти
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
-            sharedPrefs.edit()
-                .putBoolean(PREFERENCES_KEY, checked)
-                .apply()
+            appTheme.saveAppTheme(AppThemeParams(checked))
         }
 
         backButton.setOnClickListener {
@@ -48,9 +51,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         contactSupportButton.setOnClickListener {
-            val shareIntent = Intent().apply {
-                action = Intent.ACTION_SENDTO
-                data = Uri.parse(getString(R.string.contact_support_mailto))
+            val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse(getString(R.string.mailto))
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.my_email)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_support_subject))
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.contact_support_message))
             }

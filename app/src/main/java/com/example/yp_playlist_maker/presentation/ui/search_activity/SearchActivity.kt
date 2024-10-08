@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker
+package com.example.yp_playlist_maker.presentation.ui.search_activity
 
 import android.content.Context
 import android.content.Intent
@@ -17,19 +17,27 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.yp_playlist_maker.creator.Creator
+import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.domain.api.interactor.TrackInteractor
+import com.example.yp_playlist_maker.domain.models.Track
+import com.example.yp_playlist_maker.presentation.ui.application.gone
+import com.example.yp_playlist_maker.presentation.ui.application.invisible
+import com.example.yp_playlist_maker.presentation.ui.application.visible
+import com.example.yp_playlist_maker.presentation.ui.audio_player_activity.AudioPlayerActivity
+import com.example.yp_playlist_maker.presentation.ui.track.TrackAdapter
 
 class SearchActivity : AppCompatActivity() {
+
+    private val trackService = Creator.provideTrackInteractor()
 
     private var savedSearchText: String = EMPTY_STRING
     private var trackList: ArrayList<Track> = arrayListOf()
     private val adapter = TrackAdapter()
-    private val trackService = TrackService().trackService
+
     private lateinit var editText: EditText
     private lateinit var clearText: ImageView
     private lateinit var backButton: ImageView
@@ -41,7 +49,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchTextMessage: TextView
     private lateinit var clearHistoryButton: Button
     private val trackHistoryList: ArrayList<Track> = arrayListOf()
-    private val gson: Gson = Gson()
     private var updateTrackHistory: Boolean = false
     private lateinit var progressBar: ProgressBar
     private val handler = Handler(Looper.getMainLooper())
@@ -50,10 +57,11 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        val trackHistoryInteractor = Creator.provideSeacrhHistoryInteractor()
+        val trackHistory = trackHistoryInteractor.getHistory()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        val sharedPreferences = getSharedPreferences(TRACK_LIST_KEY, MODE_PRIVATE)
-        val trackHistory = sharedPreferences.getString(TRACK_KEY, EMPTY_STRING)
 
         clearText = findViewById(R.id.iw_clear)
         editText = findViewById(R.id.et_search)
@@ -80,10 +88,9 @@ class SearchActivity : AppCompatActivity() {
         recyclerViewTrack.layoutManager = LinearLayoutManager(this)
         recyclerViewTrack.adapter = adapter
 
-        if (trackHistory != "") {
-            val trackHistoryJson = gson.fromJson(trackHistory, Array<Track>::class.java)
-            trackList.addAll(trackHistoryJson)
-            trackHistoryList.addAll(trackHistoryJson)
+        if (trackHistory.isNotEmpty()) {
+            trackList.addAll(trackHistory)
+            trackHistoryList.addAll(trackHistory)
             adapter.notifyDataSetChanged()
         }
 
@@ -96,6 +103,7 @@ class SearchActivity : AppCompatActivity() {
         // Логика запуска поиска песен с клавиатуры
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                checkPlaceholder()
                 search()
             }
             false
@@ -103,8 +111,8 @@ class SearchActivity : AppCompatActivity() {
 
         // Кнопка перезапуска поиска песен, если отсутствовал интернет
         reloadButton.setOnClickListener {
+            checkPlaceholder()
             search()
-            placeholder.gone()
         }
 
         // Закрываем Activity
@@ -121,9 +129,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryButton.setOnClickListener {
-            sharedPreferences.edit()
-                .clear()
-                .apply()
+            trackHistoryInteractor.clearHistory()
             trackList.clear()
             trackHistoryList.clear()
             adapter.notifyDataSetChanged()
@@ -152,8 +158,8 @@ class SearchActivity : AppCompatActivity() {
                     adapter.notifyDataSetChanged()
                     enableSearchHistoryVisibility()
                 }
-                if (editText.text.isEmpty() && placeholder.visibility == View.VISIBLE) {
-                    placeholder.gone()
+                if (editText.text.isEmpty()) {
+                    checkPlaceholder()
                 }
                 if (editText.text.isNotEmpty()) {
                     searchDebounce()
@@ -168,7 +174,7 @@ class SearchActivity : AppCompatActivity() {
 
         adapter.onTrackClick = {
             if (clickDebounce()) {
-                SearchHistory().saveClickedTrack(sharedPreferences, it, trackHistoryList, gson)
+                trackHistoryInteractor.saveClickedTrack(it, trackHistoryList)
                 val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
                 displayAudioPlayer.apply {
                     putExtra(AudioPlayerActivity.INTENT_PUTTED_TRACK, it)
@@ -225,52 +231,39 @@ class SearchActivity : AppCompatActivity() {
 
         progressBar.visible()
 
-        trackService.search(editText.text.toString())
-            .enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(
-                    call: Call<TrackResponse>,
-                    response: Response<TrackResponse>
-                ) {
+        trackService.searchTrack(editText.text.toString(), object : TrackInteractor.TrackConsumer {
+            override fun consume(foundTrack: List<Track>) {
+                runOnUiThread {
                     progressBar.gone()
-                    when (response.code()) {
-                        200 -> {
-                            trackList.clear()
-                            if (response.body()?.results?.isNotEmpty() == true) {
-                                trackList.addAll(response.body()?.results!!)
-                                adapter.notifyDataSetChanged()
-                                placeholder.gone()
-                                recyclerViewTrack.visible()
-                            }
-                            if (trackList.isEmpty()) {
-                                showMessage(
-                                    getString(R.string.nothing_found),
-                                    EMPTY_STRING,
-                                    R.drawable.img_search_error,
-                                    false
-                                )
-                            }
-                        }
-
-                        else -> showMessage(
-                            getString(R.string.connection_error),
+                    trackList.clear()
+                    if (foundTrack.isNotEmpty()) {
+                        trackList.addAll(foundTrack)
+                        adapter.notifyDataSetChanged()
+                        checkPlaceholder()
+                        recyclerViewTrack.visible()
+                    }
+                    if (trackList.isEmpty()) {
+                        showMessage(
+                            getString(R.string.nothing_found),
                             EMPTY_STRING,
-                            R.drawable.img_connection_error,
-                            true
+                            R.drawable.img_search_error,
+                            false
                         )
-
                     }
                 }
+            }
 
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+            override fun error(errorMessage: String) {
+                runOnUiThread{
                     showMessage(
                         getString(R.string.connection_error),
-                        t.message.toString(),
+                        EMPTY_STRING,
                         R.drawable.img_connection_error,
                         true
                     )
                 }
-
-            })
+            }
+        })
     }
 
     // Сообщение об ошибке - песня не нйдена или ошибка подключения
@@ -312,9 +305,7 @@ class SearchActivity : AppCompatActivity() {
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-        if (placeholder.visibility == View.VISIBLE) {
-            placeholder.gone()
-        }
+        checkPlaceholder()
     }
 
     private fun clickDebounce() : Boolean {
@@ -326,8 +317,15 @@ class SearchActivity : AppCompatActivity() {
         return current
     }
 
+    private fun checkPlaceholder() {
+        if (placeholder.isVisible) {
+            placeholder.gone()
+        }
+    }
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val EMPTY_STRING: String = ""
     }
 }
