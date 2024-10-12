@@ -1,74 +1,60 @@
 package com.example.yp_playlist_maker.player.ui
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.creator.Creator
+import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.util.Converter
 import com.example.yp_playlist_maker.settings.ui.gone
+import com.example.yp_playlist_maker.util.Converter
 
 class AudioPlayerActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityAudioplayerBinding
     private var url: String = EMPTY_STRING
-    private lateinit var play: Button
-    private lateinit var timer: TextView
     private lateinit var playTrack: PlayTrackInteractor
     private lateinit var onPause: () -> Unit
     private lateinit var onTimeUpdate: (String) -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_audioplayer)
+        binding = ActivityAudioplayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val backButton = findViewById<ImageView>(R.id.iw_back)
-        val trackImage = findViewById<ImageView>(R.id.track_image)
-        val trackNameTextView = findViewById<TextView>(R.id.track_name)
-        val artistNameTextView = findViewById<TextView>(R.id.artist_name)
-        val trackDuration = findViewById<TextView>(R.id.duration_value)
-        val trackAlbum = findViewById<TextView>(R.id.album_text)
-        val trackAlbumValue = findViewById<TextView>(R.id.album_value)
-        val trackYear = findViewById<TextView>(R.id.year_value)
-        val trackGenre = findViewById<TextView>(R.id.genre_value)
-        val trackCountry = findViewById<TextView>(R.id.country_value)
         val getTrackExtra =
             IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
         val trackAlbumIntent = getTrackExtra?.collectionName
 
         val onPrepare: () -> Unit = {
-            play.isEnabled = true
-            play.alpha = ALPHA_100
+            binding.play.isEnabled = true
+            binding.play.alpha = ALPHA_100
         }
         val onComplete: () -> Unit = {
-            play.setBackgroundResource(R.drawable.btn_play)
-            timer.text = DEFAULT_TIME
+            binding.play.setBackgroundResource(R.drawable.btn_play)
+            binding.playTime.text = DEFAULT_TIME
         }
         val onStart: () -> Unit = {
-            play.setBackgroundResource(R.drawable.btn_pause)
+            binding.play.setBackgroundResource(R.drawable.btn_pause)
         }
         onPause = {
-            play.setBackgroundResource(R.drawable.btn_play)
+            binding.play.setBackgroundResource(R.drawable.btn_play)
         }
         onTimeUpdate = { time ->
-            timer.text = time
+            binding.playTime.text = time
         }
 
         url = getTrackExtra?.previewUrl.toString()
-        play = findViewById(R.id.play)
-        play.alpha = ALPHA_25
-        timer = findViewById(R.id.play_time)
+        binding.play.alpha = ALPHA_25
 
         playTrack = Creator.providePlayTrackInteractor()
 
         playTrack.preparePlayer(url, onPrepare, onComplete, onTimeUpdate)
-        play.setOnClickListener {
+        binding.play.setOnClickListener {
             playTrack.playbackControl(onStart, onPause, onTimeUpdate)
         }
 
@@ -77,27 +63,27 @@ class AudioPlayerActivity : AppCompatActivity() {
             .centerCrop()
             .transform(RoundedCorners(Converter.dpToPx(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)
-            .into(trackImage)
+            .into(binding.trackImage)
 
-        trackNameTextView.text = getTrackExtra?.trackName
-        artistNameTextView.text = getTrackExtra?.artistName
-        trackDuration.text = Converter.convertMillis((getTrackExtra?.trackTimeMillis.toString()))
+        binding.trackName.text = getTrackExtra?.trackName
+        binding.artistName.text = getTrackExtra?.artistName
+        binding.durationValue.text = Converter.convertMillis((getTrackExtra?.trackTimeMillis.toString()))
 
         if (trackAlbumIntent.isNullOrEmpty()) {
-            trackAlbum.gone()
-            trackAlbumValue.gone()
+            binding.albumText.gone()
+            binding.albumValue.gone()
         } else {
-            trackAlbumValue.text = trackAlbumIntent
+            binding.albumValue.text = trackAlbumIntent
         }
 
-        trackYear.text = getTrackExtra?.releaseDate
+        binding.yearValue.text = getTrackExtra?.releaseDate
             .toString()
             .replaceAfter("-", "")
             .replace("-", "")
-        trackGenre.text = getTrackExtra?.primaryGenreName
-        trackCountry.text = getTrackExtra?.country
+        binding.genreValue.text = getTrackExtra?.primaryGenreName
+        binding.countryValue.text = getTrackExtra?.country
 
-        backButton.setOnClickListener {
+        binding.iwBack.setOnClickListener {
             finish()
         }
     }
