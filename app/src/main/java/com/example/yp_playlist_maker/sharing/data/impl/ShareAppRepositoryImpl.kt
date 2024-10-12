@@ -3,7 +3,7 @@ package com.example.yp_playlist_maker.sharing.data.impl
 import android.content.Context
 import android.content.Intent
 import com.example.yp_playlist_maker.R
-import com.example.yp_playlist_maker.sharing.domain.api.ShareAppRepository
+import com.example.yp_playlist_maker.sharing.domain.api.repository.ShareAppRepository
 
 class ShareAppRepositoryImpl(private val context: Context): ShareAppRepository {
 

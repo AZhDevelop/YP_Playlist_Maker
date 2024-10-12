@@ -21,6 +21,8 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val shareApp = Creator.provideShareAppInteractor()
+        val contactSupport = Creator.provideContactSupportInteractor()
+
         val appTheme = Creator.provideAppThemeInteractor()
 
         // Достаем значение true или false из памяти и меняем состояние Switch
@@ -44,13 +46,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Написать в поддержку
         binding.flContactSupport.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse(getString(R.string.mailto))
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.my_email)))
-                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.contact_support_subject))
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.contact_support_message))
-            }
-            startActivity(shareIntent)
+            startActivity(contactSupport.contactSupport())
         }
 
         // Лицензионное соглашение
