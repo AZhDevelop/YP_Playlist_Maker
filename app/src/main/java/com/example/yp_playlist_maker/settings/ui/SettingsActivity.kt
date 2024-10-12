@@ -1,11 +1,8 @@
 package com.example.yp_playlist_maker.settings.ui
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.yp_playlist_maker.R
+import androidx.lifecycle.ViewModelProvider
 import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.databinding.ActivitySettingsBinding
 import com.example.yp_playlist_maker.settings.domain.models.AppThemeParams
@@ -13,18 +10,16 @@ import com.example.yp_playlist_maker.settings.domain.models.AppThemeParams
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+    private lateinit var viewModel: SettingsViewModel
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val shareApp = Creator.provideShareAppInteractor()
-        val contactSupport = Creator.provideContactSupportInteractor()
-        val licenseAgreement = Creator.provideLicenseAgreementInteractor()
-
         val appTheme = Creator.provideAppThemeInteractor()
+
+        viewModel = ViewModelProvider(this, SettingsViewModelFactory())[SettingsViewModel::class.java]
 
         // Достаем значение true или false из памяти и меняем состояние Switch
         binding.themeSwitcher.isChecked = appTheme.getAppTheme()
@@ -42,17 +37,17 @@ class SettingsActivity : AppCompatActivity() {
 
         // Поделиться приложением
         binding.flShare.setOnClickListener {
-            shareApp.share()
+            viewModel.share()
         }
 
         // Написать в поддержку
         binding.flContactSupport.setOnClickListener {
-            contactSupport.contact()
+            viewModel.contact()
         }
 
         // Лицензионное соглашение
         binding.flLicenseAgreement.setOnClickListener {
-            licenseAgreement.getLicenseAgreement()
+            viewModel.getLicenseAgreement()
         }
 
     }
