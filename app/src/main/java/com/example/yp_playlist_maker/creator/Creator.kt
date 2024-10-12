@@ -18,6 +18,10 @@ import com.example.yp_playlist_maker.settings.domain.impl.AppThemeInteractorImpl
 import com.example.yp_playlist_maker.player.domain.impl.PlayTrackInteractorImpl
 import com.example.yp_playlist_maker.search.domain.impl.SearchHistoryInteractorImpl
 import com.example.yp_playlist_maker.search.domain.impl.TrackInteractorImpl
+import com.example.yp_playlist_maker.sharing.data.impl.ShareAppRepositoryImpl
+import com.example.yp_playlist_maker.sharing.domain.api.ShareAppInteractor
+import com.example.yp_playlist_maker.sharing.domain.api.ShareAppRepository
+import com.example.yp_playlist_maker.sharing.domain.impl.ShareAppInteractorImpl
 
 object Creator {
 
@@ -61,6 +65,15 @@ object Creator {
 
     fun providePlayTrackInteractor() : PlayTrackInteractor {
         return PlayTrackInteractorImpl(getPlayTrackRepository())
+    }
+
+    // Поделиться приложением
+    private fun getShareAppRepository() : ShareAppRepository {
+        return ShareAppRepositoryImpl(appContext)
+    }
+
+    fun provideShareAppInteractor() : ShareAppInteractor {
+        return ShareAppInteractorImpl(getShareAppRepository())
     }
 
 }

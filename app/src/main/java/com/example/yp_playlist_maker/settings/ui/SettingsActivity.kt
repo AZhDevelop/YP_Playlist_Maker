@@ -20,6 +20,7 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val shareApp = Creator.provideShareAppInteractor()
         val appTheme = Creator.provideAppThemeInteractor()
 
         // Достаем значение true или false из памяти и меняем состояние Switch
@@ -38,12 +39,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Поделиться приложением
         binding.flShare.setOnClickListener {
-            val shareIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
-            }
-            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+            startActivity(shareApp.share())
         }
 
         // Написать в поддержку
