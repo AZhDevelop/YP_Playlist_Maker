@@ -41,12 +41,12 @@ class SettingsActivity : AppCompatActivity() {
 
         // Поделиться приложением
         binding.flShare.setOnClickListener {
-            startActivity(shareApp.share())
+            shareApp.share()
         }
 
         // Написать в поддержку
         binding.flContactSupport.setOnClickListener {
-            startActivity(contactSupport.contactSupport())
+            contactSupport.contactSupport()
         }
 
         // Лицензионное соглашение
