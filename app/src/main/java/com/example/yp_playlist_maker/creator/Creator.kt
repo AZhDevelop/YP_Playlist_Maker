@@ -19,12 +19,16 @@ import com.example.yp_playlist_maker.player.domain.impl.PlayTrackInteractorImpl
 import com.example.yp_playlist_maker.search.domain.impl.SearchHistoryInteractorImpl
 import com.example.yp_playlist_maker.search.domain.impl.TrackInteractorImpl
 import com.example.yp_playlist_maker.sharing.data.impl.ContactSupportRepositoryImpl
+import com.example.yp_playlist_maker.sharing.data.impl.LicenseAgreementRepositoryImpl
 import com.example.yp_playlist_maker.sharing.data.impl.ShareAppRepositoryImpl
 import com.example.yp_playlist_maker.sharing.domain.api.interactor.ContactSupportInteractor
+import com.example.yp_playlist_maker.sharing.domain.api.interactor.LicenseAgreementInteractor
 import com.example.yp_playlist_maker.sharing.domain.api.interactor.ShareAppInteractor
 import com.example.yp_playlist_maker.sharing.domain.api.repository.ContactSupportRepository
+import com.example.yp_playlist_maker.sharing.domain.api.repository.LicenseAgreementRepository
 import com.example.yp_playlist_maker.sharing.domain.api.repository.ShareAppRepository
 import com.example.yp_playlist_maker.sharing.domain.impl.ContactSupportInteractorImpl
+import com.example.yp_playlist_maker.sharing.domain.impl.LicenseAgreementInteractorImpl
 import com.example.yp_playlist_maker.sharing.domain.impl.ShareAppInteractorImpl
 
 object Creator {
@@ -87,6 +91,15 @@ object Creator {
 
     fun provideContactSupportInteractor() : ContactSupportInteractor {
         return ContactSupportInteractorImpl(getContactSupportRepository())
+    }
+
+    // Пользовательское соглашение
+    private fun getLicenseAgreementRepository(): LicenseAgreementRepository {
+        return LicenseAgreementRepositoryImpl(appContext)
+    }
+
+    fun provideLicenseAgreementInteractor(): LicenseAgreementInteractor {
+        return LicenseAgreementInteractorImpl(getLicenseAgreementRepository())
     }
 
 }

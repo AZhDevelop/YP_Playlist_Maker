@@ -9,7 +9,7 @@ import com.example.yp_playlist_maker.sharing.domain.api.repository.ContactSuppor
 
 class ContactSupportRepositoryImpl(private val context: Context) : ContactSupportRepository {
 
-    override fun contactSupport() {
+    override fun contact() {
         val contactSupport = Intent().apply {
             action = Intent.ACTION_SENDTO
             data = Uri.parse(context.getString(R.string.mailto))

@@ -5,8 +5,8 @@ import com.example.yp_playlist_maker.sharing.domain.api.repository.ContactSuppor
 
 class ContactSupportInteractorImpl(private val repository: ContactSupportRepository) : ContactSupportInteractor {
 
-    override fun contactSupport() {
-        repository.contactSupport()
+    override fun contact() {
+        repository.contact()
     }
 
 }

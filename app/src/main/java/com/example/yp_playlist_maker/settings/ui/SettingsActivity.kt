@@ -22,6 +22,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val shareApp = Creator.provideShareAppInteractor()
         val contactSupport = Creator.provideContactSupportInteractor()
+        val licenseAgreement = Creator.provideLicenseAgreementInteractor()
 
         val appTheme = Creator.provideAppThemeInteractor()
 
@@ -46,16 +47,12 @@ class SettingsActivity : AppCompatActivity() {
 
         // Написать в поддержку
         binding.flContactSupport.setOnClickListener {
-            contactSupport.contactSupport()
+            contactSupport.contact()
         }
 
         // Лицензионное соглашение
         binding.flLicenseAgreement.setOnClickListener {
-            val licenseAgreementIntent = Intent().apply {
-                action = Intent.ACTION_VIEW
-                data = Uri.parse(getString(R.string.license_agreement_link))
-            }
-            startActivity(licenseAgreementIntent)
+            licenseAgreement.getLicenseAgreement()
         }
 
     }
