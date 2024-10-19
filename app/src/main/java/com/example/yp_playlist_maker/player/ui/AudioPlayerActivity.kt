@@ -23,14 +23,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         val binding = ActivityAudioplayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this, AudioPlayerViewModelFactory())[AudioPlayerViewModel::class.java]
-
-        val getTrackExtra =
-            IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
+        val getTrackExtra = IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
         val trackAlbumIntent = getTrackExtra?.collectionName
-
         val url = getTrackExtra?.previewUrl.toString()
         binding.play.alpha = ALPHA_25
+
+        viewModel = ViewModelProvider(this, AudioPlayerViewModelFactory())[AudioPlayerViewModel::class.java]
 
         viewModel.getPlayButtonEnabled().observe(this) { playButtonEnabled ->
             when (playButtonEnabled) {
@@ -93,14 +91,8 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        super.onStop()
         viewModel.pausePlayer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.releasePlayer()
-        viewModel.threadRemoveCallbacks()
+        super.onStop()
     }
 
     companion object {

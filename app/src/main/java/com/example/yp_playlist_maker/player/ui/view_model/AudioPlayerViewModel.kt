@@ -1,5 +1,6 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,30 +23,9 @@ class AudioPlayerViewModel(
     private val isPlaying = MutableLiveData<Boolean>()
     fun getIsPlaying(): LiveData<Boolean> = isPlaying
 
+    // Меняем время воспроизведения
     private val currentTime = MutableLiveData<String>()
     fun getCurrentTime(): LiveData<String> = currentTime
-
-    // Меняем время воспроизведения
-
-//    val onPrepare: () -> Unit = {
-//        binding.play.isEnabled = true
-//        binding.play.alpha = ALPHA_100
-//    }
-
-//    val onComplete: () -> Unit = {
-//        binding.play.setBackgroundResource(R.drawable.btn_play)
-//        binding.playTime.text = DEFAULT_TIME
-//    }
-
-//    val onStart: () -> Unit = {
-//        binding.play.setBackgroundResource(R.drawable.btn_pause)
-//    }
-//    onPause = {
-//        binding.play.setBackgroundResource(R.drawable.btn_play)
-//    }
-//    onTimeUpdate = { time ->
-//        binding.playTime.text = time
-//    }
 
     fun preparePlayer(url: String) {
         playTrack.preparePlayer(
@@ -76,14 +56,21 @@ class AudioPlayerViewModel(
         )
     }
 
-    fun releasePlayer() {
+    private fun releasePlayer() {
         playTrack.releasePlayer()
     }
 
-    fun threadRemoveCallbacks() {
+    private fun threadRemoveCallbacks() {
         playTrack.threadRemoveCallbacks(
             onTimeUpdate = { time -> currentTime.value = time }
         )
+    }
+
+    override fun onCleared() {
+        releasePlayer()
+        Log.d("onCleared", "Player released")
+        threadRemoveCallbacks()
+        Log.d("onCleared", "Callbacks removed")
     }
 
     companion object {
