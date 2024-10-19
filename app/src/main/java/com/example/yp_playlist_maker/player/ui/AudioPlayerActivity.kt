@@ -3,59 +3,63 @@ package com.example.yp_playlist_maker.player.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
-import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
-import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
+import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
+import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModelFactory
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.settings.ui.gone
 import com.example.yp_playlist_maker.util.Converter
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAudioplayerBinding
-    private var url: String = EMPTY_STRING
-    private lateinit var playTrack: PlayTrackInteractor
-    private lateinit var onPause: () -> Unit
-    private lateinit var onTimeUpdate: (String) -> Unit
+    private lateinit var viewModel: AudioPlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAudioplayerBinding.inflate(layoutInflater)
+        val binding = ActivityAudioplayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this, AudioPlayerViewModelFactory())[AudioPlayerViewModel::class.java]
 
         val getTrackExtra =
             IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
         val trackAlbumIntent = getTrackExtra?.collectionName
 
-        val onPrepare: () -> Unit = {
-            binding.play.isEnabled = true
-            binding.play.alpha = ALPHA_100
-        }
-        val onComplete: () -> Unit = {
-            binding.play.setBackgroundResource(R.drawable.btn_play)
-            binding.playTime.text = DEFAULT_TIME
-        }
-        val onStart: () -> Unit = {
-            binding.play.setBackgroundResource(R.drawable.btn_pause)
-        }
-        onPause = {
-            binding.play.setBackgroundResource(R.drawable.btn_play)
-        }
-        onTimeUpdate = { time ->
-            binding.playTime.text = time
-        }
-
-        url = getTrackExtra?.previewUrl.toString()
+        val url = getTrackExtra?.previewUrl.toString()
         binding.play.alpha = ALPHA_25
 
-        playTrack = Creator.providePlayTrackInteractor()
+        viewModel.getPlayButtonEnabled().observe(this) { playButtonEnabled ->
+            when (playButtonEnabled) {
+                true -> binding.play.isEnabled = true
+                false -> binding.play.isEnabled = false
+            }
+        }
 
-        playTrack.preparePlayer(url, onPrepare, onComplete, onTimeUpdate)
+        viewModel.getPlayButtonAlpha().observe(this) { playButtonAlpha ->
+            when (playButtonAlpha) {
+                ALPHA_100 -> binding.play.alpha = ALPHA_100
+            }
+        }
+
+        viewModel.getIsPlaying().observe(this) { isPlaying ->
+            when (isPlaying) {
+                true -> binding.play.setBackgroundResource(R.drawable.btn_pause)
+                false -> binding.play.setBackgroundResource(R.drawable.btn_play)
+            }
+        }
+
+        viewModel.getCurrentTime().observe(this) { currentTime ->
+            binding.playTime.text = currentTime
+        }
+
+        viewModel.preparePlayer(url)
+
         binding.play.setOnClickListener {
-            playTrack.playbackControl(onStart, onPause, onTimeUpdate)
+            viewModel.playbackControl()
         }
 
         Glide.with(this)
@@ -90,21 +94,19 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        playTrack.pausePlayer(onPause)
+        viewModel.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        playTrack.releasePlayer()
-        playTrack.threadRemoveCallbacks(onTimeUpdate)
+        viewModel.releasePlayer()
+        viewModel.threadRemoveCallbacks()
     }
 
     companion object {
         const val PLAYER_IMAGE_RADIUS: Int = 8
         const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
-        private const val EMPTY_STRING = ""
         private const val ALPHA_25 = 0.25F
-        private const val DEFAULT_TIME = "00:00"
         private const val ALPHA_100 = 1F
     }
 }
