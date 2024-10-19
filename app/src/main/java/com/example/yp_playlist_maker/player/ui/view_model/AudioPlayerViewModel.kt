@@ -1,6 +1,5 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,7 +12,6 @@ class AudioPlayerViewModel(
     // Доступность кнопки
     private val playButtonEnabled = MutableLiveData<Boolean>()
     fun getPlayButtonEnabled(): LiveData<Boolean> = playButtonEnabled
-
 
     // Прозрачность кнопки
     private val playButtonAlpha = MutableLiveData<Float>()
@@ -56,21 +54,11 @@ class AudioPlayerViewModel(
         )
     }
 
-    private fun releasePlayer() {
+    override fun onCleared() {
         playTrack.releasePlayer()
-    }
-
-    private fun threadRemoveCallbacks() {
         playTrack.threadRemoveCallbacks(
             onTimeUpdate = { time -> currentTime.value = time }
         )
-    }
-
-    override fun onCleared() {
-        releasePlayer()
-        Log.d("onCleared", "Player released")
-        threadRemoveCallbacks()
-        Log.d("onCleared", "Callbacks removed")
     }
 
     companion object {
