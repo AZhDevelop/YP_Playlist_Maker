@@ -3,23 +3,21 @@ package com.example.yp_playlist_maker.player.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
-import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
-import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
+import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
+import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModelFactory
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.settings.ui.gone
 import com.example.yp_playlist_maker.util.Converter
 
 class AudioPlayerActivity : AppCompatActivity() {
 
+    private lateinit var viewModel: AudioPlayerViewModel
     private lateinit var binding: ActivityAudioplayerBinding
-    private var url: String = EMPTY_STRING
-    private lateinit var playTrack: PlayTrackInteractor
-    private lateinit var onPause: () -> Unit
-    private lateinit var onTimeUpdate: (String) -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,83 +26,94 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         val getTrackExtra =
             IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
-        val trackAlbumIntent = getTrackExtra?.collectionName
 
-        val onPrepare: () -> Unit = {
-            binding.play.isEnabled = true
-            binding.play.alpha = ALPHA_100
-        }
-        val onComplete: () -> Unit = {
-            binding.play.setBackgroundResource(R.drawable.btn_play)
-            binding.playTime.text = DEFAULT_TIME
-        }
-        val onStart: () -> Unit = {
-            binding.play.setBackgroundResource(R.drawable.btn_pause)
-        }
-        onPause = {
-            binding.play.setBackgroundResource(R.drawable.btn_play)
-        }
-        onTimeUpdate = { time ->
-            binding.playTime.text = time
+        viewModel = ViewModelProvider(this, AudioPlayerViewModelFactory())[AudioPlayerViewModel::class.java]
+
+        getTrackExtra?.let { track ->
+            viewModel.preparePlayer(track.previewUrl)
+            fillTrackData(track)
         }
 
-        url = getTrackExtra?.previewUrl.toString()
-        binding.play.alpha = ALPHA_25
+        setupPlayerObservers()
 
-        playTrack = Creator.providePlayTrackInteractor()
+        binding.play.setOnClickListener { viewModel.playbackControl() }
 
-        playTrack.preparePlayer(url, onPrepare, onComplete, onTimeUpdate)
-        binding.play.setOnClickListener {
-            playTrack.playbackControl(onStart, onPause, onTimeUpdate)
-        }
-
-        Glide.with(this)
-            .load(Converter.convertUrl(getTrackExtra?.artworkUrl100.toString()))
-            .centerCrop()
-            .transform(RoundedCorners(Converter.dpToPx(PLAYER_IMAGE_RADIUS)))
-            .placeholder(R.drawable.img_placeholder_audio_player)
-            .into(binding.trackImage)
-
-        binding.trackName.text = getTrackExtra?.trackName
-        binding.artistName.text = getTrackExtra?.artistName
-        binding.durationValue.text = Converter.convertMillis((getTrackExtra?.trackTimeMillis.toString()))
-
-        if (trackAlbumIntent.isNullOrEmpty()) {
-            binding.albumText.gone()
-            binding.albumValue.gone()
-        } else {
-            binding.albumValue.text = trackAlbumIntent
-        }
-
-        binding.yearValue.text = getTrackExtra?.releaseDate
-            .toString()
-            .replaceAfter("-", "")
-            .replace("-", "")
-        binding.genreValue.text = getTrackExtra?.primaryGenreName
-        binding.countryValue.text = getTrackExtra?.country
-
-        binding.iwBack.setOnClickListener {
-            finish()
-        }
+        binding.iwBack.setOnClickListener { finish() }
     }
 
     override fun onStop() {
         super.onStop()
-        playTrack.pausePlayer(onPause)
+        viewModel.pausePlayer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        playTrack.releasePlayer()
-        playTrack.threadRemoveCallbacks(onTimeUpdate)
+    private fun fillTrackData(track: Track) {
+        binding.apply {
+            trackName.text = track.trackName
+            artistName.text = track.artistName
+            durationValue.text = Converter.convertMillis((track.trackTimeMillis))
+            if (track.collectionName.isEmpty()) {
+                albumText.gone()
+                albumValue.gone()
+            } else {
+                albumValue.text = track.collectionName
+            }
+            yearValue.text = track.releaseDate
+                .replaceAfter(DASH, EMPTY_STRING)
+                .replace(DASH, EMPTY_STRING)
+            genreValue.text = track.primaryGenreName
+            countryValue.text = track.country
+            loadTrackImage(track.artworkUrl100)
+        }
+    }
+
+    private fun loadTrackImage(artworkUrl100: String) {
+        Glide.with(this)
+            .load(Converter.convertUrl(artworkUrl100))
+            .centerCrop()
+            .transform(RoundedCorners(Converter.dpToPx(PLAYER_IMAGE_RADIUS)))
+            .placeholder(R.drawable.img_placeholder_audio_player)
+            .into(binding.trackImage)
+    }
+
+    private fun setupPlayerObservers() {
+        viewModel.getAudioPlayerStatus().observe(this) { status ->
+            handlePlayerStatus(status)
+        }
+
+        viewModel.getCurrentTime().observe(this) { currentTime ->
+            binding.playTime.text = currentTime
+        }
+    }
+
+    private fun handlePlayerStatus(status: String) {
+        when (status) {
+            LOADING -> binding.play.alpha = ALPHA_25
+            PREPARED -> {
+                binding.play.isEnabled = true
+                binding.play.alpha = ALPHA_100
+            }
+            COMPLETED -> {
+                binding.play.setBackgroundResource(R.drawable.btn_play)
+                binding.playTime.text = DEFAULT_TIME
+            }
+            START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
+            PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
+        }
     }
 
     companion object {
         const val PLAYER_IMAGE_RADIUS: Int = 8
         const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
-        private const val EMPTY_STRING = ""
         private const val ALPHA_25 = 0.25F
         private const val DEFAULT_TIME = "00:00"
         private const val ALPHA_100 = 1F
+        private const val EMPTY_STRING = ""
+        private const val DASH = "-"
+        private const val LOADING = "Loading"
+        private const val PREPARED = "Prepared"
+        private const val COMPLETED = "Completed"
+        private const val START = "Start"
+        private const val PAUSE = "Pause"
     }
+
 }

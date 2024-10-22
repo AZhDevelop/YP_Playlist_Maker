@@ -16,18 +16,22 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 return Resource.Error(CONNECTION_ERROR)
             }
             200 -> {
-                val responseData = Resource.Success((response as TrackSearchResponse).results.map {
-                    Track(
-                        it.trackName,
-                        it.artistName,
-                        it.trackTimeMillis,
-                        it.artworkUrl100,
-                        it.collectionName,
-                        it.releaseDate,
-                        it.primaryGenreName,
-                        it.country,
-                        it.previewUrl
-                    )
+                val responseData = Resource.Success((response as TrackSearchResponse).results.mapNotNull {
+                    try {
+                        Track(
+                            it.trackName,
+                            it.artistName,
+                            it.trackTimeMillis,
+                            it.artworkUrl100,
+                            it.collectionName,
+                            it.releaseDate,
+                            it.primaryGenreName,
+                            it.country,
+                            it.previewUrl
+                        )
+                    } catch (e: Exception) {
+                        null
+                    }
                 })
                 return if (responseData.data.isNullOrEmpty()) {
                     Resource.Error(SEARCH_ERROR)
