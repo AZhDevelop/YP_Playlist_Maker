@@ -35,20 +35,13 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
     private val trackService = Creator.provideTrackInteractor()
-
     private var savedSearchText: String = EMPTY_STRING
     private var trackList: ArrayList<Track> = arrayListOf()
     private val adapter = TrackAdapter()
-
-    private lateinit var editText: EditText
-    private lateinit var backButton: ImageView
-    private lateinit var placeholderMessage: TextView
-    private lateinit var imageViewError: ImageView
     private val trackHistoryList: ArrayList<Track> = arrayListOf()
     private var updateTrackHistory: Boolean = false
-    private lateinit var progressBar: ProgressBar
     private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { if (editText.text.isNotEmpty()) { search() } }
+    private val searchRunnable = Runnable { if (binding.etSearch.text.isNotEmpty()) { search() } }
     private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,12 +51,6 @@ class SearchActivity : AppCompatActivity() {
 
         val trackHistoryInteractor = Creator.provideSeacrhHistoryInteractor()
         val trackHistory = trackHistoryInteractor.getHistory()
-
-        editText = findViewById(R.id.et_search)
-        backButton = findViewById(R.id.iw_back)
-        placeholderMessage = findViewById(R.id.placeholderMessage)
-        imageViewError = findViewById(R.id.img_search_error)
-        progressBar = findViewById(R.id.progressBar)
 
         binding.apply {
             iwClear.invisible()
@@ -86,14 +73,14 @@ class SearchActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         }
 
-        editText.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus && editText.text.isEmpty() && trackList.isNotEmpty()) {
+        binding.etSearch.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && binding.etSearch.text.isEmpty() && trackList.isNotEmpty()) {
                 enableSearchHistoryVisibility(true)
             }
         }
 
         // Логика запуска поиска песен с клавиатуры
-        editText.setOnEditorActionListener { _, actionId, _ ->
+        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 checkPlaceholder()
                 search()
@@ -108,7 +95,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         // Закрываем Activity
-        backButton.setOnClickListener {
+        binding.iwBack.setOnClickListener {
             finish()
         }
 
@@ -116,7 +103,7 @@ class SearchActivity : AppCompatActivity() {
         binding.iwClear.setOnClickListener {
             trackList.clear()
             adapter.notifyDataSetChanged()
-            editText.setText(EMPTY_STRING)
+            binding.etSearch.setText(EMPTY_STRING)
             it.hideKeyboard()
         }
 
@@ -132,7 +119,7 @@ class SearchActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
             savedSearchText =
                 savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
-            editText.setText(savedSearchText)
+            binding.etSearch.setText(savedSearchText)
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -142,18 +129,18 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.iwClear.visibility = clearButtonVisibility(s)
-                savedSearchText = editText.text.toString()
+                savedSearchText = binding.etSearch.text.toString()
                 enableSearchHistoryVisibility(false)
-                if (editText.text.isEmpty() && trackHistoryList.isNotEmpty()) {
+                if (binding.etSearch.text.isEmpty() && trackHistoryList.isNotEmpty()) {
                     trackList.clear()
                     trackList.addAll(trackHistoryList)
                     adapter.notifyDataSetChanged()
                     enableSearchHistoryVisibility(true)
                 }
-                if (editText.text.isEmpty()) {
+                if (binding.etSearch.text.isEmpty()) {
                     checkPlaceholder()
                 }
-                if (editText.text.isNotEmpty()) {
+                if (binding.etSearch.text.isNotEmpty()) {
                     searchDebounce()
                 }
             }
@@ -162,7 +149,7 @@ class SearchActivity : AppCompatActivity() {
                 //
             }
         }
-        editText.addTextChangedListener(simpleTextWatcher)
+        binding.etSearch.addTextChangedListener(simpleTextWatcher)
 
         adapter.onTrackClick = {
             if (clickDebounce()) {
@@ -172,7 +159,7 @@ class SearchActivity : AppCompatActivity() {
                     putExtra(AudioPlayerActivity.INTENT_PUTTED_TRACK, it)
                 }
                 startActivity(displayAudioPlayer)
-                if (editText.text.isEmpty()) {
+                if (binding.etSearch.text.isEmpty()) {
                     updateTrackHistory = true
                 }
             }
@@ -221,12 +208,12 @@ class SearchActivity : AppCompatActivity() {
     // Поиск песен
     private fun search() {
 
-        progressBar.visible()
+        binding.progressBar.visible()
 
-        trackService.searchTrack(editText.text.toString(), object : TrackInteractor.TrackConsumer {
+        trackService.searchTrack(binding.etSearch.text.toString(), object : TrackInteractor.TrackConsumer {
             override fun consume(foundTrack: List<Track>?, errorMessage: String?) {
                 handler.post {
-                    progressBar.gone()
+                    binding.progressBar.gone()
                     trackList.clear()
                     if (foundTrack != null) {
                         trackList.addAll(foundTrack)
@@ -245,20 +232,20 @@ class SearchActivity : AppCompatActivity() {
     // Сообщение об ошибке - песня не нйдена или ошибка подключения
     private fun showMessage(text: String) {
         if (text.isNotEmpty()) {
-            progressBar.gone()
+            binding.progressBar.gone()
             binding.placeholder.visible()
             trackList.clear()
             adapter.notifyDataSetChanged()
-            placeholderMessage.text = text
+            binding.placeholderMessage.text = text
             if (text == SEARCH_ERROR) {
-                imageViewError.setImageResource(R.drawable.img_search_error)
+                binding.imgSearchError.setImageResource(R.drawable.img_search_error)
                 binding.btnReload.gone()
             } else {
-                imageViewError.setImageResource(R.drawable.img_connection_error)
+                binding.imgSearchError.setImageResource(R.drawable.img_connection_error)
                 binding.btnReload.visible()
             }
         } else {
-            placeholderMessage.gone()
+            binding.placeholderMessage.gone()
         }
     }
 
