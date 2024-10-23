@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
+import com.example.yp_playlist_maker.databinding.ActivitySearchBinding
 import com.example.yp_playlist_maker.search.domain.api.TrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.settings.ui.gone
@@ -31,6 +33,7 @@ import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 
 class SearchActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySearchBinding
     private val trackService = Creator.provideTrackInteractor()
 
     private var savedSearchText: String = EMPTY_STRING
@@ -38,15 +41,9 @@ class SearchActivity : AppCompatActivity() {
     private val adapter = TrackAdapter()
 
     private lateinit var editText: EditText
-    private lateinit var clearText: ImageView
     private lateinit var backButton: ImageView
-    private lateinit var recyclerViewTrack: RecyclerView
-    private lateinit var placeholder: LinearLayout
     private lateinit var placeholderMessage: TextView
     private lateinit var imageViewError: ImageView
-    private lateinit var reloadButton: Button
-    private lateinit var searchTextMessage: TextView
-    private lateinit var clearHistoryButton: Button
     private val trackHistoryList: ArrayList<Track> = arrayListOf()
     private var updateTrackHistory: Boolean = false
     private lateinit var progressBar: ProgressBar
@@ -55,37 +52,33 @@ class SearchActivity : AppCompatActivity() {
     private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val trackHistoryInteractor = Creator.provideSeacrhHistoryInteractor()
         val trackHistory = trackHistoryInteractor.getHistory()
 
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
-
-        clearText = findViewById(R.id.iw_clear)
         editText = findViewById(R.id.et_search)
         backButton = findViewById(R.id.iw_back)
-        recyclerViewTrack = findViewById(R.id.rv_track)
-        placeholder = findViewById(R.id.placeholder)
         placeholderMessage = findViewById(R.id.placeholderMessage)
         imageViewError = findViewById(R.id.img_search_error)
-        reloadButton = findViewById(R.id.btn_reload)
-        searchTextMessage = findViewById(R.id.tv_search_history)
-        clearHistoryButton = findViewById(R.id.btn_clear_history)
         progressBar = findViewById(R.id.progressBar)
 
-        clearText.invisible()
-        placeholder.gone()
-        reloadButton.gone()
-        clearHistoryButton.gone()
-        searchTextMessage.gone()
-        recyclerViewTrack.gone()
+        binding.apply {
+            iwClear.invisible()
+            placeholder.gone()
+            btnReload.gone()
+            btnClearHistory.gone()
+            tvSearchHistory.gone()
+            rvTrack.gone()
+        }
 
         adapter.data = trackList
 
         // RecyclerView для списка песен
-        recyclerViewTrack.layoutManager = LinearLayoutManager(this)
-        recyclerViewTrack.adapter = adapter
+        binding.rvTrack.layoutManager = LinearLayoutManager(this)
+        binding.rvTrack.adapter = adapter
 
         if (trackHistory.isNotEmpty()) {
             trackList.addAll(trackHistory)
@@ -95,7 +88,7 @@ class SearchActivity : AppCompatActivity() {
 
         editText.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus && editText.text.isEmpty() && trackList.isNotEmpty()) {
-                enableSearchHistoryVisibility()
+                enableSearchHistoryVisibility(true)
             }
         }
 
@@ -109,7 +102,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         // Кнопка перезапуска поиска песен, если отсутствовал интернет
-        reloadButton.setOnClickListener {
+        binding.btnReload.setOnClickListener {
             checkPlaceholder()
             search()
         }
@@ -120,19 +113,19 @@ class SearchActivity : AppCompatActivity() {
         }
 
         // Очищаем строку и список песен при нажатии на кнопку
-        clearText.setOnClickListener {
+        binding.iwClear.setOnClickListener {
             trackList.clear()
             adapter.notifyDataSetChanged()
             editText.setText(EMPTY_STRING)
             it.hideKeyboard()
         }
 
-        clearHistoryButton.setOnClickListener {
+        binding.btnClearHistory.setOnClickListener {
             trackHistoryInteractor.clearHistory()
             trackList.clear()
             trackHistoryList.clear()
             adapter.notifyDataSetChanged()
-            disableSearchHistoryVisibility()
+            enableSearchHistoryVisibility(false)
         }
 
         // Проверяем сохраненное состояние текста и востанавллиевам, если что-то сохранено
@@ -148,14 +141,14 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearText.visibility = clearButtonVisibility(s)
+                binding.iwClear.visibility = clearButtonVisibility(s)
                 savedSearchText = editText.text.toString()
-                disableSearchHistoryVisibility()
+                enableSearchHistoryVisibility(false)
                 if (editText.text.isEmpty() && trackHistoryList.isNotEmpty()) {
                     trackList.clear()
                     trackList.addAll(trackHistoryList)
                     adapter.notifyDataSetChanged()
-                    enableSearchHistoryVisibility()
+                    enableSearchHistoryVisibility(true)
                 }
                 if (editText.text.isEmpty()) {
                     checkPlaceholder()
@@ -239,7 +232,7 @@ class SearchActivity : AppCompatActivity() {
                         trackList.addAll(foundTrack)
                         adapter.notifyDataSetChanged()
                         checkPlaceholder()
-                        recyclerViewTrack.visible()
+                        binding.rvTrack.visible()
                     }
                     if (errorMessage != null) {
                         showMessage(errorMessage)
@@ -253,32 +246,34 @@ class SearchActivity : AppCompatActivity() {
     private fun showMessage(text: String) {
         if (text.isNotEmpty()) {
             progressBar.gone()
-            placeholder.visible()
+            binding.placeholder.visible()
             trackList.clear()
             adapter.notifyDataSetChanged()
             placeholderMessage.text = text
             if (text == SEARCH_ERROR) {
                 imageViewError.setImageResource(R.drawable.img_search_error)
-                reloadButton.gone()
+                binding.btnReload.gone()
             } else {
                 imageViewError.setImageResource(R.drawable.img_connection_error)
-                reloadButton.visible()
+                binding.btnReload.visible()
             }
         } else {
             placeholderMessage.gone()
         }
     }
 
-    private fun enableSearchHistoryVisibility() {
-        searchTextMessage.visible()
-        clearHistoryButton.visible()
-        recyclerViewTrack.visible()
-    }
-
-    private fun disableSearchHistoryVisibility() {
-        searchTextMessage.gone()
-        clearHistoryButton.gone()
-        recyclerViewTrack.gone()
+    private fun enableSearchHistoryVisibility(enabled: Boolean) {
+        binding.apply {
+            if (enabled) {
+                tvSearchHistory.visible()
+                btnClearHistory.visible()
+                rvTrack.visible()
+            } else {
+                tvSearchHistory.gone()
+                btnClearHistory.gone()
+                rvTrack.gone()
+            }
+        }
     }
 
     private fun searchDebounce() {
@@ -297,8 +292,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun checkPlaceholder() {
-        if (placeholder.isVisible) {
-            placeholder.gone()
+        if (binding.placeholder.isVisible) {
+            binding.placeholder.gone()
         }
     }
 
