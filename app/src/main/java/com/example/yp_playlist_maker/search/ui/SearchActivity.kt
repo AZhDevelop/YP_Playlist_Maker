@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -18,6 +19,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yp_playlist_maker.creator.Creator
@@ -30,9 +32,12 @@ import com.example.yp_playlist_maker.settings.ui.gone
 import com.example.yp_playlist_maker.settings.ui.invisible
 import com.example.yp_playlist_maker.settings.ui.visible
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
+import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
+import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModelFactory
 
 class SearchActivity : AppCompatActivity() {
 
+    private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
     private val trackService = Creator.provideTrackInteractor()
     private var savedSearchText: String = EMPTY_STRING
@@ -49,8 +54,22 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
+
+        viewModel.getProgressBarVisibility().observe(this) { isVisible ->
+            Log.d("Progressbar", "$isVisible")
+            binding.progressBar.apply { if (isVisible) visible() else gone() }
+        }
+
+        viewModel.getRecyclerViewVisibility().observe(this) { isVisible ->
+            binding.rvTrack.apply { if (isVisible) visible() else gone() }
+        }
+
+        viewModel.getErrorText().observe(this) { error ->
+            showMessage(error)
+        }
+
         val trackHistoryInteractor = Creator.provideSeacrhHistoryInteractor()
-        val trackHistory = trackHistoryInteractor.getHistory()
 
         binding.apply {
             iwClear.invisible()
@@ -67,15 +86,19 @@ class SearchActivity : AppCompatActivity() {
         binding.rvTrack.layoutManager = LinearLayoutManager(this)
         binding.rvTrack.adapter = adapter
 
-        if (trackHistory.isNotEmpty()) {
-            trackList.addAll(trackHistory)
-            trackHistoryList.addAll(trackHistory)
-            adapter.notifyDataSetChanged()
+        viewModel.getTrackHistory().observe(this) { trackHistory ->
+            if (trackHistory.isNotEmpty()) {
+                trackList.addAll(trackHistory)
+                trackHistoryList.addAll(trackHistory)
+                adapter.notifyDataSetChanged()
+            }
         }
 
-        binding.etSearch.setOnFocusChangeListener { view, hasFocus ->
+        binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.etSearch.text.isEmpty() && trackList.isNotEmpty()) {
                 enableSearchHistoryVisibility(true)
+            } else {
+                enableSearchHistoryVisibility(false)
             }
         }
 
@@ -207,35 +230,13 @@ class SearchActivity : AppCompatActivity() {
 
     // Поиск песен
     private fun search() {
-
-        binding.progressBar.visible()
-
-        trackService.searchTrack(binding.etSearch.text.toString(), object : TrackInteractor.TrackConsumer {
-            override fun consume(foundTrack: List<Track>?, errorMessage: String?) {
-                handler.post {
-                    binding.progressBar.gone()
-                    trackList.clear()
-                    if (foundTrack != null) {
-                        trackList.addAll(foundTrack)
-                        adapter.notifyDataSetChanged()
-                        checkPlaceholder()
-                        binding.rvTrack.visible()
-                    }
-                    if (errorMessage != null) {
-                        showMessage(errorMessage)
-                    }
-                }
-            }
-        })
+        viewModel.search(binding.etSearch.text.toString(), trackList, adapter)
     }
 
-    // Сообщение об ошибке - песня не нйдена или ошибка подключения
+    // Сообщение об ошибке - песня не найдена или ошибка подключения
     private fun showMessage(text: String) {
         if (text.isNotEmpty()) {
-            binding.progressBar.gone()
             binding.placeholder.visible()
-            trackList.clear()
-            adapter.notifyDataSetChanged()
             binding.placeholderMessage.text = text
             if (text == SEARCH_ERROR) {
                 binding.imgSearchError.setImageResource(R.drawable.img_search_error)
@@ -284,10 +285,16 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.reloadTrackHistory()
+    }
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""
+
         private const val SEARCH_ERROR = "Ничего не нашлось"
     }
 }
