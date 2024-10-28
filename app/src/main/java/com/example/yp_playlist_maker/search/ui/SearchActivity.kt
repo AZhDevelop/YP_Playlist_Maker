@@ -34,6 +34,7 @@ import com.example.yp_playlist_maker.settings.ui.visible
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModelFactory
+import com.example.yp_playlist_maker.settings.ui.hideKeyboard
 
 class SearchActivity : AppCompatActivity() {
 
@@ -127,7 +128,7 @@ class SearchActivity : AppCompatActivity() {
             trackList.clear()
             adapter.notifyDataSetChanged()
             binding.etSearch.setText(EMPTY_STRING)
-            it.hideKeyboard()
+            binding.activitySearch.hideKeyboard()
         }
 
         binding.btnClearHistory.setOnClickListener {
@@ -220,12 +221,6 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         savedSearchText =
             savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
-    }
-
-    // Прячем клавиатуру
-    private fun View.hideKeyboard() {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
     // Поиск песен
