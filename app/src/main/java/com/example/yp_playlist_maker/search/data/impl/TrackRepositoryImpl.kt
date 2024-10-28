@@ -1,5 +1,6 @@
 package com.example.yp_playlist_maker.search.data.impl
 
+import android.util.Log
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchRequest
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchResponse
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
@@ -11,6 +12,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
 
     override fun searchTrack(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
+        Log.d("response", "${response.resultCode}")
         when (response.resultCode) {
             -1 -> {
                 return Resource.Error(CONNECTION_ERROR)
@@ -39,7 +41,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                     responseData
                 }
             } else -> {
-                return Resource.Error(SERVER_ERROR)
+                return Resource.Error(SEARCH_ERROR)
             }
         }
     }

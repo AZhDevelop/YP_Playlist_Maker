@@ -1,6 +1,5 @@
 package com.example.yp_playlist_maker.search.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -10,37 +9,26 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.R
-import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
+import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.databinding.ActivitySearchBinding
-import com.example.yp_playlist_maker.search.domain.api.TrackInteractor
-import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.settings.ui.gone
-import com.example.yp_playlist_maker.settings.ui.invisible
-import com.example.yp_playlist_maker.settings.ui.visible
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
+import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModelFactory
+import com.example.yp_playlist_maker.settings.ui.gone
 import com.example.yp_playlist_maker.settings.ui.hideKeyboard
+import com.example.yp_playlist_maker.settings.ui.invisible
+import com.example.yp_playlist_maker.settings.ui.visible
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
-    private val trackService = Creator.provideTrackInteractor()
     private var savedSearchText: String = EMPTY_STRING
     private var trackList: ArrayList<Track> = arrayListOf()
     private val adapter = TrackAdapter()
@@ -54,21 +42,8 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         viewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
-
-        viewModel.getProgressBarVisibility().observe(this) { isVisible ->
-            Log.d("Progressbar", "$isVisible")
-            binding.progressBar.apply { if (isVisible) visible() else gone() }
-        }
-
-        viewModel.getRecyclerViewVisibility().observe(this) { isVisible ->
-            binding.rvTrack.apply { if (isVisible) visible() else gone() }
-        }
-
-        viewModel.getErrorText().observe(this) { error ->
-            showMessage(error)
-        }
+        setSearchActivityObservers()
 
         val trackHistoryInteractor = Creator.provideSeacrhHistoryInteractor()
 
@@ -190,6 +165,30 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun setSearchActivityObservers() {
+        viewModel.getSearchStatus().observe(this) { searchStatus ->
+            handleSearchStatus(searchStatus)
+        }
+    }
+
+    private fun handleSearchStatus(searchStatus: String) {
+        when (searchStatus) {
+            LOADING -> {
+                binding.progressBar.visible()
+            }
+            SUCCESS -> {
+                binding.progressBar.gone()
+                binding.rvTrack.visible()
+            }
+            SEARCH_ERROR -> {
+                showMessage(searchStatus)
+            }
+            CONNECTION_ERROR -> {
+                showMessage(searchStatus)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if (updateTrackHistory) {
@@ -290,6 +289,10 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""
 
+        private const val LOADING = "Loading"
+        private const val SUCCESS = "Success"
+        private const val CONNECTION_ERROR =
+            "Проблемы со связью\nЗагрузка не удалась\nПроверьте подключение к интернету"
         private const val SEARCH_ERROR = "Ничего не нашлось"
     }
 }

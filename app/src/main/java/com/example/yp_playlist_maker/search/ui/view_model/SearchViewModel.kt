@@ -18,7 +18,6 @@ class SearchViewModel(
 
     private val handler = Handler(Looper.getMainLooper())
 
-
     private val trackHistory = MutableLiveData<ArrayList<Track>>()
     fun getTrackHistory(): LiveData<ArrayList<Track>> = trackHistory
     private fun initTrackHistory() {
@@ -33,36 +32,38 @@ class SearchViewModel(
         Log.d("Init", "init")
     }
 
-    private val progressBarVisibility = MutableLiveData<Boolean>()
-    fun getProgressBarVisibility(): LiveData<Boolean> = progressBarVisibility
-
-    private val recyclerViewVisibility = MutableLiveData<Boolean>()
-    fun getRecyclerViewVisibility(): LiveData<Boolean> = recyclerViewVisibility
-
-    private val errorText = MutableLiveData<String>()
-    fun getErrorText() : LiveData<String> = errorText
+    private val searchStatus = MutableLiveData<String>()
+    fun getSearchStatus(): LiveData<String> = searchStatus
 
     fun search(expression: String, trackList: ArrayList<Track>, adapter: TrackAdapter) {
 
-        progressBarVisibility.value = true
+        searchStatus.value = LOADING
 
         searchTrackService.searchTrack(expression, object : TrackInteractor.TrackConsumer {
             override fun consume(foundTrack: List<Track>?, errorMessage: String?) {
                 handler.post {
-                    progressBarVisibility.value = false
+                    searchStatus.value = SUCCESS
                     trackList.clear()
                     if (foundTrack != null) {
                         trackList.addAll(foundTrack)
                         adapter.notifyDataSetChanged()
-//                        checkPlaceholder()
-                        recyclerViewVisibility.value = true
                     }
-                    if (errorMessage != null) {
-                        errorText.value = errorMessage
+                    if (errorMessage == SEARCH_ERROR) {
+                        searchStatus.value = SEARCH_ERROR
+                    } else {
+                        searchStatus.value = CONNECTION_ERROR
                     }
                 }
             }
         })
+    }
+
+    companion object {
+        private const val LOADING = "Loading"
+        private const val SUCCESS = "Success"
+        private const val CONNECTION_ERROR =
+            "Проблемы со связью\nЗагрузка не удалась\nПроверьте подключение к интернету"
+        private const val SEARCH_ERROR = "Ничего не нашлось"
     }
 
 }
