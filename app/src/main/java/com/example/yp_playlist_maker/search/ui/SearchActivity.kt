@@ -13,7 +13,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
-import com.example.yp_playlist_maker.creator.Creator
 import com.example.yp_playlist_maker.databinding.ActivitySearchBinding
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.domain.models.Track
@@ -41,19 +40,9 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSearchActivityViews()
         viewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
         setSearchActivityObservers()
-
-        val trackHistoryInteractor = Creator.provideSeacrhHistoryInteractor()
-
-        binding.apply {
-            iwClear.invisible()
-            placeholder.gone()
-            btnReload.gone()
-            btnClearHistory.gone()
-            tvSearchHistory.gone()
-            rvTrack.gone()
-        }
 
         adapter.data = trackList
 
@@ -106,7 +95,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.btnClearHistory.setOnClickListener {
-            trackHistoryInteractor.clearHistory()
+            viewModel.clearHistory()
             trackList.clear()
             trackHistoryList.clear()
             adapter.notifyDataSetChanged()
@@ -151,7 +140,7 @@ class SearchActivity : AppCompatActivity() {
 
         adapter.onTrackClick = {
             if (clickDebounce()) {
-                trackHistoryInteractor.saveClickedTrack(it, trackHistoryList)
+                viewModel.saveClickedTrack(it, trackHistoryList)
                 val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
                 displayAudioPlayer.apply {
                     putExtra(AudioPlayerActivity.INTENT_PUTTED_TRACK, it)
@@ -161,6 +150,17 @@ class SearchActivity : AppCompatActivity() {
                     updateTrackHistory = true
                 }
             }
+        }
+    }
+
+    private fun setSearchActivityViews() {
+        binding.apply {
+            iwClear.invisible()
+            placeholder.gone()
+            btnReload.gone()
+            btnClearHistory.gone()
+            tvSearchHistory.gone()
+            rvTrack.gone()
         }
     }
 

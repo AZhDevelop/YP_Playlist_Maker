@@ -55,6 +55,15 @@ class SearchViewModel(
         })
     }
 
+    // Работа с историей
+    fun clearHistory() {
+        searchHistoryService.clearHistory()
+    }
+
+    fun saveClickedTrack(track: Track, trackHistoryList: ArrayList<Track>) {
+        searchHistoryService.saveClickedTrack(track, trackHistoryList)
+    }
+
     companion object {
         private const val LOADING = "Loading"
         private const val SUCCESS = "Success"
