@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -165,12 +164,14 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    // Инициализация наблюдателей viewModel
     private fun setSearchActivityObservers() {
         viewModel.getSearchStatus().observe(this) { searchStatus ->
             handleSearchStatus(searchStatus)
         }
     }
 
+    // Наблюдатель состояние запроса поиска
     private fun handleSearchStatus(searchStatus: String) {
         when (searchStatus) {
             LOADING -> {
@@ -180,22 +181,8 @@ class SearchActivity : AppCompatActivity() {
                 binding.progressBar.gone()
                 binding.rvTrack.visible()
             }
-            SEARCH_ERROR -> {
-                showMessage(searchStatus)
-            }
-            CONNECTION_ERROR -> {
-                showMessage(searchStatus)
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (updateTrackHistory) {
-            trackList.clear()
-            trackList.addAll(trackHistoryList)
-            adapter.notifyDataSetChanged()
-            updateTrackHistory = false
+            SEARCH_ERROR -> { showError(SEARCH_ERROR) }
+            CONNECTION_ERROR -> { showError(CONNECTION_ERROR) }
         }
     }
 
@@ -227,20 +214,20 @@ class SearchActivity : AppCompatActivity() {
         viewModel.search(binding.etSearch.text.toString(), trackList, adapter)
     }
 
-    // Сообщение об ошибке - песня не найдена или ошибка подключения
-    private fun showMessage(text: String) {
-        if (text.isNotEmpty()) {
-            binding.placeholder.visible()
-            binding.placeholderMessage.text = text
-            if (text == SEARCH_ERROR) {
+    private fun showError(error: String) {
+        binding.progressBar.gone()
+        binding.placeholder.visible()
+        when (error) {
+            SEARCH_ERROR -> {
+                binding.placeholderMessage.text = SEARCH_ERROR
                 binding.imgSearchError.setImageResource(R.drawable.img_search_error)
                 binding.btnReload.gone()
-            } else {
+            }
+            CONNECTION_ERROR -> {
+                binding.placeholderMessage.text = CONNECTION_ERROR
                 binding.imgSearchError.setImageResource(R.drawable.img_connection_error)
                 binding.btnReload.visible()
             }
-        } else {
-            binding.placeholderMessage.gone()
         }
     }
 
@@ -276,6 +263,16 @@ class SearchActivity : AppCompatActivity() {
     private fun checkPlaceholder() {
         if (binding.placeholder.isVisible) {
             binding.placeholder.gone()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (updateTrackHistory) {
+            trackList.clear()
+            trackList.addAll(trackHistoryList)
+            adapter.notifyDataSetChanged()
+            updateTrackHistory = false
         }
     }
 

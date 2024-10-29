@@ -2,7 +2,6 @@ package com.example.yp_playlist_maker.search.ui.view_model
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,7 +28,6 @@ class SearchViewModel(
 
     init {
         initTrackHistory()
-        Log.d("Init", "init")
     }
 
     private val searchStatus = MutableLiveData<String>()
@@ -42,15 +40,14 @@ class SearchViewModel(
         searchTrackService.searchTrack(expression, object : TrackInteractor.TrackConsumer {
             override fun consume(foundTrack: List<Track>?, errorMessage: String?) {
                 handler.post {
-                    searchStatus.value = SUCCESS
-                    trackList.clear()
-                    if (foundTrack != null) {
+                    if (foundTrack != null && errorMessage.isNullOrEmpty()) {
+                        trackList.clear()
                         trackList.addAll(foundTrack)
                         adapter.notifyDataSetChanged()
-                    }
-                    if (errorMessage == SEARCH_ERROR) {
+                        searchStatus.value = SUCCESS
+                    } else if (errorMessage == SEARCH_ERROR) {
                         searchStatus.value = SEARCH_ERROR
-                    } else {
+                    } else if (errorMessage == CONNECTION_ERROR) {
                         searchStatus.value = CONNECTION_ERROR
                     }
                 }
