@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.ActivitySearchBinding
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
-import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModelFactory
 import com.example.yp_playlist_maker.settings.ui.gone
@@ -28,9 +28,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
     private var savedSearchText: String = EMPTY_STRING
-    private var trackList: ArrayList<Track> = arrayListOf()
     private val adapter = TrackAdapter()
-    private val trackHistoryList: ArrayList<Track> = arrayListOf()
     private var updateTrackHistory: Boolean = false
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { if (binding.etSearch.text.isNotEmpty()) { search() } }
@@ -44,22 +42,16 @@ class SearchActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
         setSearchActivityObservers()
 
-        adapter.data = trackList
+        adapter.data = viewModel.getTrackList()
 
         // RecyclerView для списка песен
         binding.rvTrack.layoutManager = LinearLayoutManager(this)
         binding.rvTrack.adapter = adapter
 
-        viewModel.getTrackHistory().observe(this) { trackHistory ->
-            if (trackHistory.isNotEmpty()) {
-                trackList.addAll(trackHistory)
-                trackHistoryList.addAll(trackHistory)
-                adapter.notifyDataSetChanged()
-            }
-        }
+        viewModel.getTrackHistory(adapter)
 
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.etSearch.text.isEmpty() && trackList.isNotEmpty()) {
+            if (hasFocus && binding.etSearch.text.isEmpty() && viewModel.getTrackList().isNotEmpty()) {
                 enableSearchHistoryVisibility(true)
             } else {
                 enableSearchHistoryVisibility(false)
@@ -88,17 +80,13 @@ class SearchActivity : AppCompatActivity() {
 
         // Очищаем строку и список песен при нажатии на кнопку
         binding.iwClear.setOnClickListener {
-            trackList.clear()
-            adapter.notifyDataSetChanged()
+            viewModel.clearTrackList(adapter)
             binding.etSearch.setText(EMPTY_STRING)
             binding.activitySearch.hideKeyboard()
         }
 
         binding.btnClearHistory.setOnClickListener {
-            viewModel.clearHistory()
-            trackList.clear()
-            trackHistoryList.clear()
-            adapter.notifyDataSetChanged()
+            viewModel.clearHistory(adapter)
             enableSearchHistoryVisibility(false)
         }
 
@@ -118,10 +106,9 @@ class SearchActivity : AppCompatActivity() {
                 binding.iwClear.visibility = clearButtonVisibility(s)
                 savedSearchText = binding.etSearch.text.toString()
                 enableSearchHistoryVisibility(false)
-                if (binding.etSearch.text.isEmpty() && trackHistoryList.isNotEmpty()) {
-                    trackList.clear()
-                    trackList.addAll(trackHistoryList)
-                    adapter.notifyDataSetChanged()
+                if (binding.etSearch.text.isEmpty() && viewModel.getTrackHistoryList().isNotEmpty()) {
+                    viewModel.updateTrackList(adapter)
+                    Log.d("onTextChanged", "updated")
                     enableSearchHistoryVisibility(true)
                 }
                 if (binding.etSearch.text.isEmpty()) {
@@ -140,7 +127,7 @@ class SearchActivity : AppCompatActivity() {
 
         adapter.onTrackClick = {
             if (clickDebounce()) {
-                viewModel.saveClickedTrack(it, trackHistoryList)
+                viewModel.saveClickedTrack(it)
                 val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
                 displayAudioPlayer.apply {
                     putExtra(AudioPlayerActivity.INTENT_PUTTED_TRACK, it)
@@ -211,7 +198,7 @@ class SearchActivity : AppCompatActivity() {
 
     // Поиск песен
     private fun search() {
-        viewModel.search(binding.etSearch.text.toString(), trackList, adapter)
+        viewModel.search(binding.etSearch.text.toString(), adapter)
     }
 
     private fun showError(error: String) {
@@ -269,16 +256,9 @@ class SearchActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (updateTrackHistory) {
-            trackList.clear()
-            trackList.addAll(trackHistoryList)
-            adapter.notifyDataSetChanged()
+            viewModel.updateTrackList(adapter)
             updateTrackHistory = false
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.reloadTrackHistory()
     }
 
     companion object {

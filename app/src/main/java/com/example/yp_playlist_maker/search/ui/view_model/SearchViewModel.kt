@@ -16,24 +16,43 @@ class SearchViewModel(
 ): ViewModel() {
 
     private val handler = Handler(Looper.getMainLooper())
+    private val trackList: ArrayList<Track> = arrayListOf()
+    private val trackHistoryList: ArrayList<Track> = arrayListOf()
 
-    private val trackHistory = MutableLiveData<ArrayList<Track>>()
-    fun getTrackHistory(): LiveData<ArrayList<Track>> = trackHistory
-    private fun initTrackHistory() {
-        trackHistory.value = searchHistoryService.getHistory()
-    }
-    fun reloadTrackHistory() {
-        trackHistory.value = searchHistoryService.getHistory()
+    fun getTrackList() : ArrayList<Track> {
+        return trackList
     }
 
-    init {
-        initTrackHistory()
+    fun getTrackHistoryList() : ArrayList<Track> {
+        return trackHistoryList
+    }
+
+    fun getTrackHistory(adapter: TrackAdapter) {
+        val trackHistory = searchHistoryService.getHistory()
+        if (trackHistory.isNotEmpty()) {
+            trackList.clear()
+            trackHistoryList.clear()
+            trackList.addAll(trackHistory)
+            trackHistoryList.addAll(trackHistory)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    fun clearTrackList(adapter: TrackAdapter) {
+        trackList.clear()
+        adapter.notifyDataSetChanged()
+    }
+
+    fun updateTrackList(adapter: TrackAdapter) {
+        trackList.clear()
+        trackList.addAll(trackHistoryList)
+        adapter.notifyDataSetChanged()
     }
 
     private val searchStatus = MutableLiveData<String>()
     fun getSearchStatus(): LiveData<String> = searchStatus
 
-    fun search(expression: String, trackList: ArrayList<Track>, adapter: TrackAdapter) {
+    fun search(expression: String, adapter: TrackAdapter) {
 
         searchStatus.value = LOADING
 
@@ -56,11 +75,14 @@ class SearchViewModel(
     }
 
     // Работа с историей
-    fun clearHistory() {
+    fun clearHistory(adapter: TrackAdapter) {
         searchHistoryService.clearHistory()
+        trackList.clear()
+        trackHistoryList.clear()
+        adapter.notifyDataSetChanged()
     }
 
-    fun saveClickedTrack(track: Track, trackHistoryList: ArrayList<Track>) {
+    fun saveClickedTrack(track: Track) {
         searchHistoryService.saveClickedTrack(track, trackHistoryList)
     }
 
