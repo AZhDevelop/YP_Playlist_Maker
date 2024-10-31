@@ -30,6 +30,7 @@ class SearchActivity : AppCompatActivity() {
     private var savedSearchText: String = EMPTY_STRING
     private val adapter = TrackAdapter()
     private var updateTrackHistory: Boolean = false
+    private var onRestoreError: String = EMPTY_STRING
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { if (binding.etSearch.text.isNotEmpty()) { search() } }
     private var isClickAllowed = true
@@ -176,8 +177,14 @@ class SearchActivity : AppCompatActivity() {
                 binding.progressBar.gone()
                 binding.rvTrack.visible()
             }
-            SEARCH_ERROR -> { showError(SEARCH_ERROR) }
-            CONNECTION_ERROR -> { showError(CONNECTION_ERROR) }
+            SEARCH_ERROR -> {
+                showError(SEARCH_ERROR)
+                onRestoreError = SEARCH_ERROR
+            }
+            CONNECTION_ERROR -> {
+                showError(CONNECTION_ERROR)
+                onRestoreError = CONNECTION_ERROR
+            }
         }
     }
 
@@ -195,8 +202,11 @@ class SearchActivity : AppCompatActivity() {
         savedSearchText =
             savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
         handler.removeCallbacks(searchRunnable)
-        if (binding.etSearch.text.isNotEmpty()) {
+        if (binding.etSearch.text.isNotEmpty() && onRestoreError.isEmpty()) {
             binding.rvTrack.visible()
+        } else if (binding.etSearch.text.isNotEmpty() && onRestoreError.isNotEmpty()) {
+            showError(onRestoreError)
+            onRestoreError = EMPTY_STRING
         }
     }
 
