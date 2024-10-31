@@ -81,7 +81,7 @@ class SearchActivity : AppCompatActivity() {
         binding.iwClear.setOnClickListener {
             viewModel.clearTrackList()
             binding.etSearch.setText(EMPTY_STRING)
-            binding.etSearch.hideKeyboard()
+            binding.activitySearch.hideKeyboard()
         }
 
         binding.btnClearHistory.setOnClickListener {
