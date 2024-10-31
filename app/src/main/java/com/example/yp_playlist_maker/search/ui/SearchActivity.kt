@@ -42,18 +42,19 @@ class SearchActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
         setSearchActivityObservers()
 
-        adapter.data = viewModel.getTrackList()
-
         // RecyclerView для списка песен
         binding.rvTrack.layoutManager = LinearLayoutManager(this)
         binding.rvTrack.adapter = adapter
 
-        viewModel.getTrackHistory(adapter)
+        viewModel.getTrackHistory()
 
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
+            Log.d("onFocus", "${viewModel.getTrackList().isEmpty()}")
             if (hasFocus && binding.etSearch.text.isEmpty() && viewModel.getTrackList().isNotEmpty()) {
+                Log.d("onFocus", "Search history: Visible")
                 enableSearchHistoryVisibility(true)
             } else {
+                Log.d("onFocus", "Search history: Invisible")
                 enableSearchHistoryVisibility(false)
             }
         }
@@ -80,13 +81,13 @@ class SearchActivity : AppCompatActivity() {
 
         // Очищаем строку и список песен при нажатии на кнопку
         binding.iwClear.setOnClickListener {
-            viewModel.clearTrackList(adapter)
+            viewModel.clearTrackList()
             binding.etSearch.setText(EMPTY_STRING)
-            binding.activitySearch.hideKeyboard()
+            binding.etSearch.hideKeyboard()
         }
 
         binding.btnClearHistory.setOnClickListener {
-            viewModel.clearHistory(adapter)
+            viewModel.clearHistory()
             enableSearchHistoryVisibility(false)
         }
 
@@ -107,8 +108,7 @@ class SearchActivity : AppCompatActivity() {
                 savedSearchText = binding.etSearch.text.toString()
                 enableSearchHistoryVisibility(false)
                 if (binding.etSearch.text.isEmpty() && viewModel.getTrackHistoryList().isNotEmpty()) {
-                    viewModel.updateTrackList(adapter)
-                    Log.d("onTextChanged", "updated")
+                    viewModel.updateTrackList()
                     enableSearchHistoryVisibility(true)
                 }
                 if (binding.etSearch.text.isEmpty()) {
@@ -120,7 +120,9 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                //
+                if (binding.etSearch.text.isEmpty()) {
+                    viewModel.clearTrackList()
+                }
             }
         }
         binding.etSearch.addTextChangedListener(simpleTextWatcher)
@@ -155,6 +157,11 @@ class SearchActivity : AppCompatActivity() {
     private fun setSearchActivityObservers() {
         viewModel.getSearchStatus().observe(this) { searchStatus ->
             handleSearchStatus(searchStatus)
+        }
+
+        viewModel.getTrackListLiveData().observe(this) { trackListLiveData ->
+            adapter.data = trackListLiveData
+            adapter.notifyDataSetChanged()
         }
     }
 
@@ -194,11 +201,14 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         savedSearchText =
             savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
+
+        // binding.rvTrack.visible()
+
     }
 
     // Поиск песен
     private fun search() {
-        viewModel.search(binding.etSearch.text.toString(), adapter)
+        viewModel.search(binding.etSearch.text.toString())
     }
 
     private fun showError(error: String) {
@@ -256,7 +266,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (updateTrackHistory) {
-            viewModel.updateTrackList(adapter)
+            viewModel.updateTrackList()
             updateTrackHistory = false
         }
     }

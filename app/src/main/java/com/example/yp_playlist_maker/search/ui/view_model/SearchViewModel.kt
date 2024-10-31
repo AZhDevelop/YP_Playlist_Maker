@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.example.yp_playlist_maker.search.domain.api.SearchHistoryInteractor
 import com.example.yp_playlist_maker.search.domain.api.TrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.search.ui.TrackAdapter
 
 class SearchViewModel(
     private val searchTrackService: TrackInteractor,
@@ -18,6 +17,8 @@ class SearchViewModel(
     private val handler = Handler(Looper.getMainLooper())
     private val trackList: ArrayList<Track> = arrayListOf()
     private val trackHistoryList: ArrayList<Track> = arrayListOf()
+    private val trackListData = MutableLiveData<ArrayList<Track>>()
+    fun getTrackListLiveData(): LiveData<ArrayList<Track>> = trackListData
 
     fun getTrackList() : ArrayList<Track> {
         return trackList
@@ -27,32 +28,32 @@ class SearchViewModel(
         return trackHistoryList
     }
 
-    fun getTrackHistory(adapter: TrackAdapter) {
+    fun getTrackHistory() {
         val trackHistory = searchHistoryService.getHistory()
         if (trackHistory.isNotEmpty()) {
             trackList.clear()
             trackHistoryList.clear()
             trackList.addAll(trackHistory)
             trackHistoryList.addAll(trackHistory)
-            adapter.notifyDataSetChanged()
+            trackListData.value = trackList
         }
     }
 
-    fun clearTrackList(adapter: TrackAdapter) {
+    fun clearTrackList() {
         trackList.clear()
-        adapter.notifyDataSetChanged()
+        trackListData.value?.clear()
     }
 
-    fun updateTrackList(adapter: TrackAdapter) {
+    fun updateTrackList() {
         trackList.clear()
         trackList.addAll(trackHistoryList)
-        adapter.notifyDataSetChanged()
+        trackListData.value = trackList
     }
 
     private val searchStatus = MutableLiveData<String>()
     fun getSearchStatus(): LiveData<String> = searchStatus
 
-    fun search(expression: String, adapter: TrackAdapter) {
+    fun search(expression: String) {
 
         searchStatus.value = LOADING
 
@@ -62,7 +63,7 @@ class SearchViewModel(
                     if (foundTrack != null && errorMessage.isNullOrEmpty()) {
                         trackList.clear()
                         trackList.addAll(foundTrack)
-                        adapter.notifyDataSetChanged()
+                        trackListData.value = trackList
                         searchStatus.value = SUCCESS
                     } else if (errorMessage == SEARCH_ERROR) {
                         searchStatus.value = SEARCH_ERROR
@@ -75,11 +76,11 @@ class SearchViewModel(
     }
 
     // Работа с историей
-    fun clearHistory(adapter: TrackAdapter) {
+    fun clearHistory() {
         searchHistoryService.clearHistory()
         trackList.clear()
         trackHistoryList.clear()
-        adapter.notifyDataSetChanged()
+        trackListData.value?.clear()
     }
 
     fun saveClickedTrack(track: Track) {
