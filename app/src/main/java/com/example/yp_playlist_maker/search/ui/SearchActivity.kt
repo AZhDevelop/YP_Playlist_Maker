@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +26,7 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var binding: ActivitySearchBinding
+    private lateinit var textWatcher: TextWatcher
     private var savedSearchText: String = EMPTY_STRING
     private val adapter = TrackAdapter()
     private var updateTrackHistory: Boolean = false
@@ -38,14 +38,16 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         setSearchActivityViews()
+        setRecyclerView()
+
         viewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
         setSearchActivityObservers()
 
-        // RecyclerView для списка песен
-        binding.rvTrack.layoutManager = LinearLayoutManager(this)
-        binding.rvTrack.adapter = adapter
+        textWatcher = setTextWatcher()
 
+        binding.etSearch.addTextChangedListener(textWatcher)
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.etSearch.text.isEmpty() && viewModel.getTrackList().isNotEmpty()) {
                 enableSearchHistoryVisibility(true)
@@ -86,6 +88,38 @@ class SearchActivity : AppCompatActivity() {
             enableSearchHistoryVisibility(false)
         }
 
+        adapter.onTrackClick = {
+            if (clickDebounce()) {
+                viewModel.saveClickedTrack(it)
+                val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
+                displayAudioPlayer.apply {
+                    putExtra(AudioPlayerActivity.INTENT_PUTTED_TRACK, it)
+                }
+                startActivity(displayAudioPlayer)
+                if (binding.etSearch.text.isEmpty()) {
+                    updateTrackHistory = true
+                }
+            }
+        }
+    }
+
+    private fun setSearchActivityViews() {
+        binding.apply {
+            iwClear.invisible()
+            placeholder.gone()
+            btnReload.gone()
+            btnClearHistory.gone()
+            tvSearchHistory.gone()
+            rvTrack.gone()
+        }
+    }
+
+    private fun setRecyclerView() {
+        binding.rvTrack.layoutManager = LinearLayoutManager(this)
+        binding.rvTrack.adapter = adapter
+    }
+
+    private fun setTextWatcher() : TextWatcher {
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 //
@@ -117,32 +151,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        binding.etSearch.addTextChangedListener(simpleTextWatcher)
-
-        adapter.onTrackClick = {
-            if (clickDebounce()) {
-                viewModel.saveClickedTrack(it)
-                val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
-                displayAudioPlayer.apply {
-                    putExtra(AudioPlayerActivity.INTENT_PUTTED_TRACK, it)
-                }
-                startActivity(displayAudioPlayer)
-                if (binding.etSearch.text.isEmpty()) {
-                    updateTrackHistory = true
-                }
-            }
-        }
-    }
-
-    private fun setSearchActivityViews() {
-        binding.apply {
-            iwClear.invisible()
-            placeholder.gone()
-            btnReload.gone()
-            btnClearHistory.gone()
-            tvSearchHistory.gone()
-            rvTrack.gone()
-        }
+        return simpleTextWatcher
     }
 
     // Инициализация наблюдателей viewModel
@@ -189,7 +198,6 @@ class SearchActivity : AppCompatActivity() {
         if (binding.etSearch.text.isNotEmpty()) {
             binding.rvTrack.visible()
         }
-
     }
 
     // Поиск песен
