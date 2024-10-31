@@ -2,6 +2,7 @@ package com.example.yp_playlist_maker.search.ui.view_model
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,6 +30,7 @@ class SearchViewModel(
     }
 
     fun getTrackHistory() {
+        Log.d("onFocus", "getTrackHistory")
         val trackHistory = searchHistoryService.getHistory()
         if (trackHistory.isNotEmpty()) {
             trackList.clear()
@@ -37,6 +39,10 @@ class SearchViewModel(
             trackHistoryList.addAll(trackHistory)
             trackListData.value = trackList
         }
+    }
+
+    init {
+        getTrackHistory()
     }
 
     fun clearTrackList() {

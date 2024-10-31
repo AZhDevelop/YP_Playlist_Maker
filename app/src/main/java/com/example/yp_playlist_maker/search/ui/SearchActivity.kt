@@ -46,15 +46,10 @@ class SearchActivity : AppCompatActivity() {
         binding.rvTrack.layoutManager = LinearLayoutManager(this)
         binding.rvTrack.adapter = adapter
 
-        viewModel.getTrackHistory()
-
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
-            Log.d("onFocus", "${viewModel.getTrackList().isEmpty()}")
             if (hasFocus && binding.etSearch.text.isEmpty() && viewModel.getTrackList().isNotEmpty()) {
-                Log.d("onFocus", "Search history: Visible")
                 enableSearchHistoryVisibility(true)
             } else {
-                Log.d("onFocus", "Search history: Invisible")
                 enableSearchHistoryVisibility(false)
             }
         }
@@ -91,13 +86,6 @@ class SearchActivity : AppCompatActivity() {
             enableSearchHistoryVisibility(false)
         }
 
-        // Проверяем сохраненное состояние текста и востанавллиевам, если что-то сохранено
-        if (savedInstanceState != null) {
-            savedSearchText =
-                savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
-            binding.etSearch.setText(savedSearchText)
-        }
-
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 //
@@ -122,9 +110,13 @@ class SearchActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 if (binding.etSearch.text.isEmpty()) {
                     viewModel.clearTrackList()
+                    if (viewModel.getTrackHistoryList().isNotEmpty()) {
+                        viewModel.getTrackHistory()
+                    }
                 }
             }
         }
+
         binding.etSearch.addTextChangedListener(simpleTextWatcher)
 
         adapter.onTrackClick = {
@@ -189,20 +181,14 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    // Сохранение состояние текста
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.apply {
-            putString(getString(R.string.saved_text), savedSearchText)
-        }
-    }
-
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         savedSearchText =
             savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
-
-        // binding.rvTrack.visible()
+        handler.removeCallbacks(searchRunnable)
+        if (binding.etSearch.text.isNotEmpty()) {
+            binding.rvTrack.visible()
+        }
 
     }
 
