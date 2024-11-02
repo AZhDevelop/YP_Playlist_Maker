@@ -234,15 +234,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun enableSearchHistoryVisibility(enabled: Boolean) {
         binding.apply {
-            if (enabled) {
-                tvSearchHistory.visible()
-                btnClearHistory.visible()
-                rvTrack.visible()
-            } else {
-                tvSearchHistory.gone()
-                btnClearHistory.gone()
-                rvTrack.gone()
-            }
+            tvSearchHistory.isVisible = enabled
+            btnClearHistory.isVisible = enabled
+            rvTrack.isVisible = enabled
         }
     }
 
