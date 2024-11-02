@@ -35,17 +35,17 @@ class SettingsActivity : AppCompatActivity() {
 
         // Поделиться приложением
         binding.flShare.setOnClickListener {
-            viewModel.share()
+            viewModel.share(this)
         }
 
         // Написать в поддержку
         binding.flContactSupport.setOnClickListener {
-            viewModel.contact()
+            viewModel.contact(this)
         }
 
         // Лицензионное соглашение
         binding.flLicenseAgreement.setOnClickListener {
-            viewModel.getLicenseAgreement()
+            viewModel.getLicenseAgreement(this)
         }
 
     }
