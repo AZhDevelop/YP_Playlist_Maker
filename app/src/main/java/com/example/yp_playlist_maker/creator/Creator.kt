@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.creator
 
 import android.content.Context
+import android.net.ConnectivityManager
 import com.example.yp_playlist_maker.settings.data.impl.AppThemeImpl
 import com.example.yp_playlist_maker.player.data.impl.PlayTrackRepositoryImpl
 import com.example.yp_playlist_maker.search.data.impl.SearchHistoryRepositoryImpl
@@ -34,9 +35,11 @@ import com.example.yp_playlist_maker.sharing.domain.impl.ShareAppInteractorImpl
 object Creator {
 
     private lateinit var appContext: Context
+    private lateinit var connectivityManager: ConnectivityManager
 
     fun init(context: Context) {
         appContext = context.applicationContext
+        connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
     // Тема приложения
@@ -50,7 +53,7 @@ object Creator {
 
     // Поиск трека, работа с сетью
     private fun getTrackRepository() : TrackRepository {
-        return TrackRepositoryImpl(RetrofitNetworkClient(appContext))
+        return TrackRepositoryImpl(RetrofitNetworkClient(connectivityManager))
     }
 
     fun provideTrackInteractor() : TrackInteractor {
