@@ -1,8 +1,8 @@
 package com.example.yp_playlist_maker.search.data.dto
 
 data class TrackDto(
-    var trackName: String,
-    var artistName: String,
+    val trackName: String,
+    val artistName: String,
     val trackTimeMillis: String,
     val artworkUrl100: String,
     val collectionName: String,
