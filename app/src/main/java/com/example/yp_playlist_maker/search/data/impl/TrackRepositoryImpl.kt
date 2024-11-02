@@ -1,6 +1,5 @@
 package com.example.yp_playlist_maker.search.data.impl
 
-import android.util.Log
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchRequest
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchResponse
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
@@ -19,7 +18,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 }
                 200 -> {
                     val responseData =
-                        Resource.Success((response as TrackSearchResponse).results.map {
+                        Resource.Success((response).results.map {
                             Track(
                                 it.trackName,
                                 it.artistName,
