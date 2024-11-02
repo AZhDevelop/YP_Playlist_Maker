@@ -4,10 +4,11 @@ import com.example.yp_playlist_maker.search.domain.models.Track
 
 interface TrackInteractor {
 
-    fun searchTrack(expression: String, consumer: TrackConsumer)
-
-    interface TrackConsumer {
-        fun consume(foundTrack: List<Track>?, errorMessage: String?)
+    sealed class TrackResult {
+        data class Success(val tracks: List<Track>) : TrackResult()
+        data class Error(val message: String) : TrackResult()
     }
+
+    fun searchTrack(expression: String, consumer: (TrackResult) -> Unit)
 
 }

@@ -63,22 +63,25 @@ class SearchViewModel(
 
         searchStatus.value = LOADING
 
-        searchTrackService.searchTrack(expression, object : TrackInteractor.TrackConsumer {
-            override fun consume(foundTrack: List<Track>?, errorMessage: String?) {
-                handler.post {
-                    if (foundTrack != null && errorMessage.isNullOrEmpty()) {
+        searchTrackService.searchTrack(expression) { result ->
+            handler.post {
+                when (result) {
+                    is TrackInteractor.TrackResult.Success -> {
                         trackList.clear()
-                        trackList.addAll(foundTrack)
+                        trackList.addAll(result.tracks)
                         trackListData.value = trackList
                         searchStatus.value = SUCCESS
-                    } else if (errorMessage == SEARCH_ERROR) {
-                        searchStatus.value = SEARCH_ERROR
-                    } else if (errorMessage == CONNECTION_ERROR) {
-                        searchStatus.value = CONNECTION_ERROR
+                    }
+                    is TrackInteractor.TrackResult.Error -> {
+                        if (result.message == SEARCH_ERROR) {
+                            searchStatus.value = SEARCH_ERROR
+                        } else if (result.message == CONNECTION_ERROR) {
+                            searchStatus.value = CONNECTION_ERROR
+                        }
                     }
                 }
             }
-        })
+        }
     }
 
     // Работа с историей
