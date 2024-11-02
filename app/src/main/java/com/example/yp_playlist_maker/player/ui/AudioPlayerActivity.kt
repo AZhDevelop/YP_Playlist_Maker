@@ -12,7 +12,6 @@ import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModelFactory
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.settings.ui.gone
-import com.example.yp_playlist_maker.util.Converter
 
 class AudioPlayerActivity : AppCompatActivity() {
 
@@ -27,12 +26,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         val getTrackExtra =
             IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
 
-        viewModel = ViewModelProvider(this, AudioPlayerViewModelFactory())[AudioPlayerViewModel::class.java]
-
-        getTrackExtra?.let { track ->
-            viewModel.preparePlayer(track.previewUrl)
-            fillTrackData(track)
-        }
+        viewModel = ViewModelProvider(this, AudioPlayerViewModelFactory(getTrackExtra))[AudioPlayerViewModel::class.java]
+        viewModel.preparePlayer()
 
         setupPlayerObservers()
 
@@ -50,7 +45,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.apply {
             trackName.text = track.trackName
             artistName.text = track.artistName
-            durationValue.text = Converter.convertMillis((track.trackTimeMillis))
+            durationValue.text = track.trackTimeMillis
             if (track.collectionName.isEmpty()) {
                 albumText.gone()
                 albumValue.gone()
@@ -58,8 +53,6 @@ class AudioPlayerActivity : AppCompatActivity() {
                 albumValue.text = track.collectionName
             }
             yearValue.text = track.releaseDate
-                .replaceAfter(DASH, EMPTY_STRING)
-                .replace(DASH, EMPTY_STRING)
             genreValue.text = track.primaryGenreName
             countryValue.text = track.country
             loadTrackImage(track.artworkUrl100)
@@ -68,9 +61,9 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun loadTrackImage(artworkUrl100: String) {
         Glide.with(this)
-            .load(Converter.convertUrl(artworkUrl100))
+            .load(artworkUrl100)
             .centerCrop()
-            .transform(RoundedCorners(Converter.dpToPx(PLAYER_IMAGE_RADIUS)))
+            .transform(RoundedCorners(viewModel.getRoundedCorners(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)
             .into(binding.trackImage)
     }
@@ -82,6 +75,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         viewModel.getCurrentTime().observe(this) { currentTime ->
             binding.playTime.text = currentTime
+        }
+
+        viewModel.getTrackData().observe(this) { trackData ->
+            fillTrackData(trackData)
         }
     }
 
@@ -107,8 +104,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val ALPHA_25 = 0.25F
         private const val DEFAULT_TIME = "00:00"
         private const val ALPHA_100 = 1F
-        private const val EMPTY_STRING = ""
-        private const val DASH = "-"
         private const val LOADING = "Loading"
         private const val PREPARED = "Prepared"
         private const val COMPLETED = "Completed"
