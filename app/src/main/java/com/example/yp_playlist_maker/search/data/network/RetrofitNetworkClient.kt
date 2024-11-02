@@ -19,15 +19,22 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
     private val trackService: TrackApi = retrofit.create(TrackApi::class.java)
 
     override fun doRequest(dto: Any): Response {
+        if (!waitForConnection()) {
+            return Response().apply { resultCode = CONNECTION_ERROR }
+        }
         if (!isConnected()) {
             return Response().apply { resultCode = CONNECTION_ERROR }
         }
-        if (dto is TrackSearchRequest) {
-            val response = trackService.searchTrack(dto.expression).execute()
-            val body = response.body() ?: Response()
-            return body.apply { resultCode = response.code() }
-        } else {
-            return Response().apply { resultCode = ERROR_400 }
+        try {
+            if (dto is TrackSearchRequest) {
+                val response = trackService.searchTrack(dto.expression).execute()
+                val body = response.body() ?: Response()
+                return body.apply { resultCode = response.code() }
+            } else {
+                return Response().apply { resultCode = ERROR_400 }
+            }
+        } catch (e: Exception) {
+            return Response().apply { resultCode = CONNECTION_ERROR }
         }
     }
 
@@ -45,9 +52,21 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         return false
     }
 
+    private fun waitForConnection(): Boolean {
+        repeat(RETRIES) {
+            if (isConnected()) {
+                return true
+            }
+            Thread.sleep(DELAY_MS)
+        }
+        return false
+    }
+
     companion object {
         private const val CONNECTION_ERROR = -1
         private const val ERROR_400 = 400
+        private const val RETRIES = 3
+        private const val DELAY_MS: Long = 1000
     }
 
 }

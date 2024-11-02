@@ -21,6 +21,7 @@ class PlayTrackRepositoryImpl : PlayTrackRepository {
         onComplete: () -> Unit,
         onTimeUpdate: (String) -> Unit
     ) {
+        mediaPlayer.reset()
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {

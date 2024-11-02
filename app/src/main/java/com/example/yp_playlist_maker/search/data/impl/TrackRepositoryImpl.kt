@@ -49,7 +49,6 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
     companion object {
         private const val CONNECTION_ERROR =
             "Проблемы со связью\nЗагрузка не удалась\nПроверьте подключение к интернету"
-        private const val SERVER_ERROR = "Ошибка сервера"
         private const val SEARCH_ERROR = "Ничего не нашлось"
     }
 }
