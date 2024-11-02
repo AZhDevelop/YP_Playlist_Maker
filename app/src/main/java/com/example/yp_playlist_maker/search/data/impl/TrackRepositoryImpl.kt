@@ -12,37 +12,38 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
 
     override fun searchTrack(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
-        Log.d("response", "${response.resultCode}")
-        when (response.resultCode) {
-            -1 -> {
-                return Resource.Error(CONNECTION_ERROR)
-            }
-            200 -> {
-                val responseData = Resource.Success((response as TrackSearchResponse).results.mapNotNull {
-                    try {
-                        Track(
-                            it.trackName,
-                            it.artistName,
-                            it.trackTimeMillis,
-                            it.artworkUrl100,
-                            it.collectionName,
-                            it.releaseDate,
-                            it.primaryGenreName,
-                            it.country,
-                            it.previewUrl
-                        )
-                    } catch (e: Exception) {
-                        null
-                    }
-                })
-                return if (responseData.data.isNullOrEmpty()) {
-                    Resource.Error(SEARCH_ERROR)
-                } else {
-                    responseData
+        if (response is TrackSearchResponse) {
+            when (response.resultCode) {
+                -1 -> {
+                    return Resource.Error(CONNECTION_ERROR)
                 }
-            } else -> {
-                return Resource.Error(SEARCH_ERROR)
+                200 -> {
+                    val responseData =
+                        Resource.Success((response as TrackSearchResponse).results.map {
+                            Track(
+                                it.trackName,
+                                it.artistName,
+                                it.trackTimeMillis,
+                                it.artworkUrl100,
+                                it.collectionName,
+                                it.releaseDate,
+                                it.primaryGenreName,
+                                it.country,
+                                it.previewUrl
+                            )
+                        })
+                    return if (responseData.data.isNullOrEmpty()) {
+                        Resource.Error(SEARCH_ERROR)
+                    } else {
+                        responseData
+                    }
+                }
+                else -> {
+                    return Resource.Error(SEARCH_ERROR)
+                }
             }
+        } else {
+            return Resource.Error(SEARCH_ERROR)
         }
     }
 

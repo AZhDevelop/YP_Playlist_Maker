@@ -20,7 +20,7 @@ import com.example.yp_playlist_maker.settings.data.impl.AppThemeImpl
 import com.example.yp_playlist_maker.settings.domain.api.AppThemeInteractor
 import com.example.yp_playlist_maker.settings.domain.api.AppThemeRepository
 import com.example.yp_playlist_maker.settings.domain.impl.AppThemeInteractorImpl
-import com.example.yp_playlist_maker.util.Constants.TRACK_LIST_KEY
+import com.example.yp_playlist_maker.util.Constants
 
 object Creator {
 
@@ -31,7 +31,7 @@ object Creator {
     fun init(context: Context) {
         appContext = context.applicationContext
         connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        sharedPreferences = context.getSharedPreferences(TRACK_LIST_KEY, Context.MODE_PRIVATE)
+        sharedPreferences = context.getSharedPreferences(Constants.TRACK_LIST_KEY, Context.MODE_PRIVATE)
     }
 
     // Тема приложения
