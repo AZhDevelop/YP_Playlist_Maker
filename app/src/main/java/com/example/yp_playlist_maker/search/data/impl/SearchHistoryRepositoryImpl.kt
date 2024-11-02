@@ -1,14 +1,13 @@
 package com.example.yp_playlist_maker.search.data.impl
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.yp_playlist_maker.search.domain.api.SearchHistoryRepository
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.google.gson.Gson
 
-class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
+class SearchHistoryRepositoryImpl(private val sharedPreferences: SharedPreferences) : SearchHistoryRepository {
 
-    private val sharedPreferences =
-        context.getSharedPreferences(TRACK_LIST_KEY, Context.MODE_PRIVATE)
     private val gson: Gson = Gson()
 
     override fun saveClickedTrack(track: Track, trackHistoryList: ArrayList<Track>) {
@@ -45,7 +44,6 @@ class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
     }
 
     companion object {
-        private const val TRACK_LIST_KEY: String = "track_list_key"
         private const val TRACK_KEY: String = "track_key"
         private const val EMPTY_STRING: String = ""
         private const val TRACK_HISTORY_SIZE: Int = 10

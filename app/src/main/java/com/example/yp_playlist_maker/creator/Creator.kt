@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.creator
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import com.example.yp_playlist_maker.player.data.impl.PlayTrackRepositoryImpl
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
@@ -19,15 +20,18 @@ import com.example.yp_playlist_maker.settings.data.impl.AppThemeImpl
 import com.example.yp_playlist_maker.settings.domain.api.AppThemeInteractor
 import com.example.yp_playlist_maker.settings.domain.api.AppThemeRepository
 import com.example.yp_playlist_maker.settings.domain.impl.AppThemeInteractorImpl
+import com.example.yp_playlist_maker.util.Constants.TRACK_LIST_KEY
 
 object Creator {
 
     private lateinit var appContext: Context
     private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var sharedPreferences: SharedPreferences
 
     fun init(context: Context) {
         appContext = context.applicationContext
         connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        sharedPreferences = context.getSharedPreferences(TRACK_LIST_KEY, Context.MODE_PRIVATE)
     }
 
     // Тема приложения
@@ -50,7 +54,7 @@ object Creator {
 
     // История поиска треков
     private fun getSearchHistoryRepository() : SearchHistoryRepository {
-        return SearchHistoryRepositoryImpl(appContext)
+        return SearchHistoryRepositoryImpl(sharedPreferences)
     }
 
     fun provideSeacrhHistoryInteractor() : SearchHistoryInteractor {
