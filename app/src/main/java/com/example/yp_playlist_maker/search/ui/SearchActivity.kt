@@ -21,6 +21,7 @@ import com.example.yp_playlist_maker.settings.ui.gone
 import com.example.yp_playlist_maker.settings.ui.hideKeyboard
 import com.example.yp_playlist_maker.settings.ui.invisible
 import com.example.yp_playlist_maker.settings.ui.visible
+import com.example.yp_playlist_maker.util.Constants
 
 class SearchActivity : AppCompatActivity() {
 
@@ -168,22 +169,22 @@ class SearchActivity : AppCompatActivity() {
     }
 
     // Наблюдатель состояние запроса поиска
-    private fun handleSearchStatus(searchStatus: String) {
+    private fun handleSearchStatus(searchStatus: Constants.SearchStatus) {
         when (searchStatus) {
-            LOADING -> {
+            Constants.SearchStatus.LOADING -> {
                 binding.progressBar.visible()
             }
-            SUCCESS -> {
+            Constants.SearchStatus.SUCCESS -> {
                 binding.progressBar.gone()
                 binding.rvTrack.visible()
             }
-            SEARCH_ERROR -> {
-                showError(SEARCH_ERROR)
-                onRestoreError = SEARCH_ERROR
+            Constants.SearchStatus.SEARCH_ERROR -> {
+                showError(SEARCH_ERROR_MESSAGE)
+                onRestoreError = SEARCH_ERROR_MESSAGE
             }
-            CONNECTION_ERROR -> {
-                showError(CONNECTION_ERROR)
-                onRestoreError = CONNECTION_ERROR
+            Constants.SearchStatus.CONNECTION_ERROR -> {
+                showError(CONNECTION_ERROR_MESSAGE)
+                onRestoreError = CONNECTION_ERROR_MESSAGE
             }
         }
     }
@@ -219,13 +220,13 @@ class SearchActivity : AppCompatActivity() {
         binding.progressBar.gone()
         binding.placeholder.visible()
         when (error) {
-            SEARCH_ERROR -> {
-                binding.placeholderMessage.text = SEARCH_ERROR
+            SEARCH_ERROR_MESSAGE -> {
+                binding.placeholderMessage.text = SEARCH_ERROR_MESSAGE
                 binding.imgSearchError.setImageResource(R.drawable.img_search_error)
                 binding.btnReload.gone()
             }
-            CONNECTION_ERROR -> {
-                binding.placeholderMessage.text = CONNECTION_ERROR
+            CONNECTION_ERROR_MESSAGE -> {
+                binding.placeholderMessage.text = CONNECTION_ERROR_MESSAGE
                 binding.imgSearchError.setImageResource(R.drawable.img_connection_error)
                 binding.btnReload.visible()
             }
@@ -274,10 +275,8 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""
 
-        private const val LOADING = "Loading"
-        private const val SUCCESS = "Success"
-        private const val CONNECTION_ERROR =
+        private const val CONNECTION_ERROR_MESSAGE =
             "Проблемы со связью\nЗагрузка не удалась\nПроверьте подключение к интернету"
-        private const val SEARCH_ERROR = "Ничего не нашлось"
+        private const val SEARCH_ERROR_MESSAGE = "Ничего не нашлось"
     }
 }

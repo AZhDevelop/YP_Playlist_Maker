@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.example.yp_playlist_maker.search.domain.api.SearchHistoryInteractor
 import com.example.yp_playlist_maker.search.domain.api.TrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
+import com.example.yp_playlist_maker.util.Constants
 
 class SearchViewModel(
     private val searchTrackService: TrackInteractor,
@@ -56,12 +57,12 @@ class SearchViewModel(
         trackListData.value = trackList
     }
 
-    private val searchStatus = MutableLiveData<String>()
-    fun getSearchStatus(): LiveData<String> = searchStatus
+    private val searchStatus = MutableLiveData<Constants.SearchStatus>()
+    fun getSearchStatus(): LiveData<Constants.SearchStatus> = searchStatus
 
     fun search(expression: String) {
 
-        searchStatus.value = LOADING
+        searchStatus.value = Constants.SearchStatus.LOADING
 
         searchTrackService.searchTrack(expression) { result ->
             handler.post {
@@ -70,13 +71,13 @@ class SearchViewModel(
                         trackList.clear()
                         trackList.addAll(result.tracks)
                         trackListData.value = trackList
-                        searchStatus.value = SUCCESS
+                        searchStatus.value = Constants.SearchStatus.SUCCESS
                     }
                     is TrackInteractor.TrackResult.Error -> {
-                        if (result.message == SEARCH_ERROR) {
-                            searchStatus.value = SEARCH_ERROR
-                        } else if (result.message == CONNECTION_ERROR) {
-                            searchStatus.value = CONNECTION_ERROR
+                        if (result.message == Constants.SearchStatus.SEARCH_ERROR) {
+                            searchStatus.value = Constants.SearchStatus.SEARCH_ERROR
+                        } else if (result.message == Constants.SearchStatus.CONNECTION_ERROR) {
+                            searchStatus.value = Constants.SearchStatus.CONNECTION_ERROR
                         }
                     }
                 }
@@ -94,14 +95,6 @@ class SearchViewModel(
 
     fun saveClickedTrack(track: Track) {
         searchHistoryService.saveClickedTrack(track, trackHistoryList)
-    }
-
-    companion object {
-        private const val LOADING = "Loading"
-        private const val SUCCESS = "Success"
-        private const val CONNECTION_ERROR =
-            "Проблемы со связью\nЗагрузка не удалась\nПроверьте подключение к интернету"
-        private const val SEARCH_ERROR = "Ничего не нашлось"
     }
 
 }

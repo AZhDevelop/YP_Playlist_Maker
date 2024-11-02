@@ -1,11 +1,11 @@
 package com.example.yp_playlist_maker.search.data.impl
 
-import android.util.Log
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchRequest
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchResponse
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
 import com.example.yp_playlist_maker.search.domain.api.TrackRepository
 import com.example.yp_playlist_maker.search.domain.models.Track
+import com.example.yp_playlist_maker.util.Constants
 import com.example.yp_playlist_maker.util.Resource
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
@@ -14,7 +14,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
         val response = networkClient.doRequest(TrackSearchRequest(expression))
         when (response.resultCode) {
             -1 -> {
-                return Resource.Error(CONNECTION_ERROR)
+                return Resource.Error(Constants.SearchStatus.CONNECTION_ERROR)
             }
             200 -> {
                 val responseData =
@@ -32,20 +32,14 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                         )
                     })
                 return if (responseData.data.isEmpty()) {
-                    Resource.Error(SEARCH_ERROR)
+                    Resource.Error(Constants.SearchStatus.SEARCH_ERROR)
                 } else {
                     responseData
                 }
             }
             else -> {
-                return Resource.Error(SEARCH_ERROR)
+                return Resource.Error(Constants.SearchStatus.SEARCH_ERROR)
             }
         }
-    }
-
-    companion object {
-        private const val CONNECTION_ERROR =
-            "Проблемы со связью\nЗагрузка не удалась\nПроверьте подключение к интернету"
-        private const val SEARCH_ERROR = "Ничего не нашлось"
     }
 }
