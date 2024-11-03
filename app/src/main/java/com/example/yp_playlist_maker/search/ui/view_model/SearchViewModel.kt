@@ -17,16 +17,16 @@ class SearchViewModel(
 ): ViewModel() {
 
     private val handler = Handler(Looper.getMainLooper())
-    private val trackList: ArrayList<Track> = arrayListOf()
-    private val trackHistoryList: ArrayList<Track> = arrayListOf()
-    private val trackListData = MutableLiveData<ArrayList<Track>>()
-    fun getTrackListLiveData(): LiveData<ArrayList<Track>> = trackListData
+    private val trackList: MutableList<Track> = mutableListOf()
+    private val trackHistoryList: MutableList<Track> = mutableListOf()
+    private val trackListData = MutableLiveData<MutableList<Track>>()
+    fun getTrackListLiveData(): LiveData<MutableList<Track>> = trackListData
 
-    fun getTrackList() : ArrayList<Track> {
+    fun getTrackList() : List<Track> {
         return trackList
     }
 
-    fun getTrackHistoryList() : ArrayList<Track> {
+    fun getTrackHistoryList() : List<Track> {
         return trackHistoryList
     }
 

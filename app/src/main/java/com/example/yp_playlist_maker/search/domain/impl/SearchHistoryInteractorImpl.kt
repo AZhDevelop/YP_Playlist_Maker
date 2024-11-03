@@ -7,11 +7,11 @@ import com.example.yp_playlist_maker.search.domain.models.Track
 class SearchHistoryInteractorImpl(private val repository: SearchHistoryRepository) :
     SearchHistoryInteractor {
 
-    override fun saveClickedTrack(track: Track, trackHistoryList: ArrayList<Track>) {
+    override fun saveClickedTrack(track: Track, trackHistoryList: MutableList<Track>) {
         repository.saveClickedTrack(track, trackHistoryList)
     }
 
-    override fun getHistory(): ArrayList<Track> {
+    override fun getHistory(): List<Track> {
         return repository.getHistory()
     }
 

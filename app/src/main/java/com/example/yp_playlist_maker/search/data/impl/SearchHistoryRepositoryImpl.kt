@@ -9,7 +9,7 @@ class SearchHistoryRepositoryImpl(private val sharedPreferences: SharedPreferenc
 
     private val gson: Gson = Gson()
 
-    override fun saveClickedTrack(track: Track, trackHistoryList: ArrayList<Track>) {
+    override fun saveClickedTrack(track: Track, trackHistoryList: MutableList<Track>) {
         if (track in trackHistoryList) {
             trackHistoryList.remove(track)
             trackHistoryList.add(ZERO_INDEX, track)
