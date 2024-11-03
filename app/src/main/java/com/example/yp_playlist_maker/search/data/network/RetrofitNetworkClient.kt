@@ -4,6 +4,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.yp_playlist_maker.search.data.dto.Response
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchRequest
+import com.example.yp_playlist_maker.search.data.dto.TrackSearchResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -19,21 +20,25 @@ class RetrofitNetworkClient(private val connectivityManager: ConnectivityManager
 
     override fun doRequest(dto: Any): Response {
         if (!waitForConnection()) {
-            return Response().apply { resultCode = CONNECTION_ERROR }
+            return Response(resultCode = CONNECTION_ERROR_CODE)
         }
         if (!isConnected()) {
-            return Response().apply { resultCode = CONNECTION_ERROR }
+            return Response(resultCode = CONNECTION_ERROR_CODE)
         }
         try {
             if (dto is TrackSearchRequest) {
                 val response = trackService.searchTrack(dto.expression).execute()
-                val body = response.body() ?: Response()
-                return body.apply { resultCode = response.code() }
+                if (response.isSuccessful) {
+                    val results = response.body()?.results ?: emptyList()
+                    return TrackSearchResponse(results, response.code())
+                } else {
+                    return Response(resultCode = response.code())
+                }
             } else {
-                return Response().apply { resultCode = ERROR_400 }
+                return Response(resultCode = EXPRESSION_ERROR_CODE)
             }
         } catch (e: Exception) {
-            return Response().apply { resultCode = CONNECTION_ERROR }
+            return Response(resultCode = CONNECTION_ERROR_CODE)
         }
     }
 
@@ -60,8 +65,8 @@ class RetrofitNetworkClient(private val connectivityManager: ConnectivityManager
     }
 
     companion object {
-        private const val CONNECTION_ERROR = -1
-        private const val ERROR_400 = 400
+        private const val CONNECTION_ERROR_CODE = -1
+        private const val EXPRESSION_ERROR_CODE = 400
         private const val RETRIES = 3
         private const val DELAY_MS: Long = 1000
     }

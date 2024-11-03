@@ -1,5 +1,5 @@
 package com.example.yp_playlist_maker.search.data.dto
 
 class TrackSearchResponse(
-    val results: List<TrackDto>
-) : Response()
+    val results: List<TrackDto>, resultCode: Int
+) : Response(resultCode)

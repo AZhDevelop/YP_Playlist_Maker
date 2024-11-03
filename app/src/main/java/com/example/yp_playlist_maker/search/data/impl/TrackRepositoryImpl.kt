@@ -17,24 +17,27 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 return Resource.Error(Constants.SearchStatus.CONNECTION_ERROR)
             }
             200 -> {
-                val responseData =
-                    Resource.Success((response as TrackSearchResponse).results.map {
-                        Track(
-                            it.trackName,
-                            it.artistName,
-                            it.trackTimeMillis,
-                            it.artworkUrl100,
-                            it.collectionName,
-                            it.releaseDate,
-                            it.primaryGenreName,
-                            it.country,
-                            it.previewUrl
-                        )
-                    })
-                return if (responseData.data.isEmpty()) {
-                    Resource.Error(Constants.SearchStatus.SEARCH_ERROR)
+                if (response is TrackSearchResponse) {
+                    val responseData = Resource.Success((response).results.map {
+                            Track(
+                                it.trackName,
+                                it.artistName,
+                                it.trackTimeMillis,
+                                it.artworkUrl100,
+                                it.collectionName,
+                                it.releaseDate,
+                                it.primaryGenreName,
+                                it.country,
+                                it.previewUrl
+                            )
+                        })
+                    return if (responseData.data.isEmpty()) {
+                        Resource.Error(Constants.SearchStatus.SEARCH_ERROR)
+                    } else {
+                        responseData
+                    }
                 } else {
-                    responseData
+                    return Resource.Error(Constants.SearchStatus.SEARCH_ERROR)
                 }
             }
             else -> {
