@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_search"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -82,31 +83,39 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:id="@+id/placeholder"
-        android:layout_width="@dimen/layout_width_312"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/margin_top_102"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/margin_base_16">
 
-        <ImageView
-            android:id="@+id/img_search_error"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            tools:src="@drawable/image_placeholder" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/placeholderMessage"
-            style="@style/InfoMessage"
-            android:text="@string/nothing_found" />
+            <ImageView
+                android:id="@+id/img_search_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:src="@drawable/image_placeholder" />
 
-        <Button
-            android:id="@+id/btn_reload"
-            style="@style/ReloadButton"
-            android:text="@string/update" />
+            <TextView
+                android:id="@+id/placeholderMessage"
+                style="@style/InfoMessage"
+                android:text="@string/nothing_found" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/btn_reload"
+                style="@style/ReloadButton"
+                android:text="@string/update" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

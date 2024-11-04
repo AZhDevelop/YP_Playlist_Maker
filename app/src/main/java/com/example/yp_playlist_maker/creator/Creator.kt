@@ -1,30 +1,37 @@
 package com.example.yp_playlist_maker.creator
 
 import android.content.Context
-import com.example.yp_playlist_maker.data.impl.AppThemeImpl
-import com.example.yp_playlist_maker.data.impl.PlayTrackRepositoryImpl
-import com.example.yp_playlist_maker.data.impl.SearchHistoryRepositoryImpl
-import com.example.yp_playlist_maker.data.impl.TrackRepositoryImpl
-import com.example.yp_playlist_maker.data.network.RetrofitNetworkClient
-import com.example.yp_playlist_maker.domain.api.interactor.AppThemeInteractor
-import com.example.yp_playlist_maker.domain.api.interactor.PlayTrackInteractor
-import com.example.yp_playlist_maker.domain.api.interactor.SearchHistoryInteractor
-import com.example.yp_playlist_maker.domain.api.interactor.TrackInteractor
-import com.example.yp_playlist_maker.domain.api.repository.AppThemeRepository
-import com.example.yp_playlist_maker.domain.api.repository.PlayTrackRepository
-import com.example.yp_playlist_maker.domain.api.repository.SearchHistoryRepository
-import com.example.yp_playlist_maker.domain.api.repository.TrackRepository
-import com.example.yp_playlist_maker.domain.impl.AppThemeInteractorImpl
-import com.example.yp_playlist_maker.domain.impl.PlayTrackInteractorImpl
-import com.example.yp_playlist_maker.domain.impl.SearchHistoryInteractorImpl
-import com.example.yp_playlist_maker.domain.impl.TrackInteractorImpl
+import android.content.SharedPreferences
+import android.net.ConnectivityManager
+import com.example.yp_playlist_maker.player.data.impl.PlayTrackRepositoryImpl
+import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
+import com.example.yp_playlist_maker.player.domain.api.PlayTrackRepository
+import com.example.yp_playlist_maker.player.domain.impl.PlayTrackInteractorImpl
+import com.example.yp_playlist_maker.search.data.impl.SearchHistoryRepositoryImpl
+import com.example.yp_playlist_maker.search.data.impl.TrackRepositoryImpl
+import com.example.yp_playlist_maker.search.data.network.RetrofitNetworkClient
+import com.example.yp_playlist_maker.search.domain.api.SearchHistoryInteractor
+import com.example.yp_playlist_maker.search.domain.api.SearchHistoryRepository
+import com.example.yp_playlist_maker.search.domain.api.TrackInteractor
+import com.example.yp_playlist_maker.search.domain.api.TrackRepository
+import com.example.yp_playlist_maker.search.domain.impl.SearchHistoryInteractorImpl
+import com.example.yp_playlist_maker.search.domain.impl.TrackInteractorImpl
+import com.example.yp_playlist_maker.settings.data.impl.AppThemeImpl
+import com.example.yp_playlist_maker.settings.domain.api.AppThemeInteractor
+import com.example.yp_playlist_maker.settings.domain.api.AppThemeRepository
+import com.example.yp_playlist_maker.settings.domain.impl.AppThemeInteractorImpl
+import com.example.yp_playlist_maker.util.Constants
 
 object Creator {
 
     private lateinit var appContext: Context
+    private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var sharedPreferences: SharedPreferences
 
     fun init(context: Context) {
         appContext = context.applicationContext
+        connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        sharedPreferences = context.getSharedPreferences(Constants.TRACK_LIST_KEY, Context.MODE_PRIVATE)
     }
 
     // Тема приложения
@@ -38,7 +45,7 @@ object Creator {
 
     // Поиск трека, работа с сетью
     private fun getTrackRepository() : TrackRepository {
-        return TrackRepositoryImpl(RetrofitNetworkClient())
+        return TrackRepositoryImpl(RetrofitNetworkClient(connectivityManager))
     }
 
     fun provideTrackInteractor() : TrackInteractor {
@@ -47,7 +54,7 @@ object Creator {
 
     // История поиска треков
     private fun getSearchHistoryRepository() : SearchHistoryRepository {
-        return SearchHistoryRepositoryImpl(appContext)
+        return SearchHistoryRepositoryImpl(sharedPreferences)
     }
 
     fun provideSeacrhHistoryInteractor() : SearchHistoryInteractor {
