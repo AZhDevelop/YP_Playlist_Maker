@@ -20,6 +20,7 @@ class SearchViewModel(
     private val trackList: MutableList<Track> = mutableListOf()
     private val trackHistoryList: MutableList<Track> = mutableListOf()
     private val trackListData = MutableLiveData<MutableList<Track>>()
+
     fun getTrackListLiveData(): LiveData<MutableList<Track>> = trackListData
 
     fun getTrackList() : List<Track> {
@@ -31,8 +32,8 @@ class SearchViewModel(
     }
 
     fun getTrackHistory() {
-        Log.d("onFocus", "getTrackHistory")
         val trackHistory = searchHistoryService.getHistory()
+        Log.d("log", "${trackHistory.size}")
         if (trackHistory.isNotEmpty()) {
             trackList.clear()
             trackHistoryList.clear()
@@ -95,6 +96,8 @@ class SearchViewModel(
 
     fun saveClickedTrack(track: Track) {
         searchHistoryService.saveClickedTrack(track, trackHistoryList)
+        trackHistoryList.clear()
+        trackHistoryList.addAll(searchHistoryService.updateTrackHistoryList())
     }
 
 }
