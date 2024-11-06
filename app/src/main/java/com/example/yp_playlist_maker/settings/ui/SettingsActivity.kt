@@ -3,6 +3,7 @@ package com.example.yp_playlist_maker.settings.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.yp_playlist_maker.app.App
 import com.example.yp_playlist_maker.databinding.ActivitySettingsBinding
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModelFactory

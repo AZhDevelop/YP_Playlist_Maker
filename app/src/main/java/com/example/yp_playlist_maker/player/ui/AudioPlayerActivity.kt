@@ -11,7 +11,7 @@ import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModelFactory
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.settings.ui.gone
+import com.example.yp_playlist_maker.app.gone
 
 class AudioPlayerActivity : AppCompatActivity() {
 
