@@ -6,7 +6,9 @@ import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Constants
 import com.google.gson.Gson
 
-class SearchHistoryRepositoryImpl(private val sharedPreferences: SharedPreferences) : SearchHistoryRepository {
+class SearchHistoryRepositoryImpl(
+    private val sharedPreferences: SharedPreferences
+) : SearchHistoryRepository {
 
     private val gson: Gson = Gson()
     private val mutableTrackHistoryList: MutableList<Track> = mutableListOf()
