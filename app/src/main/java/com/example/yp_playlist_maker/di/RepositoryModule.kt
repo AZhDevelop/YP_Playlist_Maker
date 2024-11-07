@@ -1,5 +1,7 @@
 package com.example.yp_playlist_maker.di
 
+import com.example.yp_playlist_maker.player.data.impl.PlayTrackRepositoryImpl
+import com.example.yp_playlist_maker.player.domain.api.PlayTrackRepository
 import com.example.yp_playlist_maker.search.data.impl.SearchHistoryRepositoryImpl
 import com.example.yp_playlist_maker.search.data.impl.TrackRepositoryImpl
 import com.example.yp_playlist_maker.search.domain.api.SearchHistoryRepository
@@ -30,6 +32,10 @@ val repositoryModule = module {
         AppThemeImpl(
             sharedPreferences = get(named("appThemeRepository"))
         )
+    }
+
+    single<PlayTrackRepository> {
+        PlayTrackRepositoryImpl()
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.yp_playlist_maker.di
 
+import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
+import com.example.yp_playlist_maker.player.domain.impl.PlayTrackInteractorImpl
 import com.example.yp_playlist_maker.search.domain.api.SearchHistoryInteractor
 import com.example.yp_playlist_maker.search.domain.api.TrackInteractor
 import com.example.yp_playlist_maker.search.domain.impl.SearchHistoryInteractorImpl
@@ -27,6 +29,12 @@ val interactorModule = module {
     //Тема приложения
     single<AppThemeInteractor> {
         AppThemeInteractorImpl(
+            repository = get()
+        )
+    }
+
+    single<PlayTrackInteractor> {
+        PlayTrackInteractorImpl(
             repository = get()
         )
     }

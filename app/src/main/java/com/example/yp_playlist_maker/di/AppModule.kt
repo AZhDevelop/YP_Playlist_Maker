@@ -1,5 +1,6 @@
 package com.example.yp_playlist_maker.di
 
+import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -18,6 +19,12 @@ val appModule = module {
     viewModel<SettingsViewModel> {
         SettingsViewModel(
             appTheme = get()
+        )
+    }
+
+    viewModel<AudioPlayerViewModel> {
+        AudioPlayerViewModel(
+            playTrackService = get()
         )
     }
 
