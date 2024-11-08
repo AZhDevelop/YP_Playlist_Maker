@@ -12,6 +12,7 @@ import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModelFactory
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.app.gone
+import org.koin.android.ext.android.get
 
 class AudioPlayerActivity : AppCompatActivity() {
 
@@ -27,6 +28,8 @@ class AudioPlayerActivity : AppCompatActivity() {
             IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
 
         viewModel = ViewModelProvider(this, AudioPlayerViewModelFactory(getTrackExtra))[AudioPlayerViewModel::class.java]
+
+        viewModel.setTrackData(getTrackExtra)
         viewModel.preparePlayer()
 
         setupPlayerObservers()

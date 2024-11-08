@@ -9,7 +9,6 @@ import com.example.yp_playlist_maker.util.Converter
 
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
-    private val trackExtra: Track?
 ) : ViewModel() {
 
     fun getRoundedCorners(playerImageRadius: Int) : Int {
@@ -19,7 +18,7 @@ class AudioPlayerViewModel(
     private val trackData = MutableLiveData<Track>()
     fun getTrackData(): LiveData<Track> = trackData
 
-    private fun setTrackData() {
+    fun setTrackData(trackExtra: Track?) {
         trackData.value = trackExtra?.let {
             Track(
                 trackName = it.trackName,
@@ -66,10 +65,6 @@ class AudioPlayerViewModel(
         playTrackService.pausePlayer(
             onPause = { audioPlayerStatus.value = PAUSE }
         )
-    }
-
-    init {
-        setTrackData()
     }
 
     override fun onCleared() {

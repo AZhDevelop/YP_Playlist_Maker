@@ -3,6 +3,7 @@ package com.example.yp_playlist_maker.player.data.impl
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -22,7 +23,12 @@ class PlayTrackRepositoryImpl : PlayTrackRepository {
         onTimeUpdate: (String) -> Unit
     ) {
         mediaPlayer.reset()
-        mediaPlayer.setDataSource(url)
+        try {
+            mediaPlayer.setDataSource(url)
+        } catch (e: IllegalStateException) {
+            Log.e("MediaPlayer", "Method setDataSource() вызван в неверном состоянии: ${e.message}")
+        }
+//        mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             onPrepare.invoke()

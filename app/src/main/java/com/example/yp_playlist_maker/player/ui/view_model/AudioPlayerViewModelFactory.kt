@@ -11,6 +11,6 @@ class AudioPlayerViewModelFactory(private val trackExtra: Track?) : ViewModelPro
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return AudioPlayerViewModel(playTrackService, trackExtra) as T
+        return AudioPlayerViewModel(playTrackService) as T
     }
 }
