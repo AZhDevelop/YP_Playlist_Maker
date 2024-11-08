@@ -3,20 +3,18 @@ package com.example.yp_playlist_maker.player.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
-import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModelFactory
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.app.gone
-import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: AudioPlayerViewModel
+    private val viewModel by viewModel<AudioPlayerViewModel>()
     private lateinit var binding: ActivityAudioplayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +24,6 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         val getTrackExtra =
             IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
-
-        viewModel = ViewModelProvider(this, AudioPlayerViewModelFactory(getTrackExtra))[AudioPlayerViewModel::class.java]
 
         viewModel.setTrackData(getTrackExtra)
         viewModel.preparePlayer()
