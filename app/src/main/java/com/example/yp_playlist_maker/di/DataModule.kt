@@ -2,6 +2,7 @@ package com.example.yp_playlist_maker.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
 import com.example.yp_playlist_maker.search.data.network.RetrofitNetworkClient
@@ -41,6 +42,10 @@ val dataModule = module {
             connectivityManager = get(),
             trackApi = get()
         )
+    }
+
+    factory<MediaPlayer> {
+        MediaPlayer()
     }
 
 }

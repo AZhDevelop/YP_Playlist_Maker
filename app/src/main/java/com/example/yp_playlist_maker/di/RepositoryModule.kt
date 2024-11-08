@@ -34,8 +34,10 @@ val repositoryModule = module {
         )
     }
 
-    single<PlayTrackRepository> {
-        PlayTrackRepositoryImpl()
+    factory<PlayTrackRepository> {
+        PlayTrackRepositoryImpl(
+            mediaPlayer = get()
+        )
     }
 
 }

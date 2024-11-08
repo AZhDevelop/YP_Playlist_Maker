@@ -33,7 +33,7 @@ val interactorModule = module {
         )
     }
 
-    single<PlayTrackInteractor> {
+    factory<PlayTrackInteractor> {
         PlayTrackInteractorImpl(
             repository = get()
         )
