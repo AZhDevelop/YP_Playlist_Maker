@@ -6,6 +6,8 @@ object Constants {
     const val EMPTY_STRING: String = ""
     const val TRACK_HISTORY_SIZE: Int = 10
     const val ZERO_INDEX: Int = 0
+    const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
+    const val DEFAULT_TIME: String = "00:00"
 
     // Константы для SharedPreferences истории поиска треков
     const val TRACK_LIST_KEY: String = "track_list_key"
@@ -17,10 +19,19 @@ object Constants {
 
     //Enum класс для статуса поиска, чтобы не тащить String через все слои
     //с последующей инициализация нужных в UI
-    enum class SearchStatus {
+    enum class SearchState {
         LOADING,
         SUCCESS,
         CONNECTION_ERROR,
         SEARCH_ERROR
+    }
+
+    //Enum класс для состояния плеера
+    enum class PlayerState {
+        LOADING,
+        PREPARED,
+        COMPLETED,
+        START,
+        PAUSE,
     }
 }

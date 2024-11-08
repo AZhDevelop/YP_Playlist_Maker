@@ -58,12 +58,12 @@ class SearchViewModel(
         trackListData.value = trackList
     }
 
-    private val searchStatus = MutableLiveData<Constants.SearchStatus>()
-    fun getSearchStatus(): LiveData<Constants.SearchStatus> = searchStatus
+    private val searchState = MutableLiveData<Constants.SearchState>()
+    fun getSearchStatus(): LiveData<Constants.SearchState> = searchState
 
     fun search(expression: String) {
 
-        searchStatus.value = Constants.SearchStatus.LOADING
+        searchState.value = Constants.SearchState.LOADING
 
         searchTrackService.searchTrack(expression) { result ->
             handler.post {
@@ -72,13 +72,13 @@ class SearchViewModel(
                         trackList.clear()
                         trackList.addAll(result.tracks)
                         trackListData.value = trackList
-                        searchStatus.value = Constants.SearchStatus.SUCCESS
+                        searchState.value = Constants.SearchState.SUCCESS
                     }
                     is TrackInteractor.TrackResult.Error -> {
-                        if (result.message == Constants.SearchStatus.SEARCH_ERROR) {
-                            searchStatus.value = Constants.SearchStatus.SEARCH_ERROR
-                        } else if (result.message == Constants.SearchStatus.CONNECTION_ERROR) {
-                            searchStatus.value = Constants.SearchStatus.CONNECTION_ERROR
+                        if (result.message == Constants.SearchState.SEARCH_ERROR) {
+                            searchState.value = Constants.SearchState.SEARCH_ERROR
+                        } else if (result.message == Constants.SearchState.CONNECTION_ERROR) {
+                            searchState.value = Constants.SearchState.CONNECTION_ERROR
                         }
                     }
                 }

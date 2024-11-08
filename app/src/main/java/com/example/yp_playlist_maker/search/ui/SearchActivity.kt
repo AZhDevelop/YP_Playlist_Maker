@@ -93,7 +93,7 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.saveClickedTrack(it)
                 val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
                 displayAudioPlayer.apply {
-                    putExtra(AudioPlayerActivity.INTENT_PUTTED_TRACK, it)
+                    putExtra(Constants.INTENT_PUTTED_TRACK, it)
                 }
                 startActivity(displayAudioPlayer)
                 if (binding.etSearch.text.isEmpty()) {
@@ -167,20 +167,20 @@ class SearchActivity : AppCompatActivity() {
     }
 
     // Наблюдатель состояние запроса поиска
-    private fun handleSearchStatus(searchStatus: Constants.SearchStatus) {
-        when (searchStatus) {
-            Constants.SearchStatus.LOADING -> {
+    private fun handleSearchStatus(searchState: Constants.SearchState) {
+        when (searchState) {
+            Constants.SearchState.LOADING -> {
                 binding.progressBar.visible()
             }
-            Constants.SearchStatus.SUCCESS -> {
+            Constants.SearchState.SUCCESS -> {
                 binding.progressBar.gone()
                 binding.rvTrack.visible()
             }
-            Constants.SearchStatus.SEARCH_ERROR -> {
+            Constants.SearchState.SEARCH_ERROR -> {
                 showError(SEARCH_ERROR_MESSAGE)
                 onRestoreError = SEARCH_ERROR_MESSAGE
             }
-            Constants.SearchStatus.CONNECTION_ERROR -> {
+            Constants.SearchState.CONNECTION_ERROR -> {
                 showError(CONNECTION_ERROR_MESSAGE)
                 onRestoreError = CONNECTION_ERROR_MESSAGE
             }

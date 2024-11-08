@@ -1,12 +1,15 @@
 package com.example.yp_playlist_maker.di
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
+import androidx.core.content.IntentCompat
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
 import com.example.yp_playlist_maker.search.data.network.RetrofitNetworkClient
 import com.example.yp_playlist_maker.search.data.network.TrackApi
+import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Constants
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -46,6 +49,10 @@ val dataModule = module {
 
     factory<MediaPlayer> {
         MediaPlayer()
+    }
+
+    factory<Track?> { (intent : Intent) ->
+        IntentCompat.getParcelableExtra(intent, Constants.INTENT_PUTTED_TRACK, Track::class.java)
     }
 
 }

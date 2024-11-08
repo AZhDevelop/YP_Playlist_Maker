@@ -7,7 +7,7 @@ interface TrackInteractor {
 
     sealed class TrackResult {
         data class Success(val tracks: List<Track>) : TrackResult()
-        data class Error(val message: Constants.SearchStatus) : TrackResult()
+        data class Error(val message: Constants.SearchState) : TrackResult()
     }
 
     fun searchTrack(expression: String, consumer: (TrackResult) -> Unit)

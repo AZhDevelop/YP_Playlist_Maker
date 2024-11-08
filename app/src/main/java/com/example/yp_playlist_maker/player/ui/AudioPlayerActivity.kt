@@ -2,7 +2,6 @@ package com.example.yp_playlist_maker.player.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
@@ -10,11 +9,13 @@ import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
+import com.example.yp_playlist_maker.util.Constants
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private val viewModel by viewModel<AudioPlayerViewModel>()
+    private val viewModel by viewModel<AudioPlayerViewModel> { parametersOf(intent) }
     private lateinit var binding: ActivityAudioplayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,10 +23,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding = ActivityAudioplayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val getTrackExtra =
-            IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
-
-        viewModel.setTrackData(getTrackExtra)
         viewModel.preparePlayer()
 
         setupPlayerObservers()
@@ -81,33 +78,26 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun handlePlayerStatus(status: String) {
+    private fun handlePlayerStatus(status: Constants.PlayerState) {
         when (status) {
-            LOADING -> binding.play.alpha = ALPHA_25
-            PREPARED -> {
+            Constants.PlayerState.LOADING -> binding.play.alpha = ALPHA_25
+            Constants.PlayerState.PREPARED -> {
                 binding.play.isEnabled = true
                 binding.play.alpha = ALPHA_100
             }
-            COMPLETED -> {
+            Constants.PlayerState.COMPLETED -> {
                 binding.play.setBackgroundResource(R.drawable.btn_play)
-                binding.playTime.text = DEFAULT_TIME
+                binding.playTime.text = Constants.DEFAULT_TIME
             }
-            START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
-            PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
+            Constants.PlayerState.START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
+            Constants.PlayerState.PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
         }
     }
 
     companion object {
         const val PLAYER_IMAGE_RADIUS: Int = 8
-        const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
         private const val ALPHA_25 = 0.25F
-        private const val DEFAULT_TIME = "00:00"
         private const val ALPHA_100 = 1F
-        private const val LOADING = "Loading"
-        private const val PREPARED = "Prepared"
-        private const val COMPLETED = "Completed"
-        private const val START = "Start"
-        private const val PAUSE = "Pause"
     }
 
 }

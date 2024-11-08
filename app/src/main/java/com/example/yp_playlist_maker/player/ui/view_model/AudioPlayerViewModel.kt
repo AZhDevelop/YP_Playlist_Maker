@@ -5,10 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
+import com.example.yp_playlist_maker.util.Constants
 import com.example.yp_playlist_maker.util.Converter
 
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
+    private val trackExtra: Track?
 ) : ViewModel() {
 
     fun getRoundedCorners(playerImageRadius: Int) : Int {
@@ -18,7 +20,7 @@ class AudioPlayerViewModel(
     private val trackData = MutableLiveData<Track>()
     fun getTrackData(): LiveData<Track> = trackData
 
-    fun setTrackData(trackExtra: Track?) {
+    private fun setTrackData() {
         trackData.value = trackExtra?.let {
             Track(
                 trackName = it.trackName,
@@ -36,8 +38,12 @@ class AudioPlayerViewModel(
         }
     }
 
-    private val audioPlayerStatus = MutableLiveData(LOADING)
-    fun getAudioPlayerStatus(): LiveData<String> = audioPlayerStatus
+    init {
+        setTrackData()
+    }
+
+    private val audioPlayerStatus = MutableLiveData(Constants.PlayerState.LOADING)
+    fun getAudioPlayerStatus(): LiveData<Constants.PlayerState> = audioPlayerStatus
 
     private val currentTime = MutableLiveData<String>()
     fun getCurrentTime(): LiveData<String> = currentTime
@@ -46,8 +52,8 @@ class AudioPlayerViewModel(
         trackData.value?.let {
             playTrackService.preparePlayer(
                 it.previewUrl,
-                onPrepare = { audioPlayerStatus.value = PREPARED },
-                onComplete = { audioPlayerStatus.value = COMPLETED },
+                onPrepare = { audioPlayerStatus.value = Constants.PlayerState.PREPARED },
+                onComplete = { audioPlayerStatus.value = Constants.PlayerState.COMPLETED },
                 onTimeUpdate = { time -> currentTime.value = time }
             )
         }
@@ -55,15 +61,15 @@ class AudioPlayerViewModel(
 
     fun playbackControl() {
         playTrackService.playbackControl(
-            onStart = { audioPlayerStatus.value = START },
+            onStart = { audioPlayerStatus.value = Constants.PlayerState.START },
             onTimeUpdate = { time -> currentTime.value = time },
-            onPause = { audioPlayerStatus.value = PAUSE }
+            onPause = { audioPlayerStatus.value = Constants.PlayerState.PAUSE }
         )
     }
 
     fun pausePlayer() {
         playTrackService.pausePlayer(
-            onPause = { audioPlayerStatus.value = PAUSE }
+            onPause = { audioPlayerStatus.value = Constants.PlayerState.PAUSE }
         )
     }
 
@@ -75,11 +81,6 @@ class AudioPlayerViewModel(
     }
 
     companion object {
-        private const val LOADING = "Loading"
-        private const val PREPARED = "Prepared"
-        private const val COMPLETED = "Completed"
-        private const val START = "Start"
-        private const val PAUSE = "Pause"
         private const val EMPTY_STRING = ""
         private const val DASH = "-"
     }
