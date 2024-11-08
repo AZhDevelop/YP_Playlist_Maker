@@ -22,22 +22,19 @@ class PlayTrackRepositoryImpl : PlayTrackRepository {
         onComplete: () -> Unit,
         onTimeUpdate: (String) -> Unit
     ) {
-        mediaPlayer.reset()
-        try {
-            mediaPlayer.setDataSource(url)
-        } catch (e: IllegalStateException) {
-            Log.e("MediaPlayer", "Method setDataSource() вызван в неверном состоянии: ${e.message}")
-        }
-//        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            onPrepare.invoke()
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            onComplete.invoke()
-            playerState = STATE_PREPARED
-            threadRemoveCallbacks(onTimeUpdate)
+        mediaPlayer.apply {
+            reset()
+            setDataSource(url)
+            prepareAsync()
+            setOnPreparedListener {
+                onPrepare.invoke()
+                playerState = STATE_PREPARED
+            }
+            setOnCompletionListener {
+                onComplete.invoke()
+                playerState = STATE_PREPARED
+                threadRemoveCallbacks(onTimeUpdate)
+            }
         }
     }
 
