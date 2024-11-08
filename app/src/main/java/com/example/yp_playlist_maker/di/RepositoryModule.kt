@@ -8,6 +8,7 @@ import com.example.yp_playlist_maker.search.domain.api.SearchHistoryRepository
 import com.example.yp_playlist_maker.search.domain.api.TrackRepository
 import com.example.yp_playlist_maker.settings.data.impl.AppThemeImpl
 import com.example.yp_playlist_maker.settings.domain.api.AppThemeRepository
+import com.example.yp_playlist_maker.util.Constants
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -23,14 +24,14 @@ val repositoryModule = module {
     //История поиска треков
     single<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(
-            sharedPreferences = get(named("trackHistoryRepository"))
+            sharedPreferences = get(named(Constants.TRACK_LIST_KEY))
         )
     }
 
     //Тема приложения
     single<AppThemeRepository> {
         AppThemeImpl(
-            sharedPreferences = get(named("appThemeRepository"))
+            sharedPreferences = get(named(Constants.THEME_PREFERENCES))
         )
     }
 

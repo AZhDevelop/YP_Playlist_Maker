@@ -29,11 +29,11 @@ val dataModule = module {
             .applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    single<SharedPreferences>(named("trackHistoryRepository")) {
+    single<SharedPreferences>(named(Constants.TRACK_LIST_KEY)) {
         androidContext().getSharedPreferences(Constants.TRACK_LIST_KEY, Context.MODE_PRIVATE)
     }
 
-    single<SharedPreferences>(named("appThemeRepository")) {
+    single<SharedPreferences>(named(Constants.THEME_PREFERENCES)) {
         androidContext().getSharedPreferences(Constants.THEME_PREFERENCES, Context.MODE_PRIVATE)
     }
 
