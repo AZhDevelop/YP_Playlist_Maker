@@ -11,6 +11,7 @@ import com.example.yp_playlist_maker.search.data.network.RetrofitNetworkClient
 import com.example.yp_playlist_maker.search.data.network.TrackApi
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Constants
+import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -18,6 +19,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
+
+    single<Gson> { Gson() }
 
     single<TrackApi> {
         Retrofit.Builder()

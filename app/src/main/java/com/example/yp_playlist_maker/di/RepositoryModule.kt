@@ -24,7 +24,8 @@ val repositoryModule = module {
     //История поиска треков
     single<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(
-            sharedPreferences = get(named(Constants.TRACK_LIST_KEY))
+            sharedPreferences = get(named(Constants.TRACK_LIST_KEY)),
+            gson = get()
         )
     }
 

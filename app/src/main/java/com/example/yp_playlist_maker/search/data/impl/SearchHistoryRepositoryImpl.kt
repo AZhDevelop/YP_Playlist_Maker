@@ -7,10 +7,10 @@ import com.example.yp_playlist_maker.util.Constants
 import com.google.gson.Gson
 
 class SearchHistoryRepositoryImpl(
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson
 ) : SearchHistoryRepository {
 
-    private val gson: Gson = Gson()
     private val mutableTrackHistoryList: MutableList<Track> = mutableListOf()
 
     override fun saveClickedTrack(track: Track, trackHistoryList: List<Track>) {
