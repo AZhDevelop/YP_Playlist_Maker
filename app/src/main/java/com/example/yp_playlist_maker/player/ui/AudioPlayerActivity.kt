@@ -59,7 +59,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         Glide.with(this)
             .load(artworkUrl100)
             .centerCrop()
-            .transform(RoundedCorners(viewModel.getRoundedCorners(Constants.PLAYER_IMAGE_RADIUS)))
+            .transform(RoundedCorners(viewModel.getRoundedCorners(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)
             .into(binding.trackImage)
     }
@@ -80,18 +80,25 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun handlePlayerStatus(status: Constants.PlayerState) {
         when (status) {
-            Constants.PlayerState.LOADING -> binding.play.alpha = Constants.ALPHA_25
+            Constants.PlayerState.LOADING -> binding.play.alpha = ALPHA_25
             Constants.PlayerState.PREPARED -> {
                 binding.play.isEnabled = true
-                binding.play.alpha = Constants.ALPHA_100
+                binding.play.alpha = ALPHA_100
             }
             Constants.PlayerState.COMPLETED -> {
                 binding.play.setBackgroundResource(R.drawable.btn_play)
-                binding.playTime.text = Constants.DEFAULT_TIME
+                binding.playTime.text = DEFAULT_TIME
             }
             Constants.PlayerState.START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
             Constants.PlayerState.PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
         }
+    }
+
+    companion object {
+        private const val DEFAULT_TIME: String = "00:00"
+        private const val PLAYER_IMAGE_RADIUS: Int = 8
+        private const val ALPHA_25 = 0.25F
+        private const val ALPHA_100 = 1F
     }
 
 }

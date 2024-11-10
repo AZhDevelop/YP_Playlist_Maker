@@ -12,6 +12,9 @@ import com.example.yp_playlist_maker.util.Constants
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+private const val TRACK_LIST_KEY: String = "track_list_key"
+private const val THEME_PREFERENCES: String = "theme_preferences"
+
 val repositoryModule = module {
 
     //Поиск треков в сети
@@ -24,7 +27,7 @@ val repositoryModule = module {
     //История поиска треков
     single<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(
-            sharedPreferences = get(named(Constants.TRACK_LIST_KEY)),
+            sharedPreferences = get(named(TRACK_LIST_KEY)),
             gson = get()
         )
     }
@@ -32,7 +35,7 @@ val repositoryModule = module {
     //Тема приложения
     single<AppThemeRepository> {
         AppThemeImpl(
-            sharedPreferences = get(named(Constants.THEME_PREFERENCES))
+            sharedPreferences = get(named(THEME_PREFERENCES))
         )
     }
 

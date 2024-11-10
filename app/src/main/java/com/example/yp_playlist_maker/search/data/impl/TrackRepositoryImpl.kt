@@ -14,7 +14,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
         val response = networkClient.doRequest(TrackSearchRequest(expression))
         when (response.resultCode) {
             -1 -> {
-                return Resource.Error(Constants.SearchState.CONNECTION_ERROR)
+                return Resource.Error(Constants.SearchState.SEARCH_ERROR)
             }
             200 -> {
                 if (response is TrackSearchResponse) {
@@ -45,4 +45,5 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
             }
         }
     }
+
 }

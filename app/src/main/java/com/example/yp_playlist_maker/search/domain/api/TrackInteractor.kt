@@ -12,4 +12,8 @@ interface TrackInteractor {
 
     fun searchTrack(expression: String, consumer: (TrackResult) -> Unit)
 
+    companion object {
+        enum class SearchState
+    }
+
 }

@@ -93,7 +93,7 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.saveClickedTrack(it)
                 val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
                 displayAudioPlayer.apply {
-                    putExtra(Constants.INTENT_PUTTED_TRACK, it)
+                    putExtra(INTENT_PUTTED_TRACK, it)
                 }
                 startActivity(displayAudioPlayer)
                 if (binding.etSearch.text.isEmpty()) {
@@ -269,6 +269,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""

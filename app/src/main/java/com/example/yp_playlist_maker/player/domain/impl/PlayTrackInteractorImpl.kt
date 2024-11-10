@@ -2,6 +2,7 @@ package com.example.yp_playlist_maker.player.domain.impl
 
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackRepository
+import com.example.yp_playlist_maker.util.Constants
 
 class PlayTrackInteractorImpl(private val repository: PlayTrackRepository) : PlayTrackInteractor {
 
@@ -24,6 +25,7 @@ class PlayTrackInteractorImpl(private val repository: PlayTrackRepository) : Pla
         onTimeUpdate: (String) -> Unit
     ) {
         repository.playbackControl(onStart, onPause, onTimeUpdate)
+        Constants.SearchState.SEARCH_ERROR
     }
 
     override fun releasePlayer() {

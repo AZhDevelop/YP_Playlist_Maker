@@ -29,8 +29,8 @@ class AudioPlayerViewModel(
                 artworkUrl100 = Converter.convertUrl(trackExtra.artworkUrl100),
                 collectionName = trackExtra.collectionName,
                 releaseDate = trackExtra.releaseDate
-                    .replaceAfter(Constants.DASH, Constants.EMPTY_STRING)
-                    .replace(Constants.DASH, Constants.EMPTY_STRING),
+                    .replaceAfter(DASH, EMPTY_STRING)
+                    .replace(DASH, EMPTY_STRING),
                 primaryGenreName = trackExtra.primaryGenreName,
                 country = trackExtra.country,
                 previewUrl = trackExtra.previewUrl,
@@ -78,5 +78,10 @@ class AudioPlayerViewModel(
         playTrackService.threadRemoveCallbacks(
             onTimeUpdate = { time -> currentTime.value = time }
         )
+    }
+
+    companion object {
+        private const val EMPTY_STRING: String = ""
+        const val DASH = "-"
     }
 }

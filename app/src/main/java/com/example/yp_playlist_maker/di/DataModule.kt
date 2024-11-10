@@ -18,6 +18,10 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
+private const val TRACK_LIST_KEY: String = "track_list_key"
+private const val THEME_PREFERENCES: String = "theme_preferences"
+
 val dataModule = module {
 
     single<Gson> { Gson() }
@@ -35,12 +39,12 @@ val dataModule = module {
             .applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    single<SharedPreferences>(named(Constants.TRACK_LIST_KEY)) {
-        androidContext().getSharedPreferences(Constants.TRACK_LIST_KEY, Context.MODE_PRIVATE)
+    single<SharedPreferences>(named(TRACK_LIST_KEY)) {
+        androidContext().getSharedPreferences(TRACK_LIST_KEY, Context.MODE_PRIVATE)
     }
 
-    single<SharedPreferences>(named(Constants.THEME_PREFERENCES)) {
-        androidContext().getSharedPreferences(Constants.THEME_PREFERENCES, Context.MODE_PRIVATE)
+    single<SharedPreferences>(named(THEME_PREFERENCES)) {
+        androidContext().getSharedPreferences(THEME_PREFERENCES, Context.MODE_PRIVATE)
     }
 
     single<NetworkClient> {
@@ -55,7 +59,7 @@ val dataModule = module {
     }
 
     factory<Track?> { (intent : Intent) ->
-        IntentCompat.getParcelableExtra(intent, Constants.INTENT_PUTTED_TRACK, Track::class.java)
+        IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
     }
 
 }
