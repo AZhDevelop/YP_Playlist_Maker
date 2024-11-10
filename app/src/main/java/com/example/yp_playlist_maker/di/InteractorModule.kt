@@ -13,26 +13,27 @@ import org.koin.dsl.module
 val interactorModule = module {
 
     //Поиск треков в сети
-    single<TrackInteractor> {
+    factory<TrackInteractor> {
         TrackInteractorImpl(
             repository = get()
         )
     }
 
     //История поиска треков
-    single<SearchHistoryInteractor> {
+    factory<SearchHistoryInteractor> {
         SearchHistoryInteractorImpl(
             repository = get()
         )
     }
 
     //Тема приложения
-    single<AppThemeInteractor> {
+    factory<AppThemeInteractor> {
         AppThemeInteractorImpl(
             repository = get()
         )
     }
 
+    //Аудиоплеер
     factory<PlayTrackInteractor> {
         PlayTrackInteractorImpl(
             repository = get()
