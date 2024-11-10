@@ -5,7 +5,7 @@ import com.example.yp_playlist_maker.search.data.dto.TrackSearchResponse
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
 import com.example.yp_playlist_maker.search.domain.api.TrackRepository
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.util.Constants
+import com.example.yp_playlist_maker.util.State
 import com.example.yp_playlist_maker.util.Resource
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
@@ -14,7 +14,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
         val response = networkClient.doRequest(TrackSearchRequest(expression))
         when (response.resultCode) {
             -1 -> {
-                return Resource.Error(Constants.SearchState.SEARCH_ERROR)
+                return Resource.Error(State.SearchState.CONNECTION_ERROR)
             }
             200 -> {
                 if (response is TrackSearchResponse) {
@@ -32,16 +32,16 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                             )
                         })
                     return if (responseData.data.isEmpty()) {
-                        Resource.Error(Constants.SearchState.SEARCH_ERROR)
+                        Resource.Error(State.SearchState.SEARCH_ERROR)
                     } else {
                         responseData
                     }
                 } else {
-                    return Resource.Error(Constants.SearchState.SEARCH_ERROR)
+                    return Resource.Error(State.SearchState.SEARCH_ERROR)
                 }
             }
             else -> {
-                return Resource.Error(Constants.SearchState.SEARCH_ERROR)
+                return Resource.Error(State.SearchState.SEARCH_ERROR)
             }
         }
     }

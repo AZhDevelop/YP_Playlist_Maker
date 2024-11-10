@@ -1,6 +1,6 @@
 package com.example.yp_playlist_maker.util
 
-object Constants {
+object State {
 
     //Enum класс для статуса поиска, чтобы не тащить String через все слои
     //с последующей инициализация нужных в UI

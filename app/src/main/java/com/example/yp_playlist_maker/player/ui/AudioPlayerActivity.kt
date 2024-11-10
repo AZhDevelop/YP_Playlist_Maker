@@ -9,7 +9,7 @@ import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.util.Constants
+import com.example.yp_playlist_maker.util.State
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -78,19 +78,19 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun handlePlayerStatus(status: Constants.PlayerState) {
+    private fun handlePlayerStatus(status: State.PlayerState) {
         when (status) {
-            Constants.PlayerState.LOADING -> binding.play.alpha = ALPHA_25
-            Constants.PlayerState.PREPARED -> {
+            State.PlayerState.LOADING -> binding.play.alpha = ALPHA_25
+            State.PlayerState.PREPARED -> {
                 binding.play.isEnabled = true
                 binding.play.alpha = ALPHA_100
             }
-            Constants.PlayerState.COMPLETED -> {
+            State.PlayerState.COMPLETED -> {
                 binding.play.setBackgroundResource(R.drawable.btn_play)
                 binding.playTime.text = DEFAULT_TIME
             }
-            Constants.PlayerState.START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
-            Constants.PlayerState.PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
+            State.PlayerState.START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
+            State.PlayerState.PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
         }
     }
 

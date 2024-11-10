@@ -3,7 +3,6 @@ package com.example.yp_playlist_maker.search.data.impl
 import android.content.SharedPreferences
 import com.example.yp_playlist_maker.search.domain.api.SearchHistoryRepository
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.util.Constants
 import com.google.gson.Gson
 
 class SearchHistoryRepositoryImpl(

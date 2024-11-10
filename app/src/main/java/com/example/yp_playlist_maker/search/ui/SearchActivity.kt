@@ -19,7 +19,7 @@ import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.ActivitySearchBinding
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
-import com.example.yp_playlist_maker.util.Constants
+import com.example.yp_playlist_maker.util.State
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
@@ -167,20 +167,20 @@ class SearchActivity : AppCompatActivity() {
     }
 
     // Наблюдатель состояние запроса поиска
-    private fun handleSearchStatus(searchState: Constants.SearchState) {
+    private fun handleSearchStatus(searchState: State.SearchState) {
         when (searchState) {
-            Constants.SearchState.LOADING -> {
+            State.SearchState.LOADING -> {
                 binding.progressBar.visible()
             }
-            Constants.SearchState.SUCCESS -> {
+            State.SearchState.SUCCESS -> {
                 binding.progressBar.gone()
                 binding.rvTrack.visible()
             }
-            Constants.SearchState.SEARCH_ERROR -> {
+            State.SearchState.SEARCH_ERROR -> {
                 showError(SEARCH_ERROR_MESSAGE)
                 onRestoreError = SEARCH_ERROR_MESSAGE
             }
-            Constants.SearchState.CONNECTION_ERROR -> {
+            State.SearchState.CONNECTION_ERROR -> {
                 showError(CONNECTION_ERROR_MESSAGE)
                 onRestoreError = CONNECTION_ERROR_MESSAGE
             }

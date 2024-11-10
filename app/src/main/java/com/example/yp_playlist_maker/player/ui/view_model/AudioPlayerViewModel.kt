@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.util.Constants
 import com.example.yp_playlist_maker.util.Converter
+import com.example.yp_playlist_maker.util.State
 
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
@@ -42,8 +42,8 @@ class AudioPlayerViewModel(
         setTrackData()
     }
 
-    private val audioPlayerStatus = MutableLiveData(Constants.PlayerState.LOADING)
-    fun getAudioPlayerStatus(): LiveData<Constants.PlayerState> = audioPlayerStatus
+    private val audioPlayerStatus = MutableLiveData(State.PlayerState.LOADING)
+    fun getAudioPlayerStatus(): LiveData<State.PlayerState> = audioPlayerStatus
 
     private val currentTime = MutableLiveData<String>()
     fun getCurrentTime(): LiveData<String> = currentTime
@@ -52,8 +52,8 @@ class AudioPlayerViewModel(
         trackData.value?.let {
             playTrackService.preparePlayer(
                 it.previewUrl,
-                onPrepare = { audioPlayerStatus.value = Constants.PlayerState.PREPARED },
-                onComplete = { audioPlayerStatus.value = Constants.PlayerState.COMPLETED },
+                onPrepare = { audioPlayerStatus.value = State.PlayerState.PREPARED },
+                onComplete = { audioPlayerStatus.value = State.PlayerState.COMPLETED },
                 onTimeUpdate = { time -> currentTime.value = time }
             )
         }
@@ -61,15 +61,15 @@ class AudioPlayerViewModel(
 
     fun playbackControl() {
         playTrackService.playbackControl(
-            onStart = { audioPlayerStatus.value = Constants.PlayerState.START },
+            onStart = { audioPlayerStatus.value = State.PlayerState.START },
             onTimeUpdate = { time -> currentTime.value = time },
-            onPause = { audioPlayerStatus.value = Constants.PlayerState.PAUSE }
+            onPause = { audioPlayerStatus.value = State.PlayerState.PAUSE }
         )
     }
 
     fun pausePlayer() {
         playTrackService.pausePlayer(
-            onPause = { audioPlayerStatus.value = Constants.PlayerState.PAUSE }
+            onPause = { audioPlayerStatus.value = State.PlayerState.PAUSE }
         )
     }
 

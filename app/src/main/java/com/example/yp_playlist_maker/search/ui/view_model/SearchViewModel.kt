@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.example.yp_playlist_maker.search.domain.api.SearchHistoryInteractor
 import com.example.yp_playlist_maker.search.domain.api.TrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.util.Constants
+import com.example.yp_playlist_maker.util.State
 
 class SearchViewModel(
     private val searchTrackService: TrackInteractor,
@@ -58,12 +58,12 @@ class SearchViewModel(
         trackListData.value = trackList
     }
 
-    private val searchState = MutableLiveData<Constants.SearchState>()
-    fun getSearchStatus(): LiveData<Constants.SearchState> = searchState
+    private val searchState = MutableLiveData<State.SearchState>()
+    fun getSearchStatus(): LiveData<State.SearchState> = searchState
 
     fun search(expression: String) {
 
-        searchState.value = Constants.SearchState.LOADING
+        searchState.value = State.SearchState.LOADING
 
         searchTrackService.searchTrack(expression) { result ->
             handler.post {
@@ -72,13 +72,13 @@ class SearchViewModel(
                         trackList.clear()
                         trackList.addAll(result.tracks)
                         trackListData.value = trackList
-                        searchState.value = Constants.SearchState.SUCCESS
+                        searchState.value = State.SearchState.SUCCESS
                     }
                     is TrackInteractor.TrackResult.Error -> {
-                        if (result.message == Constants.SearchState.SEARCH_ERROR) {
-                            searchState.value = Constants.SearchState.SEARCH_ERROR
-                        } else if (result.message == Constants.SearchState.CONNECTION_ERROR) {
-                            searchState.value = Constants.SearchState.CONNECTION_ERROR
+                        if (result.message == State.SearchState.SEARCH_ERROR) {
+                            searchState.value = State.SearchState.SEARCH_ERROR
+                        } else if (result.message == State.SearchState.CONNECTION_ERROR) {
+                            searchState.value = State.SearchState.CONNECTION_ERROR
                         }
                     }
                 }
