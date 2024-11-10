@@ -10,22 +10,21 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.app.gone
+import com.example.yp_playlist_maker.app.hideKeyboard
+import com.example.yp_playlist_maker.app.invisible
+import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.ActivitySearchBinding
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
-import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModelFactory
-import com.example.yp_playlist_maker.settings.ui.gone
-import com.example.yp_playlist_maker.settings.ui.hideKeyboard
-import com.example.yp_playlist_maker.settings.ui.invisible
-import com.example.yp_playlist_maker.settings.ui.visible
-import com.example.yp_playlist_maker.util.Constants
+import com.example.yp_playlist_maker.util.State
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
     private lateinit var binding: ActivitySearchBinding
     private lateinit var textWatcher: TextWatcher
     private var savedSearchText: String = EMPTY_STRING
@@ -44,7 +43,6 @@ class SearchActivity : AppCompatActivity() {
         setSearchActivityViews()
         setRecyclerView()
 
-        viewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
         setSearchActivityObservers()
 
         textWatcher = setTextWatcher()
@@ -95,7 +93,7 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.saveClickedTrack(it)
                 val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
                 displayAudioPlayer.apply {
-                    putExtra(AudioPlayerActivity.INTENT_PUTTED_TRACK, it)
+                    putExtra(INTENT_PUTTED_TRACK, it)
                 }
                 startActivity(displayAudioPlayer)
                 if (binding.etSearch.text.isEmpty()) {
@@ -169,20 +167,20 @@ class SearchActivity : AppCompatActivity() {
     }
 
     // Наблюдатель состояние запроса поиска
-    private fun handleSearchStatus(searchStatus: Constants.SearchStatus) {
-        when (searchStatus) {
-            Constants.SearchStatus.LOADING -> {
+    private fun handleSearchStatus(searchState: State.SearchState) {
+        when (searchState) {
+            State.SearchState.LOADING -> {
                 binding.progressBar.visible()
             }
-            Constants.SearchStatus.SUCCESS -> {
+            State.SearchState.SUCCESS -> {
                 binding.progressBar.gone()
                 binding.rvTrack.visible()
             }
-            Constants.SearchStatus.SEARCH_ERROR -> {
+            State.SearchState.SEARCH_ERROR -> {
                 showError(SEARCH_ERROR_MESSAGE)
                 onRestoreError = SEARCH_ERROR_MESSAGE
             }
-            Constants.SearchStatus.CONNECTION_ERROR -> {
+            State.SearchState.CONNECTION_ERROR -> {
                 showError(CONNECTION_ERROR_MESSAGE)
                 onRestoreError = CONNECTION_ERROR_MESSAGE
             }
@@ -271,6 +269,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""

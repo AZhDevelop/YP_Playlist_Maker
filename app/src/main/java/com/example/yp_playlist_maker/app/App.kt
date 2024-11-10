@@ -1,11 +1,18 @@
-package com.example.yp_playlist_maker.settings.ui
+package com.example.yp_playlist_maker.app
 
 import android.app.Application
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.yp_playlist_maker.creator.Creator
+import com.example.yp_playlist_maker.di.appModule
+import com.example.yp_playlist_maker.di.dataModule
+import com.example.yp_playlist_maker.di.interactorModule
+import com.example.yp_playlist_maker.di.repositoryModule
+import com.example.yp_playlist_maker.settings.domain.api.AppThemeRepository
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 fun View.gone() {
     visibility = View.GONE
@@ -32,9 +39,12 @@ class App : Application() {
         super.onCreate()
         instance = this
 
-        Creator.init(this)
+        val getThemeColor: AppThemeRepository by inject<AppThemeRepository>()
 
-        val getThemeColor = Creator.provideAppThemeInteractor()
+        startKoin {
+            androidContext(this@App)
+            modules(appModule, dataModule, interactorModule, repositoryModule)
+        }
 
         darkTheme = getThemeColor.getAppTheme()
         switchTheme(darkTheme)

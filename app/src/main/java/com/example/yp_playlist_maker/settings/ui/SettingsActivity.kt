@@ -2,22 +2,20 @@ package com.example.yp_playlist_maker.settings.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import com.example.yp_playlist_maker.app.App
 import com.example.yp_playlist_maker.databinding.ActivitySettingsBinding
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
-import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel by viewModel<SettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(this, SettingsViewModelFactory())[SettingsViewModel::class.java]
 
         // Достаем значение true или false из памяти и меняем состояние Switch
         binding.themeSwitcher.isChecked = viewModel.getAppTheme()

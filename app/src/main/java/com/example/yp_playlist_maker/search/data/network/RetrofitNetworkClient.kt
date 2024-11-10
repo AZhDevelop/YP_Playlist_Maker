@@ -5,18 +5,11 @@ import android.net.NetworkCapabilities
 import com.example.yp_playlist_maker.search.data.dto.Response
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchRequest
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchResponse
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitNetworkClient(private val connectivityManager: ConnectivityManager) : NetworkClient {
-    private val trackUrl: String = "https://itunes.apple.com"
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(trackUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val trackService: TrackApi = retrofit.create(TrackApi::class.java)
+class RetrofitNetworkClient(
+    private val connectivityManager: ConnectivityManager,
+    private val trackApi: TrackApi
+) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (!waitForConnection()) {
@@ -27,7 +20,7 @@ class RetrofitNetworkClient(private val connectivityManager: ConnectivityManager
         }
         try {
             if (dto is TrackSearchRequest) {
-                val response = trackService.searchTrack(dto.expression).execute()
+                val response = trackApi.searchTrack(dto.expression).execute()
                 if (response.isSuccessful) {
                     val results = response.body()?.results ?: emptyList()
                     return TrackSearchResponse(results, response.code())

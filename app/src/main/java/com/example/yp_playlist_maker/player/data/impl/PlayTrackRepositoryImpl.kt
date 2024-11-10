@@ -7,10 +7,9 @@ import com.example.yp_playlist_maker.player.domain.api.PlayTrackRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayTrackRepositoryImpl : PlayTrackRepository {
+class PlayTrackRepositoryImpl(private val mediaPlayer: MediaPlayer): PlayTrackRepository {
 
     private var playerState = STATE_DEFAULT
-    private var mediaPlayer = MediaPlayer()
     private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
     private var trackTime: String = ""
     private var receiveCallbacks = true
@@ -21,17 +20,19 @@ class PlayTrackRepositoryImpl : PlayTrackRepository {
         onComplete: () -> Unit,
         onTimeUpdate: (String) -> Unit
     ) {
-        mediaPlayer.reset()
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            onPrepare.invoke()
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            onComplete.invoke()
-            playerState = STATE_PREPARED
-            threadRemoveCallbacks(onTimeUpdate)
+        mediaPlayer.apply {
+            reset()
+            setDataSource(url)
+            prepareAsync()
+            setOnPreparedListener {
+                onPrepare.invoke()
+                playerState = STATE_PREPARED
+            }
+            setOnCompletionListener {
+                onComplete.invoke()
+                playerState = STATE_PREPARED
+                threadRemoveCallbacks(onTimeUpdate)
+            }
         }
     }
 
