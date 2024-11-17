@@ -19,4 +19,9 @@ object State {
         START,
         PAUSE,
     }
+
+    enum class FragmentState {
+        SUCCESS,
+        ERROR
+    }
 }
