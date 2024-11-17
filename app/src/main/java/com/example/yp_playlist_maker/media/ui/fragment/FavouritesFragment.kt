@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.ActivityMediaFavouritesFragmentBinding
 import com.example.yp_playlist_maker.media.ui.view_model.FavouritesFragmentViewModel
 import com.example.yp_playlist_maker.util.State
@@ -29,13 +30,19 @@ class FavouritesFragment: Fragment() {
         viewModel.getFragmentState().observe(viewLifecycleOwner) { fragmentState ->
             when (fragmentState) {
                 State.FragmentState.ERROR -> {
-                    binding.tvPlaceholder.text = EMPTY_MEDIA
+                    showEmptyMediaError()
                 }
-
                 else -> {
                     binding.tvPlaceholder.text = EMPTY_MEDIA //Пока как заглушка
                 }
             }
+        }
+    }
+
+    private fun showEmptyMediaError() {
+        binding.apply {
+            tvPlaceholder.text = EMPTY_MEDIA
+            imgPlaceholder.setImageResource(R.drawable.img_search_error)
         }
     }
 

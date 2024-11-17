@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.ActivityMediaPlaylistsFragmentBinding
 import com.example.yp_playlist_maker.media.ui.view_model.PlaylistsFragmentViewModel
 import com.example.yp_playlist_maker.util.State
@@ -29,9 +30,8 @@ class PlaylistsFragment : Fragment() {
         viewModel.getFragmentState().observe(viewLifecycleOwner) { fragmentState ->
             when (fragmentState) {
                 State.FragmentState.ERROR -> {
-                    binding.tvPlaceholder.text = NO_PLAYLISTS
+                    showNoPlaylistsError()
                 }
-
                 else -> {
                     binding.tvPlaceholder.text = NO_PLAYLISTS //Пока как заглушка
                 }
@@ -39,8 +39,17 @@ class PlaylistsFragment : Fragment() {
         }
     }
 
+    private fun showNoPlaylistsError() {
+        binding.apply {
+            tvPlaceholder.text = NO_PLAYLISTS
+            btnPlaceholder.text = NEW_PLAYLIST
+            imgPlaceholder.setImageResource(R.drawable.img_search_error)
+        }
+    }
+
     companion object {
-        private const val NO_PLAYLISTS = "Вы не создали ни одного плейлиста"
+        private const val NO_PLAYLISTS = "Вы не создали ни\nодного плейлиста"
+        private const val NEW_PLAYLIST = "Новый плейлист"
 
         fun newInstance() = PlaylistsFragment()
     }
