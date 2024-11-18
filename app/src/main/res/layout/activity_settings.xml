@@ -35,55 +35,22 @@
         android:textSize="@dimen/font_size_list_16"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-    <FrameLayout
-        android:id="@+id/fl_share"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/line_high_64"
-        android:foreground="?attr/selectableItemBackground">
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/mtv_share"
+        style="@style/SettingsMenuText"
+        android:drawableEnd="@drawable/ic_share"
+        android:text="@string/settings_activity_share" />
 
-        <TextView
-            style="@style/SettingsMenuText"
-            android:text="@string/settings_activity_share" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/mtv_contact_support"
+        style="@style/SettingsMenuText"
+        android:drawableEnd="@drawable/ic_contact_support"
+        android:text="@string/settings_activity_contact_support" />
 
-        <ImageView
-            style="@style/SettingsMenuIcon"
-            android:contentDescription="@string/settings_activity_share"
-            android:src="@drawable/ic_share" />
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/fl_contact_support"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/line_high_64"
-        android:foreground="?attr/selectableItemBackground">
-
-        <TextView
-            style="@style/SettingsMenuText"
-            android:text="@string/settings_activity_contact_support" />
-
-        <ImageView
-            style="@style/SettingsMenuIcon"
-            android:contentDescription="@string/settings_activity_contact_support"
-            android:src="@drawable/ic_contact_support" />
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/fl_license_agreement"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/line_high_64"
-        android:foreground="?attr/selectableItemBackground">
-
-        <TextView
-            style="@style/SettingsMenuText"
-            android:text="@string/settings_activity_licence_agreement" />
-
-        <ImageView
-            style="@style/SettingsMenuIcon"
-            android:contentDescription="@string/settings_activity_licence_agreement"
-            android:src="@drawable/ic_forward" />
-
-    </FrameLayout>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/mtv_license_agreement"
+        style="@style/SettingsMenuText"
+        android:drawableEnd="@drawable/ic_forward"
+        android:text="@string/settings_activity_licence_agreement" />
 
 </LinearLayout>
