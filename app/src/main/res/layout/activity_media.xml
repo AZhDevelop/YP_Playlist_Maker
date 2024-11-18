@@ -14,8 +14,8 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
-        style="@style/tabStyle"
-        app:tabTextAppearance="@style/tab_text" />
+        style="@style/TabStyle"
+        app:tabTextAppearance="@style/TabText" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

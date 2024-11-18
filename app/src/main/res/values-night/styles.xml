@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- All Activities -->
     <style name="ToolBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -8,6 +9,7 @@
         <item name="titleTextColor">@color/white</item>
     </style>
 
+    <!-- SettingsActivity -->
     <style name="SettingsMenuText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -69,7 +71,7 @@
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
-    <style name="track_main_information">
+    <style name="TrackMainInformation">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
@@ -79,8 +81,8 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <!--    MediaActivity-->
-    <style name="tabStyle">
+    <!-- MediaActivity-->
+    <style name="TabStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="tabTextColor">@color/white</item>
@@ -88,7 +90,7 @@
         <item name="android:background">@color/yp_black</item>
     </style>
 
-    <style name="placeholder_message">
+    <style name="PlaceholderMessage">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/margin_base_16</item>
@@ -98,7 +100,7 @@
         <item name="android:textSize">19sp</item>
     </style>
 
-    <style name="placeholder_button">
+    <style name="PlaceholderButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">@dimen/btn_height_36</item>
         <item name="android:layout_marginTop">34dp</item>
@@ -112,6 +114,5 @@
         <item name="android:insetBottom">0dp</item>
         <item name="android:letterSpacing">0</item>
     </style>
-
 
 </resources>
