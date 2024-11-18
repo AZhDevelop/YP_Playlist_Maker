@@ -27,7 +27,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // Кнопка назад
-        binding.iwBack.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             finish()
         }
 

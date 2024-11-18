@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,20 +9,30 @@
     android:theme="@style/Base.Theme.YP_Playlist_Maker"
     android:background="@color/main_background">
 
-    <LinearLayout style="@style/ToolBar"
-        tools:ignore="UseCompoundDrawables">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/settings_activity_header"
+        app:navigationIcon="@drawable/ic_back"
+        app:titleTextAppearance="@style/AppCompatToolBar" >
 
-        <ImageView
-            android:id="@+id/iw_back"
-            style="@style/ToolBarIcon"
-            android:contentDescription="@string/media_activity_back"
-            android:src="@drawable/ic_back" />
+    </androidx.appcompat.widget.Toolbar>
 
-        <TextView
-            style="@style/ToolBarText"
-            android:text="@string/settings_activity_header" />
+<!--    <LinearLayout style="@style/ToolBar"-->
+<!--        tools:ignore="UseCompoundDrawables">-->
 
-    </LinearLayout>
+<!--        <ImageView-->
+<!--            android:id="@+id/iw_back"-->
+<!--            style="@style/ToolBarIcon"-->
+<!--            android:contentDescription="@string/media_activity_back"-->
+<!--            android:src="@drawable/ic_back" />-->
+
+<!--        <TextView-->
+<!--            style="@style/ToolBarText"-->
+<!--            android:text="@string/settings_activity_header" />-->
+
+<!--    </LinearLayout>-->
 
     <Switch
         android:id="@+id/theme_switcher"
