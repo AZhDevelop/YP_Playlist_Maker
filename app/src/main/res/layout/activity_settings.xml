@@ -14,9 +14,7 @@
         android:layout_height="wrap_content"
         app:title="@string/settings_activity_header"
         app:navigationIcon="@drawable/ic_back"
-        app:titleTextAppearance="@style/AppCompatToolBar" >
-
-    </androidx.appcompat.widget.Toolbar>
+        app:titleTextAppearance="@style/AppCompatToolBar" />
 
     <Switch
         android:id="@+id/theme_switcher"

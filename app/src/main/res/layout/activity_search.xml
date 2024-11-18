@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_search"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,21 +8,13 @@
     android:orientation="vertical"
     android:background="@color/main_background">
 
-    <LinearLayout
-        style="@style/ToolBar"
-        tools:ignore="UseCompoundDrawables">
-
-        <ImageView
-            android:id="@+id/iw_back"
-            style="@style/ToolBarIcon"
-            android:contentDescription="@string/media_activity_back"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            style="@style/ToolBarText"
-            android:text="@string/search_activity_header" />
-
-    </LinearLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/search_activity_header"
+        app:navigationIcon="@drawable/ic_back"
+        app:titleTextAppearance="@style/AppCompatToolBar" />
 
     <FrameLayout
         android:layout_width="match_parent"

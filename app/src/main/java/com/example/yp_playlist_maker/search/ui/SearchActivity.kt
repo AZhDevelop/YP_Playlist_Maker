@@ -72,7 +72,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         // Закрываем Activity
-        binding.iwBack.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             finish()
         }
 
