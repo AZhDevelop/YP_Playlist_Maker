@@ -33,7 +33,7 @@ class FavouritesFragment: Fragment() {
                     showEmptyMediaError()
                 }
                 else -> {
-                    binding.tvPlaceholder.text = EMPTY_MEDIA //Пока как заглушка
+                    binding.tvPlaceholder.text = getString(R.string.empty_media) //Пока как заглушка
                 }
             }
         }
@@ -41,14 +41,12 @@ class FavouritesFragment: Fragment() {
 
     private fun showEmptyMediaError() {
         binding.apply {
-            tvPlaceholder.text = EMPTY_MEDIA
+            tvPlaceholder.text = getString(R.string.empty_media)
             imgPlaceholder.setImageResource(R.drawable.img_search_error)
         }
     }
 
     companion object {
-        private const val EMPTY_MEDIA = "Ваша медиатека пуста"
-
         fun newInstance() = FavouritesFragment()
     }
 

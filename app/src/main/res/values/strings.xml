@@ -21,6 +21,11 @@
 
     <!-- Экран медиа -->
     <string name="media_activity_back">Назад</string>
+    <string name="favourite_tracks">Избранные треки</string>
+    <string name="playlists">Плейлисты</string>
+    <string name="empty_media">Ваша медиатека пуста</string>
+    <string name="no_playlists">Вы не создали ни\nодного плейлиста</string>
+    <string name="new_playlist">Новый плейлист</string>
 
     <!-- Экран настроек -->
     <string name="settings_activity_dark_mode">Темная тема</string>

@@ -33,7 +33,7 @@ class PlaylistsFragment : Fragment() {
                     showNoPlaylistsError()
                 }
                 else -> {
-                    binding.tvPlaceholder.text = NO_PLAYLISTS //Пока как заглушка
+                    binding.tvPlaceholder.text = getString(R.string.no_playlists) //Пока как заглушка
                 }
             }
         }
@@ -41,16 +41,13 @@ class PlaylistsFragment : Fragment() {
 
     private fun showNoPlaylistsError() {
         binding.apply {
-            tvPlaceholder.text = NO_PLAYLISTS
-            btnPlaceholder.text = NEW_PLAYLIST
+            tvPlaceholder.text = getString(R.string.no_playlists)
+            btnPlaceholder.text = getString(R.string.new_playlist)
             imgPlaceholder.setImageResource(R.drawable.img_search_error)
         }
     }
 
     companion object {
-        private const val NO_PLAYLISTS = "Вы не создали ни\nодного плейлиста"
-        private const val NEW_PLAYLIST = "Новый плейлист"
-
         fun newInstance() = PlaylistsFragment()
     }
 

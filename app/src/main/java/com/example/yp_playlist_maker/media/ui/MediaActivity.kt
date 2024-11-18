@@ -2,6 +2,7 @@ package com.example.yp_playlist_maker.media.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.ActivityMediaBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -23,8 +24,8 @@ class MediaActivity : AppCompatActivity() {
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when(position) {
-                0 -> tab.text = FAVOURITE_TRACKS
-                else -> tab.text = PLAYLISTS
+                0 -> tab.text = getString(R.string.favourite_tracks)
+                else -> tab.text = getString(R.string.playlists)
             }
         }
         tabMediator.attach()
@@ -33,10 +34,5 @@ class MediaActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         tabMediator.detach()
-    }
-
-    companion object {
-        private const val FAVOURITE_TRACKS = "Избранные треки"
-        private const val PLAYLISTS = "Плейлисты"
     }
 }
