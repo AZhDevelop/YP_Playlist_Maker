@@ -29,7 +29,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.play.setOnClickListener { viewModel.playbackControl() }
 
-        binding.iwBack.setOnClickListener { finish() }
+        binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
     override fun onStop() {
