@@ -177,12 +177,12 @@ class SearchActivity : AppCompatActivity() {
                 binding.rvTrack.visible()
             }
             State.SearchState.SEARCH_ERROR -> {
-                showError(SEARCH_ERROR_MESSAGE)
-                onRestoreError = SEARCH_ERROR_MESSAGE
+                showError(getString(R.string.nothing_found))
+                onRestoreError = getString(R.string.nothing_found)
             }
             State.SearchState.CONNECTION_ERROR -> {
-                showError(CONNECTION_ERROR_MESSAGE)
-                onRestoreError = CONNECTION_ERROR_MESSAGE
+                showError(getString(R.string.connection_error))
+                onRestoreError = getString(R.string.connection_error)
             }
         }
     }
@@ -218,13 +218,13 @@ class SearchActivity : AppCompatActivity() {
         binding.progressBar.gone()
         binding.placeholder.visible()
         when (error) {
-            SEARCH_ERROR_MESSAGE -> {
-                binding.placeholderMessage.text = SEARCH_ERROR_MESSAGE
+            getString(R.string.nothing_found) -> {
+                binding.placeholderMessage.text = getString(R.string.nothing_found)
                 binding.imgSearchError.setImageResource(R.drawable.img_search_error)
                 binding.btnReload.gone()
             }
-            CONNECTION_ERROR_MESSAGE -> {
-                binding.placeholderMessage.text = CONNECTION_ERROR_MESSAGE
+            getString(R.string.connection_error) -> {
+                binding.placeholderMessage.text = getString(R.string.connection_error)
                 binding.imgSearchError.setImageResource(R.drawable.img_connection_error)
                 binding.btnReload.visible()
             }
@@ -273,9 +273,5 @@ class SearchActivity : AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""
-
-        private const val CONNECTION_ERROR_MESSAGE =
-            "Проблемы со связью\nЗагрузка не удалась\nПроверьте подключение к интернету"
-        private const val SEARCH_ERROR_MESSAGE = "Ничего не нашлось"
     }
 }
