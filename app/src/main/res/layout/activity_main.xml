@@ -7,7 +7,7 @@
     android:background="@color/menu_background"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         style="@style/MainToolBar"
         app:title="@string/main_activity_header" />
