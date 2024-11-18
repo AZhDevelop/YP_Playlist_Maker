@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- All Activities -->
+    <style name="ToolBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="titleTextAppearance">@style/ToolBarText</item>
+        <item name="titleTextColor">@color/yp_black</item>
+    </style>
+
+    <style name="ToolBarText">
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/font_size_base_22</item>
+    </style>
+
+    <!-- MainActivity -->
     <style name="MainScreenButton" parent="Widget.Material3.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/btn_height_0</item>
@@ -9,56 +23,39 @@
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/yp_black</item>
         <item name="android:textSize">@dimen/font_size_base_22</item>
         <item name="cornerRadius">@dimen/btn_corner_radius_16</item>
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/icon_padding_8</item>
-        <item name="iconTint">@color/black</item>
+        <item name="iconTint">@color/yp_black</item>
         <item name="android:insetTop">@dimen/btn_inset_0</item>
         <item name="android:insetBottom">@dimen/btn_inset_0</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
-    <style name="ToolBar">
+    <style name="MainToolBar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/toolbar_high_56</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="titleTextAppearance">@style/ToolBarText</item>
+        <item name="titleTextColor">@color/white</item>
     </style>
 
-    <style name="ToolBarIcon">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">@dimen/margin_base_16</item>
-    </style>
-
-    <style name="ToolBarText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="fontFamily">@font/ys_display_medium</item>
-        <item name="android:layout_marginStart">@dimen/toolbar_margin_start_24</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/font_size_base_22</item>
+    <!-- SettingsActivity -->
+    <style name="Switcher">
+        <item name="colorAccent">@color/yp_blue</item>
     </style>
 
     <style name="SettingsMenuText">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">start|center_vertical</item>
-        <item name="android:layout_marginStart">@dimen/margin_base_16</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingHorizontal">@dimen/margin_base_16</item>
+        <item name="android:paddingVertical">20dp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/font_size_list_16</item>
         <item name="fontFamily">@font/ys_display_regular</item>
     </style>
-
-    <style name="SettingsMenuIcon">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">end|center_vertical</item>
-        <item name="android:layout_marginEnd">@dimen/margin_base_16</item>
-    </style>
-
 
     <!-- SearchActivity -->
     <style name="SearchMenuIcon">
@@ -81,7 +78,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:textSize">@dimen/font_size_list_16</item>
         <item name="android:textColorHint">@color/search_hint</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/yp_black</item>
     </style>
 
     <style name="TrackName">
@@ -111,7 +108,7 @@
         <item name="android:layout_marginTop">@dimen/margin_base_16</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/yp_black</item>
         <item name="android:textSize">19sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -120,7 +117,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">36dp</item>
         <item name="android:layout_marginHorizontal">@dimen/margin_base_16</item>
-        <item name="android:backgroundTint">@color/black</item>
+        <item name="android:backgroundTint">@color/yp_black</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/white</item>
@@ -133,7 +130,7 @@
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
-    <style name="track_main_information">
+    <style name="TrackMainInformation">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
@@ -143,7 +140,7 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <style name="track_other_information">
+    <style name="TrackOtherInformation">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:gravity">center_vertical</item>
@@ -153,6 +150,44 @@
         <item name="layout_constrainedWidth">true</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
+    </style>
+
+    <!-- MediaActivity-->
+    <style name="TabStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="tabTextColor">@color/yp_black</item>
+        <item name="tabIndicatorColor">@color/yp_black</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="TabText" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+
+    <style name="PlaceholderMessage">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/margin_base_16</item>
+        <item name="android:textColor">@color/yp_black</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">19sp</item>
+    </style>
+
+    <style name="PlaceholderButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/btn_height_36</item>
+        <item name="android:layout_marginTop">34dp</item>
+        <item name="android:backgroundTint">@color/yp_black</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="cornerRadius">54dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
 </resources>

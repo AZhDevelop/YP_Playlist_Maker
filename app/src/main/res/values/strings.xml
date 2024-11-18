@@ -14,13 +14,18 @@
     <string name="search_activity_clear">Очистить</string>
     <string name="point_divider">Точка разделитель</string>
     <string name="nothing_found">Ничего не нашлось</string>
-    <string name="connection_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="connection_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
     <string name="search_history">Вы искали</string>
     <string name="clear_history">Очистить историю</string>
     <string name="update">Обновить</string>
 
     <!-- Экран медиа -->
     <string name="media_activity_back">Назад</string>
+    <string name="favourite_tracks">Избранные треки</string>
+    <string name="playlists">Плейлисты</string>
+    <string name="empty_media">Ваша медиатека пуста</string>
+    <string name="no_playlists">Вы не создали ни\nодного плейлиста</string>
+    <string name="new_playlist">Новый плейлист</string>
 
     <!-- Экран настроек -->
     <string name="settings_activity_dark_mode">Темная тема</string>
@@ -36,6 +41,7 @@
     <string name="track_year">Год</string>
     <string name="track_genre">Жанр</string>
     <string name="track_country">Страна</string>
+    <string name="default_time">00:00</string>
 
     <!-- Ссылки -->
     <string name="license_agreement_link">https://yandex.ru/legal/practicum_offer</string>

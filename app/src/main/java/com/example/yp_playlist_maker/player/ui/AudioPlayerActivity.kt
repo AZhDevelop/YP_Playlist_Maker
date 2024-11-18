@@ -29,7 +29,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.play.setOnClickListener { viewModel.playbackControl() }
 
-        binding.iwBack.setOnClickListener { finish() }
+        binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
     override fun onStop() {
@@ -87,7 +87,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
             State.PlayerState.COMPLETED -> {
                 binding.play.setBackgroundResource(R.drawable.btn_play)
-                binding.playTime.text = DEFAULT_TIME
+                binding.playTime.text = getString(R.string.default_time)
             }
             State.PlayerState.START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
             State.PlayerState.PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
@@ -95,7 +95,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val DEFAULT_TIME: String = "00:00"
         private const val PLAYER_IMAGE_RADIUS: Int = 8
         private const val ALPHA_25 = 0.25F
         private const val ALPHA_100 = 1F

@@ -27,22 +27,22 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // Кнопка назад
-        binding.iwBack.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             finish()
         }
 
         // Поделиться приложением
-        binding.flShare.setOnClickListener {
+        binding.mtvShare.setOnClickListener {
             viewModel.share(this)
         }
 
         // Написать в поддержку
-        binding.flContactSupport.setOnClickListener {
+        binding.mtvContactSupport.setOnClickListener {
             viewModel.contact(this)
         }
 
         // Лицензионное соглашение
-        binding.flLicenseAgreement.setOnClickListener {
+        binding.mtvLicenseAgreement.setOnClickListener {
             viewModel.getLicenseAgreement(this)
         }
 
