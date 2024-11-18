@@ -8,11 +8,9 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/ToolBar"
         app:navigationIcon="@drawable/ic_back"
-        app:title="@string/media_activity_header"
-        app:titleTextAppearance="@style/AppCompatToolBar" />
+        app:title="@string/media_activity_header" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
