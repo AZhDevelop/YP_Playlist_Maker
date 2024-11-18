@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:theme="@style/Base.Theme.YP_Playlist_Maker"
     android:background="@color/main_background">
 
     <androidx.appcompat.widget.Toolbar
@@ -18,21 +17,6 @@
         app:titleTextAppearance="@style/AppCompatToolBar" >
 
     </androidx.appcompat.widget.Toolbar>
-
-<!--    <LinearLayout style="@style/ToolBar"-->
-<!--        tools:ignore="UseCompoundDrawables">-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/iw_back"-->
-<!--            style="@style/ToolBarIcon"-->
-<!--            android:contentDescription="@string/media_activity_back"-->
-<!--            android:src="@drawable/ic_back" />-->
-
-<!--        <TextView-->
-<!--            style="@style/ToolBarText"-->
-<!--            android:text="@string/settings_activity_header" />-->
-
-<!--    </LinearLayout>-->
 
     <Switch
         android:id="@+id/theme_switcher"

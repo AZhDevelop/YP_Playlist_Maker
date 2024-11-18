@@ -16,7 +16,7 @@ class MediaActivity : AppCompatActivity() {
         binding = ActivityMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.iwBack.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             finish()
         }
 
