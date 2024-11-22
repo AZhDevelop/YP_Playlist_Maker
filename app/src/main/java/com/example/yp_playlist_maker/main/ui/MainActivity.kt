@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.ActivityMainBinding
-import com.example.yp_playlist_maker.media.ui.MediaFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,21 +17,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.commit {
-//                this.add(R.id.main, SettingsFragment())
-//            }
-//        }
-
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.commit {
-//                this.add(R.id.main, SearchFragment())
-//            }
-//        }
-
         if (savedInstanceState == null) {
             supportFragmentManager.commit {
-                this.add(R.id.main, MediaFragment())
+                this.add(R.id.main, MainFragment())
             }
         }
 

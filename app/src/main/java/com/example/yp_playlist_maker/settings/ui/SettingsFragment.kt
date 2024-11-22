@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.yp_playlist_maker.app.App
 import com.example.yp_playlist_maker.databinding.FragmentSettingsBinding
+import com.example.yp_playlist_maker.search.ui.SearchFragment
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -50,6 +51,11 @@ class SettingsFragment: Fragment() {
         binding.mtvLicenseAgreement.setOnClickListener {
             viewModel.getLicenseAgreement(requireContext())
         }
+    }
+
+    companion object {
+        fun newInstance() = SettingsFragment()
+        const val TAG = "SettingsFragment"
     }
 
 }

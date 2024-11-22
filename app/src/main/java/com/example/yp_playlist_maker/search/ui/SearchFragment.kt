@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -200,19 +201,6 @@ class SearchFragment: Fragment() {
         }
     }
 
-//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-//        super.onRestoreInstanceState(savedInstanceState)
-//        savedSearchText =
-//            savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
-//        handler.removeCallbacks(searchRunnable)
-//        if (binding.etSearch.text.isNotEmpty() && onRestoreError.isEmpty()) {
-//            binding.rvTrack.visible()
-//        } else if (binding.etSearch.text.isNotEmpty() && onRestoreError.isNotEmpty()) {
-//            showError(onRestoreError)
-//            onRestoreError = EMPTY_STRING
-//        }
-//    }
-
     // Поиск песен
     private fun search() {
         viewModel.search(binding.etSearch.text.toString())
@@ -277,6 +265,9 @@ class SearchFragment: Fragment() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""
+
+        fun newInstance() = SearchFragment()
+        const val TAG = "SearchFragment"
     }
 
 }
