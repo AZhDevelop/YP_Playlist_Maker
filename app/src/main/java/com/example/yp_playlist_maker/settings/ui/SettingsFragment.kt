@@ -1,50 +1,55 @@
 package com.example.yp_playlist_maker.settings.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.yp_playlist_maker.app.App
-import com.example.yp_playlist_maker.databinding.ActivitySettingsBinding
+import com.example.yp_playlist_maker.databinding.FragmentSettingsBinding
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment: Fragment() {
 
-    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var binding: FragmentSettingsBinding
     private val viewModel by viewModel<SettingsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // Достаем значение true или false из памяти и меняем состояние Switch
         binding.themeSwitcher.isChecked = viewModel.getAppTheme()
 
         // Переключаем тему с помощью Switch и сохраняем значение в памяти
         binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            (applicationContext as App).switchTheme(checked)
+            (requireContext().applicationContext as App).switchTheme(checked)
             viewModel.saveAppTheme(checked)
-        }
-
-        // Кнопка назад
-        binding.toolbar.setNavigationOnClickListener {
-            finish()
         }
 
         // Поделиться приложением
         binding.mtvShare.setOnClickListener {
-            viewModel.share(this)
+            viewModel.share(requireContext())
         }
 
         // Написать в поддержку
         binding.mtvContactSupport.setOnClickListener {
-            viewModel.contact(this)
+            viewModel.contact(requireContext())
         }
 
         // Лицензионное соглашение
         binding.mtvLicenseAgreement.setOnClickListener {
-            viewModel.getLicenseAgreement(this)
+            viewModel.getLicenseAgreement(requireContext())
         }
-
     }
+
 }
