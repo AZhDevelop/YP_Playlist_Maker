@@ -6,27 +6,29 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.hideKeyboard
 import com.example.yp_playlist_maker.app.invisible
 import com.example.yp_playlist_maker.app.visible
-import com.example.yp_playlist_maker.databinding.ActivitySearchBinding
+import com.example.yp_playlist_maker.databinding.FragmentSearchBinding
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.util.State
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment: Fragment() {
 
-    private val viewModel by viewModel<SearchViewModel>()
-    private lateinit var binding: ActivitySearchBinding
+    private lateinit var binding: FragmentSearchBinding
     private lateinit var textWatcher: TextWatcher
+    private val viewModel by viewModel<SearchViewModel>()
     private var savedSearchText: String = EMPTY_STRING
     private val adapter = TrackAdapter()
     private var updateTrackHistory: Boolean = false
@@ -35,10 +37,17 @@ class SearchActivity : AppCompatActivity() {
     private val searchRunnable = Runnable { if (binding.etSearch.text.isNotEmpty()) { search() } }
     private var isClickAllowed = true
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setSearchActivityViews()
         setRecyclerView()
@@ -71,11 +80,6 @@ class SearchActivity : AppCompatActivity() {
             search()
         }
 
-        // Закрываем Activity
-        binding.toolbar.setNavigationOnClickListener {
-            finish()
-        }
-
         // Очищаем строку и список песен при нажатии на кнопку
         binding.iwClear.setOnClickListener {
             viewModel.clearTrackList()
@@ -91,7 +95,7 @@ class SearchActivity : AppCompatActivity() {
         adapter.onTrackClick = {
             if (clickDebounce()) {
                 viewModel.saveClickedTrack(it)
-                val displayAudioPlayer = Intent(this, AudioPlayerActivity::class.java)
+                val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
                 displayAudioPlayer.apply {
                     putExtra(INTENT_PUTTED_TRACK, it)
                 }
@@ -115,7 +119,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setRecyclerView() {
-        binding.rvTrack.layoutManager = LinearLayoutManager(this)
+        binding.rvTrack.layoutManager = LinearLayoutManager(requireContext())
         binding.rvTrack.adapter = adapter
     }
 
@@ -156,11 +160,11 @@ class SearchActivity : AppCompatActivity() {
 
     // Инициализация наблюдателей viewModel
     private fun setSearchActivityObservers() {
-        viewModel.getSearchStatus().observe(this) { searchStatus ->
+        viewModel.getSearchStatus().observe(viewLifecycleOwner) { searchStatus ->
             handleSearchStatus(searchStatus)
         }
 
-        viewModel.getTrackListLiveData().observe(this) { trackListLiveData ->
+        viewModel.getTrackListLiveData().observe(viewLifecycleOwner) { trackListLiveData ->
             adapter.data = trackListLiveData
             adapter.notifyDataSetChanged()
         }
@@ -196,18 +200,18 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        savedSearchText =
-            savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
-        handler.removeCallbacks(searchRunnable)
-        if (binding.etSearch.text.isNotEmpty() && onRestoreError.isEmpty()) {
-            binding.rvTrack.visible()
-        } else if (binding.etSearch.text.isNotEmpty() && onRestoreError.isNotEmpty()) {
-            showError(onRestoreError)
-            onRestoreError = EMPTY_STRING
-        }
-    }
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//        savedSearchText =
+//            savedInstanceState.getString(getString(R.string.saved_text), savedSearchText)
+//        handler.removeCallbacks(searchRunnable)
+//        if (binding.etSearch.text.isNotEmpty() && onRestoreError.isEmpty()) {
+//            binding.rvTrack.visible()
+//        } else if (binding.etSearch.text.isNotEmpty() && onRestoreError.isNotEmpty()) {
+//            showError(onRestoreError)
+//            onRestoreError = EMPTY_STRING
+//        }
+//    }
 
     // Поиск песен
     private fun search() {
@@ -274,4 +278,5 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""
     }
+
 }
