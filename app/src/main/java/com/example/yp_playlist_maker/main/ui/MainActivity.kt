@@ -6,8 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.ActivityMainBinding
-import com.example.yp_playlist_maker.search.ui.SearchFragment
-import com.example.yp_playlist_maker.settings.ui.SettingsFragment
+import com.example.yp_playlist_maker.media.ui.MediaFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,9 +24,15 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.commit {
+//                this.add(R.id.main, SearchFragment())
+//            }
+//        }
+
         if (savedInstanceState == null) {
             supportFragmentManager.commit {
-                this.add(R.id.main, SearchFragment())
+                this.add(R.id.main, MediaFragment())
             }
         }
 
