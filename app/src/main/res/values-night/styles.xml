@@ -115,4 +115,23 @@
         <item name="android:letterSpacing">0</item>
     </style>
 
+    <!-- Bottom Navigation Menu-->
+    <style name="BottomNavigationMenu">
+        <item name="itemTextColor">@color/dark_theme_color_selector</item>
+        <item name="itemIconTint">@color/dark_theme_color_selector</item>
+        <item name="itemTextAppearanceActive">@style/ElementActive</item>
+        <item name="itemTextAppearanceInactive">@style/ElementInactive</item>
+        <item name="android:background">@color/yp_black</item>
+    </style>
+
+    <style name="ElementActive">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ElementInactive">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>
