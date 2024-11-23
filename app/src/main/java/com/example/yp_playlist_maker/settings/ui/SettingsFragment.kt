@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.yp_playlist_maker.app.App
 import com.example.yp_playlist_maker.databinding.FragmentSettingsBinding
-import com.example.yp_playlist_maker.search.ui.SearchFragment
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -27,6 +27,10 @@ class SettingsFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
         // Достаем значение true или false из памяти и меняем состояние Switch
         binding.themeSwitcher.isChecked = viewModel.getAppTheme()
@@ -51,11 +55,6 @@ class SettingsFragment: Fragment() {
         binding.mtvLicenseAgreement.setOnClickListener {
             viewModel.getLicenseAgreement(requireContext())
         }
-    }
-
-    companion object {
-        fun newInstance() = SettingsFragment()
-        const val TAG = "SettingsFragment"
     }
 
 }

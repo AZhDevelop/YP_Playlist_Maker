@@ -3,8 +3,6 @@ package com.example.yp_playlist_maker.main.ui
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
-import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -13,15 +11,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        if (savedInstanceState == null) {
-            supportFragmentManager.commit {
-                this.add(R.id.main, MainFragment())
-            }
-        }
 
     }
 }

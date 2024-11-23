@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.FragmentMediaBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -28,6 +29,10 @@ class MediaFragment: Fragment() {
 
         binding.viewPager.adapter = MediaViewPagerAdapter(childFragmentManager, lifecycle)
 
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when(position) {
                 0 -> tab.text = getString(R.string.favourite_tracks)
@@ -40,10 +45,5 @@ class MediaFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         tabMediator.detach()
-    }
-
-    companion object {
-        fun newInstance() = MediaFragment()
-        const val TAG = "MediaFragment"
     }
 }

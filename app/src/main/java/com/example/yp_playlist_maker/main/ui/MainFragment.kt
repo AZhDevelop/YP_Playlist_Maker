@@ -5,12 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.FragmentMainBinding
-import com.example.yp_playlist_maker.media.ui.MediaFragment
-import com.example.yp_playlist_maker.search.ui.SearchFragment
-import com.example.yp_playlist_maker.settings.ui.SettingsFragment
 
 class MainFragment: Fragment() {
 
@@ -29,36 +26,15 @@ class MainFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnSearch.setOnClickListener {
-            parentFragmentManager.commit {
-                replace(
-                    R.id.main,
-                    SearchFragment.newInstance(),
-                    SearchFragment.TAG
-                )
-                addToBackStack(SearchFragment.TAG)
-            }
+            findNavController().navigate(R.id.action_mainFragment_to_searchFragment)
         }
 
         binding.btnMedia.setOnClickListener {
-            parentFragmentManager.commit {
-                replace(
-                    R.id.main,
-                    MediaFragment.newInstance(),
-                    MediaFragment.TAG
-                )
-                addToBackStack(MediaFragment.TAG)
-            }
+            findNavController().navigate(R.id.action_mainFragment_to_mediaFragment)
         }
 
         binding.btnSettings.setOnClickListener {
-            parentFragmentManager.commit {
-                replace(
-                    R.id.main,
-                    SettingsFragment.newInstance(),
-                    SettingsFragment.TAG
-                )
-                addToBackStack(SettingsFragment.TAG)
-            }
+            findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
         }
     }
 

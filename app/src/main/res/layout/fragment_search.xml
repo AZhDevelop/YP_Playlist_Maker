@@ -11,6 +11,7 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
+        app:navigationIcon="@drawable/ic_back"
         style="@style/ToolBar"
         app:title="@string/search_activity_header" />
 
