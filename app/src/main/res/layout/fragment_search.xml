@@ -25,7 +25,7 @@
         <EditText
             android:id="@+id/et_search"
             style="@style/SearchBar"
-            android:autofillHints="fa"
+            android:autofillHints=""
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:textCursorDrawable="@drawable/ic_cursor"

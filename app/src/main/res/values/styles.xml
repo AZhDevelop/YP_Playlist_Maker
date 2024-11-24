@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- All Activities -->
+    <!-- All Fragments -->
     <style name="ToolBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -14,7 +14,7 @@
         <item name="android:textSize">@dimen/font_size_base_22</item>
     </style>
 
-    <!-- SettingsActivity -->
+    <!-- Settings Fragment -->
     <style name="Switcher">
         <item name="colorAccent">@color/yp_blue</item>
     </style>
@@ -30,7 +30,7 @@
         <item name="fontFamily">@font/ys_display_regular</item>
     </style>
 
-    <!-- SearchActivity -->
+    <!-- Search Fragment -->
     <style name="SearchMenuIcon">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -124,7 +124,7 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <!-- MediaActivity-->
+    <!-- Media Fragment -->
     <style name="TabStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
