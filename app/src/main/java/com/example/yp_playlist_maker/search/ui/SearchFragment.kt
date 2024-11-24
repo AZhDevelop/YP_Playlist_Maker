@@ -75,6 +75,7 @@ class SearchFragment: Fragment() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 checkPlaceholder()
                 search()
+                handler.removeCallbacks(searchRunnable)
             }
             false
         }
@@ -260,8 +261,12 @@ class SearchFragment: Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        Log.d("log", "restored")
+        if (binding.etSearch.text.isNotEmpty()) {
+            handler.removeCallbacks(searchRunnable)
+        }
         if (binding.etSearch.text.isEmpty()) {
             viewModel.resetSearchState()
         }

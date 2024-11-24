@@ -2,6 +2,7 @@ package com.example.yp_playlist_maker.search.ui.view_model
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -86,6 +87,7 @@ class SearchViewModel(
 
     fun resetSearchState() {
         searchState.value = State.SearchState.RESET
+        Log.d("log", "Search State Reseted")
     }
 
     // Работа с историей
