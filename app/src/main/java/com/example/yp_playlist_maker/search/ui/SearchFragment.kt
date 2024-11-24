@@ -50,9 +50,9 @@ class SearchFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setSearchActivityViews()
+        setSearchFragmentViews()
         setRecyclerView()
-        setSearchActivityObservers()
+        setSearchFragmentObservers()
 
         textWatcher = setTextWatcher()
 
@@ -93,7 +93,7 @@ class SearchFragment: Fragment() {
         binding.iwClear.setOnClickListener {
             viewModel.clearTrackList()
             binding.etSearch.setText(EMPTY_STRING)
-            binding.activitySearch.hideKeyboard()
+            binding.fragmentSearch.hideKeyboard()
         }
 
         binding.btnClearHistory.setOnClickListener {
@@ -116,7 +116,7 @@ class SearchFragment: Fragment() {
         }
     }
 
-    private fun setSearchActivityViews() {
+    private fun setSearchFragmentViews() {
         binding.apply {
             iwClear.invisible()
             placeholder.gone()
@@ -168,7 +168,7 @@ class SearchFragment: Fragment() {
     }
 
     // Инициализация наблюдателей viewModel
-    private fun setSearchActivityObservers() {
+    private fun setSearchFragmentObservers() {
         viewModel.getSearchStatus().observe(viewLifecycleOwner) { searchStatus ->
             handleSearchStatus(searchStatus)
         }
