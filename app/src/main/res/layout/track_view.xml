@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/line_high_64"
+    android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/margin_start_12"
-    android:background="?android:attr/selectableItemBackground">
+    android:paddingHorizontal="@dimen/margin_start_12">
 
     <ImageView
         android:id="@+id/track_image"
