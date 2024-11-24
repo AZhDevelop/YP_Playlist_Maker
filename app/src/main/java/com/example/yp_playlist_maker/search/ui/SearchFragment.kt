@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,7 +62,11 @@ class SearchFragment: Fragment() {
 
         binding.etSearch.addTextChangedListener(textWatcher)
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.etSearch.text.isEmpty() && viewModel.getTrackList().isNotEmpty()) {
+            if (hasFocus && binding.etSearch.text.isNotEmpty() && onRestoreError == EMPTY_STRING) {
+                binding.rvTrack.visible()
+            } else if (hasFocus && binding.etSearch.text.isNotEmpty() && onRestoreError != EMPTY_STRING) {
+                handler.removeCallbacks(searchRunnable)
+            } else if (hasFocus && binding.etSearch.text.isEmpty() && viewModel.getTrackList().isNotEmpty()) {
                 enableSearchHistoryVisibility(true)
             } else {
                 enableSearchHistoryVisibility(false)
@@ -167,7 +170,6 @@ class SearchFragment: Fragment() {
     // Инициализация наблюдателей viewModel
     private fun setSearchActivityObservers() {
         viewModel.getSearchStatus().observe(viewLifecycleOwner) { searchStatus ->
-            Log.d("log", "$searchStatus")
             handleSearchStatus(searchStatus)
         }
 
@@ -263,7 +265,6 @@ class SearchFragment: Fragment() {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        Log.d("log", "restored")
         if (binding.etSearch.text.isNotEmpty()) {
             handler.removeCallbacks(searchRunnable)
         }

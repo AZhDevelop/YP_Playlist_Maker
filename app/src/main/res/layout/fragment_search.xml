@@ -74,39 +74,31 @@
 
     </LinearLayout>
 
-    <ScrollView
+    <LinearLayout
         android:id="@+id/placeholder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginTop="@dimen/margin_top_102"
-        android:layout_marginBottom="@dimen/margin_base_16"
-        android:scrollbars="none">
+        android:layout_marginBottom="@dimen/margin_base_16">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/img_search_error"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            tools:src="@drawable/image_placeholder" />
 
-            <ImageView
-                android:id="@+id/img_search_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                tools:src="@drawable/image_placeholder" />
+        <TextView
+            android:id="@+id/placeholderMessage"
+            style="@style/InfoMessage"
+            android:text="@string/nothing_found" />
 
-            <TextView
-                android:id="@+id/placeholderMessage"
-                style="@style/InfoMessage"
-                android:text="@string/nothing_found" />
+        <Button
+            android:id="@+id/btn_reload"
+            style="@style/ReloadButton"
+            android:text="@string/update" />
 
-            <Button
-                android:id="@+id/btn_reload"
-                style="@style/ReloadButton"
-                android:text="@string/update" />
-
-        </LinearLayout>
-
-    </ScrollView>
+    </LinearLayout>
 
 </LinearLayout>
