@@ -8,7 +8,8 @@ object State {
         LOADING,
         SUCCESS,
         CONNECTION_ERROR,
-        SEARCH_ERROR
+        SEARCH_ERROR,
+        RESET
     }
 
     //Enum класс для состояния плеера

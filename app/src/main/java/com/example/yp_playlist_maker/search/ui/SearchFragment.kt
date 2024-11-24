@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,7 +53,6 @@ class SearchFragment: Fragment() {
 
         setSearchActivityViews()
         setRecyclerView()
-
         setSearchActivityObservers()
 
         textWatcher = setTextWatcher()
@@ -166,6 +166,7 @@ class SearchFragment: Fragment() {
     // Инициализация наблюдателей viewModel
     private fun setSearchActivityObservers() {
         viewModel.getSearchStatus().observe(viewLifecycleOwner) { searchStatus ->
+            Log.d("log", "$searchStatus")
             handleSearchStatus(searchStatus)
         }
 
@@ -192,6 +193,9 @@ class SearchFragment: Fragment() {
             State.SearchState.CONNECTION_ERROR -> {
                 showError(getString(R.string.connection_error))
                 onRestoreError = getString(R.string.connection_error)
+            }
+            State.SearchState.RESET -> {
+                checkPlaceholder()
             }
         }
     }
@@ -253,6 +257,13 @@ class SearchFragment: Fragment() {
     private fun checkPlaceholder() {
         if (binding.placeholder.isVisible) {
             binding.placeholder.gone()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (binding.etSearch.text.isEmpty()) {
+            viewModel.resetSearchState()
         }
     }
 
