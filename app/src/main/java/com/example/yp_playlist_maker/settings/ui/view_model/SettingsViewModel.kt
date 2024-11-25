@@ -4,14 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.settings.domain.api.AppThemeInteractor
 import com.example.yp_playlist_maker.settings.domain.models.AppThemeParams
+import com.example.yp_playlist_maker.util.State
 
 class SettingsViewModel(
     private val appTheme: AppThemeInteractor,
 ) : ViewModel() {
+
+    private val shareIntentStatus = MutableLiveData(State.ShareIntentState.NONACTIVE)
+    fun getShareIntentStatus(): LiveData<State.ShareIntentState> = shareIntentStatus
 
     fun getAppTheme() : Boolean {
         return appTheme.getAppTheme()
@@ -32,6 +38,11 @@ class SettingsViewModel(
         createChooser.addFlags(FLAG_ACTIVITY_NEW_TASK)
 
         context.startActivity(createChooser)
+        shareIntentStatus.value = State.ShareIntentState.ACTIVE
+    }
+
+    fun clearShareIntentStatus() {
+        shareIntentStatus.value = State.ShareIntentState.NONACTIVE
     }
 
     fun contact(context: Context) {

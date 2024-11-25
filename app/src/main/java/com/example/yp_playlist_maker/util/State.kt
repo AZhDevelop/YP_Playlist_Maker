@@ -25,4 +25,9 @@ object State {
         SUCCESS,
         ERROR
     }
+
+    enum class ShareIntentState {
+        ACTIVE,
+        NONACTIVE
+    }
 }

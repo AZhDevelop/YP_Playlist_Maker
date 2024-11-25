@@ -13,6 +13,7 @@ import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.App
 import com.example.yp_playlist_maker.databinding.FragmentSettingsBinding
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
+import com.example.yp_playlist_maker.util.State
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment: Fragment() {
@@ -32,7 +33,7 @@ class SettingsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val rootView = requireView()
+        setSearchFragmentObservers()
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
@@ -64,13 +65,18 @@ class SettingsFragment: Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        setBaseFragmentBackground()
+    private fun setSearchFragmentObservers() {
+        viewModel.getShareIntentStatus().observe(viewLifecycleOwner) { shareStatus ->
+            when (shareStatus) {
+                State.ShareIntentState.ACTIVE -> setFragmentBackgroundOnPause()
+                State.ShareIntentState.NONACTIVE -> setBaseFragmentBackground()
+                null -> Unit
+            }
+        }
     }
 
     private fun setFragmentBackgroundOnPause() {
-        if (compareBackground(requireView())) {
+        if (compareBackground()) {
             binding.fragmentSettings.setBackgroundColor(TRANSPARENT_BACKGROUND)
         } else {
             binding.fragmentSettings.background.alpha = ALPHA_BACKGROUND
@@ -81,13 +87,18 @@ class SettingsFragment: Fragment() {
         binding.fragmentSettings.setBackgroundColor(requireContext().getColor(R.color.main_background))
     }
 
-    private fun compareBackground(view: View) : Boolean {
-        val background = view.background
+    private fun compareBackground() : Boolean {
+        val background = requireView().background
         if (background is ColorDrawable) {
             val currentValue = background.color
             return currentValue == LIGHT_BACKGROUND
         }
         return false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.clearShareIntentStatus()
     }
 
     companion object {
