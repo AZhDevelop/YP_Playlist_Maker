@@ -2,7 +2,6 @@ package com.example.yp_playlist_maker.settings.ui
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +12,13 @@ import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.App
 import com.example.yp_playlist_maker.databinding.FragmentSettingsBinding
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
-import com.example.yp_playlist_maker.util.State
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment: Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding
     private val viewModel by viewModel<SettingsViewModel>()
+    private var shareIntentActive: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +49,6 @@ class SettingsFragment: Fragment() {
 
         // Поделиться приложением
         binding.mtvShare.setOnClickListener {
-            setFragmentBackgroundOnPause()
             viewModel.share(requireContext())
         }
 
@@ -66,12 +64,17 @@ class SettingsFragment: Fragment() {
     }
 
     private fun setSearchFragmentObservers() {
-        viewModel.getShareIntentStatus().observe(viewLifecycleOwner) { shareStatus ->
-            when (shareStatus) {
-                State.ShareIntentState.ACTIVE -> setFragmentBackgroundOnPause()
-                State.ShareIntentState.NONACTIVE -> setBaseFragmentBackground()
-                null -> Unit
-            }
+        viewModel.getShareIntentIsActive().observe(viewLifecycleOwner) { shareIntentStatus ->
+            handleShareIntentStatus(shareIntentStatus)
+            shareIntentActive = shareIntentStatus
+        }
+    }
+
+    private fun handleShareIntentStatus(shareIntentStatus: Boolean) {
+        if (shareIntentStatus) {
+            setFragmentBackgroundOnPause()
+        } else {
+            setBaseFragmentBackground()
         }
     }
 
@@ -98,7 +101,9 @@ class SettingsFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.clearShareIntentStatus()
+        if (shareIntentActive) {
+            viewModel.clearShareIntentStatus()
+        }
     }
 
     companion object {
@@ -106,5 +111,4 @@ class SettingsFragment: Fragment() {
         private val LIGHT_BACKGROUND = R.color.white
         private const val ALPHA_BACKGROUND = 127
     }
-
 }
