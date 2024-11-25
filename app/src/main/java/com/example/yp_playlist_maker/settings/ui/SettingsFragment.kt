@@ -1,11 +1,15 @@
 package com.example.yp_playlist_maker.settings.ui
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.App
 import com.example.yp_playlist_maker.databinding.FragmentSettingsBinding
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
@@ -28,6 +32,8 @@ class SettingsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val rootView = requireView()
+
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -43,6 +49,7 @@ class SettingsFragment: Fragment() {
 
         // Поделиться приложением
         binding.mtvShare.setOnClickListener {
+            setFragmentBackgroundOnPause()
             viewModel.share(requireContext())
         }
 
@@ -55,6 +62,38 @@ class SettingsFragment: Fragment() {
         binding.mtvLicenseAgreement.setOnClickListener {
             viewModel.getLicenseAgreement(requireContext())
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setBaseFragmentBackground()
+    }
+
+    private fun setFragmentBackgroundOnPause() {
+        if (compareBackground(requireView())) {
+            binding.fragmentSettings.setBackgroundColor(TRANSPARENT_BACKGROUND)
+        } else {
+            binding.fragmentSettings.background.alpha = ALPHA_BACKGROUND
+        }
+    }
+
+    private fun setBaseFragmentBackground() {
+        binding.fragmentSettings.setBackgroundColor(requireContext().getColor(R.color.main_background))
+    }
+
+    private fun compareBackground(view: View) : Boolean {
+        val background = view.background
+        if (background is ColorDrawable) {
+            val currentValue = background.color
+            return currentValue == LIGHT_BACKGROUND
+        }
+        return false
+    }
+
+    companion object {
+        private val TRANSPARENT_BACKGROUND = Color.argb(0.5F, 26F, 27F, 34F)
+        private val LIGHT_BACKGROUND = R.color.white
+        private const val ALPHA_BACKGROUND = 127
     }
 
 }
