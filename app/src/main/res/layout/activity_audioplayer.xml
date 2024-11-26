@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_background">
+    android:background="@color/main_background"
+    tools:context="com.example.yp_playlist_maker.player.ui.AudioPlayerActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -42,9 +43,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:navigationIcon="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="@id/left_border_16"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_back" />
 
         <ImageView
             android:id="@+id/track_image"
@@ -62,10 +63,10 @@
             style="@style/TrackMainInformation"
             android:layout_marginTop="24dp"
             android:textSize="22sp"
-            app:layout_constraintStart_toEndOf="@id/left_border_24"
             app:layout_constraintEnd_toStartOf="@id/right_border_24"
-            app:layout_constraintTop_toBottomOf="@id/track_image"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/left_border_24"
+            app:layout_constraintTop_toBottomOf="@id/track_image"
             tools:text="Название песни" />
 
         <TextView
@@ -73,10 +74,10 @@
             style="@style/TrackMainInformation"
             android:layout_marginTop="12dp"
             android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/left_border_24"
             app:layout_constraintEnd_toStartOf="@id/right_border_24"
-            app:layout_constraintTop_toBottomOf="@id/track_name"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/left_border_24"
+            app:layout_constraintTop_toBottomOf="@id/track_name"
             tools:text="Название исполнителя" />
 
         <ImageView
@@ -93,11 +94,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_play"
+            android:enabled="false"
             app:layout_constraintBottom_toBottomOf="@id/add_to_playlist"
             app:layout_constraintEnd_toStartOf="@id/like"
             app:layout_constraintStart_toEndOf="@id/add_to_playlist"
-            app:layout_constraintTop_toTopOf="@id/add_to_playlist"
-            android:enabled="false"/>
+            app:layout_constraintTop_toTopOf="@id/add_to_playlist" />
 
         <ImageView
             android:id="@+id/like"
@@ -145,12 +146,12 @@
         <TextView
             android:id="@+id/album_value"
             style="@style/TrackOtherInformation"
-            android:textColor="@color/track_value_color"
-            app:layout_constraintStart_toEndOf="@id/duration_text"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintEnd_toStartOf="@id/right_border_16"
-            app:layout_constraintTop_toBottomOf="@id/duration_value"
             android:layout_marginStart="10dp"
+            android:textColor="@color/track_value_color"
+            app:layout_constraintEnd_toStartOf="@id/right_border_16"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/duration_text"
+            app:layout_constraintTop_toBottomOf="@id/duration_value"
             tools:text="Альбом" />
 
         <TextView

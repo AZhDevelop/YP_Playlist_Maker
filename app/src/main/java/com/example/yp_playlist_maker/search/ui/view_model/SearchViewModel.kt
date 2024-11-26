@@ -84,6 +84,10 @@ class SearchViewModel(
         }
     }
 
+    fun resetSearchState() {
+        searchState.value = State.SearchState.RESET
+    }
+
     // Работа с историей
     fun clearHistory() {
         searchHistoryService.clearHistory()
