@@ -9,6 +9,7 @@ import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
 import com.example.yp_playlist_maker.util.State
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -20,8 +21,8 @@ class AudioPlayerViewModel(
     private val trackExtra: Track?
 ) : ViewModel() {
 
-    private var trackTime: String = ""
-    private var isReceivingCallbacks: Boolean = false
+    private var trackTime: String = EMPTY_STRING
+    private var updateTrackTimeJob: Job? = null
 
     private val audioPlayerStatus = MutableLiveData(State.PlayerState.LOADING)
     fun getAudioPlayerStatus(): LiveData<State.PlayerState> = audioPlayerStatus
@@ -62,7 +63,8 @@ class AudioPlayerViewModel(
                 onPrepare = { audioPlayerStatus.value = State.PlayerState.PREPARED },
                 onComplete = {
                     audioPlayerStatus.value = State.PlayerState.COMPLETED
-                    isReceivingCallbacks = false
+                    updateTrackTimeJob?.cancel()
+                    currentTime.value = DEFAULT_TIME
                 }
             )
         }
@@ -72,12 +74,11 @@ class AudioPlayerViewModel(
         playTrackService.playbackControl(
             onStart = {
                 audioPlayerStatus.value = State.PlayerState.START
-                isReceivingCallbacks = true
                 updateTrackTime()
             },
             onPause = {
                 audioPlayerStatus.value = State.PlayerState.PAUSE
-                isReceivingCallbacks = false
+                updateTrackTimeJob?.cancel()
             }
         )
     }
@@ -86,7 +87,7 @@ class AudioPlayerViewModel(
         playTrackService.pausePlayer(
             onPause = {
                 audioPlayerStatus.value = State.PlayerState.PAUSE
-                isReceivingCallbacks = false
+                updateTrackTimeJob?.cancel()
             }
         )
     }
@@ -97,18 +98,13 @@ class AudioPlayerViewModel(
     }
 
     private fun updateTrackTime() {
-        viewModelScope.launch {
-            while (isReceivingCallbacks) {
+        updateTrackTimeJob = viewModelScope.launch {
+            while (audioPlayerStatus.value == State.PlayerState.START) {
                 delay(MILLIS_500)
                 trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
                     .format(playTrackService.getTrackCurrentTime())
                     .toString()
-                if (audioPlayerStatus.value != State.PlayerState.COMPLETED) {
-                    currentTime.value = trackTime
-                } else {
-                    currentTime.value = DEFAULT_TIME
-                }
-                Log.d("trackTime", trackTime)
+                currentTime.value = trackTime
             }
         }
     }
