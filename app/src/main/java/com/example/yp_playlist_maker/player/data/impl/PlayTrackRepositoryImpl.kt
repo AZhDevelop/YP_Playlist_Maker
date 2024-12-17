@@ -1,24 +1,24 @@
 package com.example.yp_playlist_maker.player.data.impl
 
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayTrackRepositoryImpl(private val mediaPlayer: MediaPlayer): PlayTrackRepository {
 
     private var playerState = STATE_DEFAULT
-    private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
-    private var trackTime: String = ""
-    private var receiveCallbacks = true
 
     override fun preparePlayer(
         url: String,
         onPrepare: () -> Unit,
-        onComplete: () -> Unit,
-        onTimeUpdate: (String) -> Unit
+        onComplete: () -> Unit
     ) {
         mediaPlayer.apply {
             reset()
@@ -31,13 +31,11 @@ class PlayTrackRepositoryImpl(private val mediaPlayer: MediaPlayer): PlayTrackRe
             setOnCompletionListener {
                 onComplete.invoke()
                 playerState = STATE_PREPARED
-                threadRemoveCallbacks(onTimeUpdate)
             }
         }
     }
 
     override fun startPlayer(onStart: () -> Unit) {
-        receiveCallbacks = true
         mediaPlayer.start()
         playerState = STATE_PLAYING
         onStart.invoke()
@@ -51,18 +49,15 @@ class PlayTrackRepositoryImpl(private val mediaPlayer: MediaPlayer): PlayTrackRe
 
     override fun playbackControl(
         onStart: () -> Unit,
-        onPause: () -> Unit,
-        onTimeUpdate: (String) -> Unit
+        onPause: () -> Unit
     ) {
         when (playerState) {
             STATE_PLAYING -> {
                 pausePlayer(onPause)
-                threadRemoveCallbacks(onTimeUpdate)
             }
 
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer(onStart)
-                threadPost(onTimeUpdate)
             }
         }
     }
@@ -71,23 +66,8 @@ class PlayTrackRepositoryImpl(private val mediaPlayer: MediaPlayer): PlayTrackRe
         mediaPlayer.release()
     }
 
-    override fun threadRemoveCallbacks(onTimeUpdate: (String) -> Unit) {
-        mainThreadHandler.removeCallbacks { threadPostDelayed(onTimeUpdate) }
-        receiveCallbacks = false
-    }
-
-    override fun threadPostDelayed(onTimeUpdate: (String) -> Unit) {
-        if (receiveCallbacks) {
-            trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
-                .format(mediaPlayer.currentPosition)
-                .toString()
-            onTimeUpdate.invoke(trackTime)
-            mainThreadHandler.postDelayed({ threadPostDelayed(onTimeUpdate) }, MILLIS_500)
-        }
-    }
-
-    override fun threadPost(onTimeUpdate: (String) -> Unit) {
-        mainThreadHandler.post { threadPostDelayed(onTimeUpdate) }
+    override fun getTrackCurrentTime(): Int {
+        return mediaPlayer.currentPosition
     }
 
     companion object {
@@ -95,7 +75,6 @@ class PlayTrackRepositoryImpl(private val mediaPlayer: MediaPlayer): PlayTrackRe
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-        private const val MILLIS_500 = 500L
     }
 
 }

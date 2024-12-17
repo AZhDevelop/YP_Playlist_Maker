@@ -1,21 +1,33 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
 import com.example.yp_playlist_maker.util.State
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
     private val trackExtra: Track?
 ) : ViewModel() {
 
-    fun getRoundedCorners(playerImageRadius: Int) : Int {
-        return Converter.dpToPx(playerImageRadius)
-    }
+    private var trackTime: String = ""
+    private var isReceivingCallbacks: Boolean = false
+
+    private val audioPlayerStatus = MutableLiveData(State.PlayerState.LOADING)
+    fun getAudioPlayerStatus(): LiveData<State.PlayerState> = audioPlayerStatus
+
+    private val currentTime = MutableLiveData<String>()
+    fun getCurrentTime(): LiveData<String> = currentTime
 
     private val trackData = MutableLiveData<Track>()
     fun getTrackData(): LiveData<Track> = trackData
@@ -40,48 +52,75 @@ class AudioPlayerViewModel(
 
     init {
         setTrackData()
+        currentTime.value = DEFAULT_TIME
     }
-
-    private val audioPlayerStatus = MutableLiveData(State.PlayerState.LOADING)
-    fun getAudioPlayerStatus(): LiveData<State.PlayerState> = audioPlayerStatus
-
-    private val currentTime = MutableLiveData<String>()
-    fun getCurrentTime(): LiveData<String> = currentTime
 
     fun preparePlayer() {
         trackData.value?.let {
             playTrackService.preparePlayer(
                 it.previewUrl,
                 onPrepare = { audioPlayerStatus.value = State.PlayerState.PREPARED },
-                onComplete = { audioPlayerStatus.value = State.PlayerState.COMPLETED },
-                onTimeUpdate = { time -> currentTime.value = time }
+                onComplete = {
+                    audioPlayerStatus.value = State.PlayerState.COMPLETED
+                    isReceivingCallbacks = false
+                }
             )
         }
     }
 
     fun playbackControl() {
         playTrackService.playbackControl(
-            onStart = { audioPlayerStatus.value = State.PlayerState.START },
-            onTimeUpdate = { time -> currentTime.value = time },
-            onPause = { audioPlayerStatus.value = State.PlayerState.PAUSE }
+            onStart = {
+                audioPlayerStatus.value = State.PlayerState.START
+                isReceivingCallbacks = true
+                updateTrackTime()
+            },
+            onPause = {
+                audioPlayerStatus.value = State.PlayerState.PAUSE
+                isReceivingCallbacks = false
+            }
         )
     }
 
     fun pausePlayer() {
         playTrackService.pausePlayer(
-            onPause = { audioPlayerStatus.value = State.PlayerState.PAUSE }
+            onPause = {
+                audioPlayerStatus.value = State.PlayerState.PAUSE
+                isReceivingCallbacks = false
+            }
         )
     }
 
     override fun onCleared() {
         playTrackService.releasePlayer()
-        playTrackService.threadRemoveCallbacks(
-            onTimeUpdate = { time -> currentTime.value = time }
-        )
+        viewModelScope.cancel()
+    }
+
+    private fun updateTrackTime() {
+        viewModelScope.launch {
+            while (isReceivingCallbacks) {
+                delay(MILLIS_500)
+                trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
+                    .format(playTrackService.getTrackCurrentTime())
+                    .toString()
+                if (audioPlayerStatus.value != State.PlayerState.COMPLETED) {
+                    currentTime.value = trackTime
+                } else {
+                    currentTime.value = DEFAULT_TIME
+                }
+                Log.d("trackTime", trackTime)
+            }
+        }
+    }
+
+    fun getRoundedCorners(playerImageRadius: Int): Int {
+        return Converter.dpToPx(playerImageRadius)
     }
 
     companion object {
+        private const val DEFAULT_TIME: String = "00:00"
         private const val EMPTY_STRING: String = ""
-        const val DASH = "-"
+        private const val DASH: String = "-"
+        private const val MILLIS_500: Long = 300L
     }
 }
