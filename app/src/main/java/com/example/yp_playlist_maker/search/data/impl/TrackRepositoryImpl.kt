@@ -15,10 +15,10 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
     override fun searchTrack(expression: String): Flow<Resource> = flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
         when (response.resultCode) {
-            -1 -> {
+            CONNECTION_ERROR_CODE -> {
                 emit(Resource.Error(State.SearchState.CONNECTION_ERROR))
             }
-            0 -> {
+            SUCCESS_CODE -> {
                 if (response is TrackSearchResponse) {
                     val responseData = Resource.Success((response).results.map {
                             Track(
@@ -46,6 +46,11 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 emit(Resource.Error(State.SearchState.SEARCH_ERROR))
             }
         }
+    }
+
+    companion object {
+        private const val CONNECTION_ERROR_CODE = -1
+        private const val SUCCESS_CODE: Int = 200
     }
 
 }

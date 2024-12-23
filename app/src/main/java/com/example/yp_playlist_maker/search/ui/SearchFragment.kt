@@ -152,6 +152,7 @@ class SearchFragment: Fragment() {
                     checkPlaceholder()
                 }
                 if (binding.etSearch.text.isNotEmpty()) {
+                    checkPlaceholder()
                     searchDebounce()
                 }
             }

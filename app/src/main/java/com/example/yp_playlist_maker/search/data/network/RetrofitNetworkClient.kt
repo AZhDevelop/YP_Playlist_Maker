@@ -2,7 +2,6 @@ package com.example.yp_playlist_maker.search.data.network
 
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
 import com.example.yp_playlist_maker.search.data.dto.Response
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchRequest
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchResponse
@@ -21,17 +20,11 @@ class RetrofitNetworkClient(
         if (!isConnected()) {
             return Response(resultCode = CONNECTION_ERROR_CODE)
         }
-
         return withContext(Dispatchers.IO) {
             try {
                 if (dto is TrackSearchRequest) {
                     val response = trackApi.searchTrack(dto.expression)
-                    if (response.resultCode == 0) {
-                        val results = response.results
-                        TrackSearchResponse(results, response.resultCode)
-                    } else {
-                        Response(resultCode = response.resultCode)
-                    }
+                    TrackSearchResponse(response.results, SUCCESS_CODE)
                 } else {
                     Response(resultCode = EXPRESSION_ERROR_CODE)
                 }
@@ -68,6 +61,7 @@ class RetrofitNetworkClient(
         private const val EXPRESSION_ERROR_CODE = 400
         private const val RETRIES = 3
         private const val DELAY_MS: Long = 1000
+        private const val SUCCESS_CODE: Int = 200
     }
 
 }
