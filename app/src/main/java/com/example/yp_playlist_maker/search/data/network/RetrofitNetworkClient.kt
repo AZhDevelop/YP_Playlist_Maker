@@ -2,36 +2,42 @@ package com.example.yp_playlist_maker.search.data.network
 
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import com.example.yp_playlist_maker.search.data.dto.Response
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchRequest
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class RetrofitNetworkClient(
     private val connectivityManager: ConnectivityManager,
     private val trackApi: TrackApi
 ) : NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (!waitForConnection()) {
             return Response(resultCode = CONNECTION_ERROR_CODE)
         }
         if (!isConnected()) {
             return Response(resultCode = CONNECTION_ERROR_CODE)
         }
-        try {
-            if (dto is TrackSearchRequest) {
-                val response = trackApi.searchTrack(dto.expression).execute()
-                if (response.isSuccessful) {
-                    val results = response.body()?.results ?: emptyList()
-                    return TrackSearchResponse(results, response.code())
+
+        return withContext(Dispatchers.IO) {
+            try {
+                if (dto is TrackSearchRequest) {
+                    val response = trackApi.searchTrack(dto.expression)
+                    if (response.resultCode == 0) {
+                        val results = response.results
+                        TrackSearchResponse(results, response.resultCode)
+                    } else {
+                        Response(resultCode = response.resultCode)
+                    }
                 } else {
-                    return Response(resultCode = response.code())
+                    Response(resultCode = EXPRESSION_ERROR_CODE)
                 }
-            } else {
-                return Response(resultCode = EXPRESSION_ERROR_CODE)
+            } catch (e: Exception) {
+                Response(resultCode = CONNECTION_ERROR_CODE)
             }
-        } catch (e: Exception) {
-            return Response(resultCode = CONNECTION_ERROR_CODE)
         }
     }
 

@@ -2,18 +2,8 @@ package com.example.yp_playlist_maker.search.domain.api
 
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.State
+import kotlinx.coroutines.flow.Flow
 
 interface TrackInteractor {
-
-    sealed class TrackResult {
-        data class Success(val tracks: List<Track>) : TrackResult()
-        data class Error(val message: State.SearchState) : TrackResult()
-    }
-
-    fun searchTrack(expression: String, consumer: (TrackResult) -> Unit)
-
-    companion object {
-        enum class SearchState
-    }
-
+    fun searchTrack(expression: String) : Flow<Pair<List<Track>?, State.SearchState?>>
 }

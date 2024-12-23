@@ -1,21 +1,20 @@
 package com.example.yp_playlist_maker.search.ui.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.yp_playlist_maker.search.domain.api.SearchHistoryInteractor
 import com.example.yp_playlist_maker.search.domain.api.TrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.State
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchTrackService: TrackInteractor,
     private val searchHistoryService: SearchHistoryInteractor
 ): ViewModel() {
 
-    private val handler = Handler(Looper.getMainLooper())
     private val trackList: MutableList<Track> = mutableListOf()
     private val trackHistoryList: MutableList<Track> = mutableListOf()
     private val trackListData = MutableLiveData<MutableList<Track>>()
@@ -63,24 +62,25 @@ class SearchViewModel(
 
         searchState.value = State.SearchState.LOADING
 
-        searchTrackService.searchTrack(expression) { result ->
-            handler.post {
-                when (result) {
-                    is TrackInteractor.TrackResult.Success -> {
-                        trackList.clear()
-                        trackList.addAll(result.tracks)
-                        trackListData.value = trackList
-                        searchState.value = State.SearchState.SUCCESS
-                    }
-                    is TrackInteractor.TrackResult.Error -> {
-                        if (result.message == State.SearchState.SEARCH_ERROR) {
-                            searchState.value = State.SearchState.SEARCH_ERROR
-                        } else if (result.message == State.SearchState.CONNECTION_ERROR) {
-                            searchState.value = State.SearchState.CONNECTION_ERROR
+        viewModelScope.launch {
+            searchTrackService
+                .searchTrack(expression)
+                .collect { pair ->
+                    when (pair.first) {
+                        null -> {
+                            if (pair.second == State.SearchState.SEARCH_ERROR) {
+                                searchState.value = State.SearchState.SEARCH_ERROR
+                            } else if (pair.second == State.SearchState.CONNECTION_ERROR) {
+                                searchState.value = State.SearchState.CONNECTION_ERROR
+                            }
+                        } else -> {
+                            trackList.clear()
+                            trackList.addAll(pair.first!!)
+                            trackListData.value = trackList
+                            searchState.value = State.SearchState.SUCCESS
                         }
                     }
                 }
-            }
         }
     }
 
