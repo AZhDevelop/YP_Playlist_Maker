@@ -32,7 +32,6 @@ class SearchFragment: Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private lateinit var textWatcher: TextWatcher
     private val viewModel by viewModel<SearchViewModel>()
-    private var savedSearchText: String = EMPTY_STRING
     private val adapter = TrackAdapter()
     private var updateTrackHistory: Boolean = false
     private var onRestoreError: String = EMPTY_STRING
@@ -142,7 +141,6 @@ class SearchFragment: Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.iwClear.visibility = clearButtonVisibility(s)
-                savedSearchText = binding.etSearch.text.toString()
                 enableSearchHistoryVisibility(false)
                 if (binding.etSearch.text.isEmpty() && viewModel.getTrackHistoryList().isNotEmpty()) {
                     viewModel.updateTrackList()
