@@ -8,6 +8,7 @@ import com.example.yp_playlist_maker.search.domain.api.SearchHistoryInteractor
 import com.example.yp_playlist_maker.search.domain.api.TrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.State
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -65,17 +66,17 @@ class SearchViewModel(
         viewModelScope.launch {
             searchTrackService
                 .searchTrack(expression)
-                .collect { pair ->
-                    when (pair.first) {
+                .collect { (tracks, state) ->
+                    when (tracks) {
                         null -> {
-                            if (pair.second == State.SearchState.SEARCH_ERROR) {
+                            if (state == State.SearchState.SEARCH_ERROR) {
                                 searchState.value = State.SearchState.SEARCH_ERROR
-                            } else if (pair.second == State.SearchState.CONNECTION_ERROR) {
+                            } else if (state == State.SearchState.CONNECTION_ERROR) {
                                 searchState.value = State.SearchState.CONNECTION_ERROR
                             }
                         } else -> {
                             trackList.clear()
-                            trackList.addAll(pair.first!!)
+                            trackList.addAll(tracks)
                             trackListData.value = trackList
                             searchState.value = State.SearchState.SUCCESS
                         }
@@ -100,6 +101,11 @@ class SearchViewModel(
         searchHistoryService.saveClickedTrack(track, trackHistoryList)
         trackHistoryList.clear()
         trackHistoryList.addAll(searchHistoryService.updateTrackHistoryList())
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
     }
 
 }

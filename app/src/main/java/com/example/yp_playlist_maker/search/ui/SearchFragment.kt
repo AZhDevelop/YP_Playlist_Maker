@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.util.State
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -173,6 +175,7 @@ class SearchFragment: Fragment() {
     // Инициализация наблюдателей viewModel
     private fun setSearchFragmentObservers() {
         viewModel.getSearchStatus().observe(viewLifecycleOwner) { searchStatus ->
+            Log.d("log", "Observed search state: $searchStatus")
             handleSearchStatus(searchStatus)
         }
 
@@ -187,21 +190,26 @@ class SearchFragment: Fragment() {
         when (searchState) {
             State.SearchState.LOADING -> {
                 binding.progressBar.visible()
+                Log.d("log", "Search state: LOADING")
             }
             State.SearchState.SUCCESS -> {
                 binding.progressBar.gone()
                 binding.rvTrack.visible()
+                Log.d("log", "Search state: SUCCESS")
             }
             State.SearchState.SEARCH_ERROR -> {
                 showError(getString(R.string.nothing_found))
                 onRestoreError = getString(R.string.nothing_found)
+                Log.d("log", "Search state: SEARCH_ERROR")
             }
             State.SearchState.CONNECTION_ERROR -> {
                 showError(getString(R.string.connection_error))
                 onRestoreError = getString(R.string.connection_error)
+                Log.d("log", "Search state: CONNECTION_ERROR")
             }
             State.SearchState.RESET -> {
                 checkPlaceholder()
+                Log.d("log", "Search state: RESET")
             }
         }
     }

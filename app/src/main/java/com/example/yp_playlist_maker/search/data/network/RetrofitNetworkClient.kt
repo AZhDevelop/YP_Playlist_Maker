@@ -6,6 +6,7 @@ import com.example.yp_playlist_maker.search.data.dto.Response
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchRequest
 import com.example.yp_playlist_maker.search.data.dto.TrackSearchResponse
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 class RetrofitNetworkClient(
@@ -15,9 +16,6 @@ class RetrofitNetworkClient(
 
     override suspend fun doRequest(dto: Any): Response {
         if (!waitForConnection()) {
-            return Response(resultCode = CONNECTION_ERROR_CODE)
-        }
-        if (!isConnected()) {
             return Response(resultCode = CONNECTION_ERROR_CODE)
         }
         return withContext(Dispatchers.IO) {
@@ -46,12 +44,12 @@ class RetrofitNetworkClient(
         return false
     }
 
-    private fun waitForConnection(): Boolean {
+    private suspend fun waitForConnection(): Boolean {
         repeat(RETRIES) {
             if (isConnected()) {
                 return true
             }
-            Thread.sleep(DELAY_MS)
+            delay(DELAY_MS)
         }
         return false
     }
