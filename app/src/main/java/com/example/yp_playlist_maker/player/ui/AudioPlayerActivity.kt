@@ -89,7 +89,6 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
             State.PlayerState.COMPLETED -> {
                 binding.play.setBackgroundResource(R.drawable.btn_play)
-                binding.playTime.text = getString(R.string.default_time)
             }
             State.PlayerState.START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
             State.PlayerState.PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)

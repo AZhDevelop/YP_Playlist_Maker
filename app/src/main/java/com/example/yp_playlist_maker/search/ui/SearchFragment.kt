@@ -2,8 +2,6 @@ package com.example.yp_playlist_maker.search.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -12,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
@@ -23,6 +22,9 @@ import com.example.yp_playlist_maker.databinding.FragmentSearchBinding
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.util.State
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
@@ -30,13 +32,13 @@ class SearchFragment: Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private lateinit var textWatcher: TextWatcher
     private val viewModel by viewModel<SearchViewModel>()
-    private var savedSearchText: String = EMPTY_STRING
     private val adapter = TrackAdapter()
     private var updateTrackHistory: Boolean = false
     private var onRestoreError: String = EMPTY_STRING
-    private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { if (binding.etSearch.text.isNotEmpty()) { search() } }
     private var isClickAllowed = true
+
+    private var searchDebounceJob: Job? = null
+    private var clickDebounceJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +67,7 @@ class SearchFragment: Fragment() {
             if (hasFocus && binding.etSearch.text.isNotEmpty() && onRestoreError == EMPTY_STRING) {
                 binding.rvTrack.visible()
             } else if (hasFocus && binding.etSearch.text.isNotEmpty() && onRestoreError != EMPTY_STRING) {
-                handler.removeCallbacks(searchRunnable)
+                searchDebounceJob?.cancel()
             } else if (hasFocus && binding.etSearch.text.isEmpty() && viewModel.getTrackList().isNotEmpty()) {
                 enableSearchHistoryVisibility(true)
             } else {
@@ -78,7 +80,6 @@ class SearchFragment: Fragment() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 checkPlaceholder()
                 search()
-                handler.removeCallbacks(searchRunnable)
             }
             false
         }
@@ -140,7 +141,6 @@ class SearchFragment: Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.iwClear.visibility = clearButtonVisibility(s)
-                savedSearchText = binding.etSearch.text.toString()
                 enableSearchHistoryVisibility(false)
                 if (binding.etSearch.text.isEmpty() && viewModel.getTrackHistoryList().isNotEmpty()) {
                     viewModel.updateTrackList()
@@ -150,6 +150,7 @@ class SearchFragment: Fragment() {
                     checkPlaceholder()
                 }
                 if (binding.etSearch.text.isNotEmpty()) {
+                    checkPlaceholder()
                     searchDebounce()
                 }
             }
@@ -243,16 +244,23 @@ class SearchFragment: Fragment() {
     }
 
     private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-        checkPlaceholder()
+        searchDebounceJob?.cancel()
+        searchDebounceJob = lifecycleScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            checkPlaceholder()
+            if (binding.etSearch.text.isNotEmpty()) { search() }
+        }
     }
 
     private fun clickDebounce() : Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            clickDebounceJob?.cancel()
+            clickDebounceJob = lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
@@ -266,7 +274,7 @@ class SearchFragment: Fragment() {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (binding.etSearch.text.isNotEmpty()) {
-            handler.removeCallbacks(searchRunnable)
+            searchDebounceJob?.cancel()
         }
         if (binding.etSearch.text.isEmpty()) {
             viewModel.resetSearchState()

@@ -9,10 +9,9 @@ class PlayTrackInteractorImpl(private val repository: PlayTrackRepository) : Pla
     override fun preparePlayer(
         url: String,
         onPrepare: () -> Unit,
-        onComplete: () -> Unit,
-        onTimeUpdate: (String) -> Unit
+        onComplete: () -> Unit
     ) {
-        repository.preparePlayer(url, onPrepare, onComplete, onTimeUpdate)
+        repository.preparePlayer(url, onPrepare, onComplete)
     }
 
     override fun pausePlayer(onPause: () -> Unit) {
@@ -21,10 +20,9 @@ class PlayTrackInteractorImpl(private val repository: PlayTrackRepository) : Pla
 
     override fun playbackControl(
         onStart: () -> Unit,
-        onPause: () -> Unit,
-        onTimeUpdate: (String) -> Unit
+        onPause: () -> Unit
     ) {
-        repository.playbackControl(onStart, onPause, onTimeUpdate)
+        repository.playbackControl(onStart, onPause)
         State.SearchState.SEARCH_ERROR
     }
 
@@ -32,8 +30,8 @@ class PlayTrackInteractorImpl(private val repository: PlayTrackRepository) : Pla
         repository.releasePlayer()
     }
 
-    override fun threadRemoveCallbacks(onTimeUpdate: (String) -> Unit) {
-        repository.threadRemoveCallbacks(onTimeUpdate)
+    override fun getTrackCurrentTime(): Int {
+        return repository.getTrackCurrentTime()
     }
 
 }
