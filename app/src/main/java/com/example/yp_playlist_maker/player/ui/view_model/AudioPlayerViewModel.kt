@@ -99,7 +99,7 @@ class AudioPlayerViewModel(
     private fun updateTrackTime() {
         updateTrackTimeJob = viewModelScope.launch {
             while (audioPlayerStatus.value == State.PlayerState.START) {
-                delay(MILLIS_500)
+                delay(MILLIS_300)
                 trackTime = SimpleDateFormat("mm:ss", Locale.getDefault())
                     .format(playTrackService.getTrackCurrentTime())
                     .toString()
@@ -116,6 +116,6 @@ class AudioPlayerViewModel(
         private const val DEFAULT_TIME: String = "00:00"
         private const val EMPTY_STRING: String = ""
         private const val DASH: String = "-"
-        private const val MILLIS_500: Long = 300L
+        private const val MILLIS_300: Long = 300L
     }
 }
