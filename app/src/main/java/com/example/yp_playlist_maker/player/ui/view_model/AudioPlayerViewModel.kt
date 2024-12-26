@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yp_playlist_maker.database.domain.api.FavouriteTracksInteractor
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
@@ -17,7 +18,8 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
-    private val trackExtra: Track?
+    private val trackExtra: Track?,
+    private val favouriteTracksInteractor: FavouriteTracksInteractor
 ) : ViewModel() {
 
     private var trackTime: String = EMPTY_STRING
@@ -48,6 +50,12 @@ class AudioPlayerViewModel(
                 country = trackExtra.country,
                 previewUrl = trackExtra.previewUrl,
             )
+        }
+    }
+
+    fun saveTrackToFavourites() {
+        viewModelScope.launch {
+            trackData.value?.let { favouriteTracksInteractor.insertTrack(it) }
         }
     }
 

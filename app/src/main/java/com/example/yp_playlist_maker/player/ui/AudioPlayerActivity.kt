@@ -2,6 +2,7 @@ package com.example.yp_playlist_maker.player.ui
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -30,6 +31,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         setupPlayerObservers()
 
         binding.play.setOnClickListener { viewModel.playbackControl() }
+
+        binding.like.setOnClickListener {
+            Log.d("log", "Like button clicked")
+            viewModel.saveTrackToFavourites()
+        }
 
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
