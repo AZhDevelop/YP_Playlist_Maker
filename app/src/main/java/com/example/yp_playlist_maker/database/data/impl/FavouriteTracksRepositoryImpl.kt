@@ -1,8 +1,9 @@
-package com.example.yp_playlist_maker.database.data
+package com.example.yp_playlist_maker.database.data.impl
 
+import com.example.yp_playlist_maker.database.data.AppDatabase
 import com.example.yp_playlist_maker.database.data.converters.TrackDbConverter
 import com.example.yp_playlist_maker.database.data.entity.TrackEntity
-import com.example.yp_playlist_maker.database.domain.FavouriteTracksRepository
+import com.example.yp_playlist_maker.database.domain.api.FavouriteTracksRepository
 import com.example.yp_playlist_maker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
