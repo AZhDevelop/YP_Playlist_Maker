@@ -12,6 +12,7 @@ import com.example.yp_playlist_maker.search.data.network.NetworkClient
 import com.example.yp_playlist_maker.search.data.network.RetrofitNetworkClient
 import com.example.yp_playlist_maker.search.data.network.TrackApi
 import com.example.yp_playlist_maker.search.domain.models.Track
+import com.example.yp_playlist_maker.util.Converter
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named

@@ -1,7 +1,6 @@
 package com.example.yp_playlist_maker.di
 
 import com.example.yp_playlist_maker.database.data.impl.FavouriteTracksRepositoryImpl
-import com.example.yp_playlist_maker.database.data.converters.TrackDbConverter
 import com.example.yp_playlist_maker.database.domain.api.FavouriteTracksRepository
 import com.example.yp_playlist_maker.player.data.impl.PlayTrackRepositoryImpl
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackRepository
@@ -11,6 +10,7 @@ import com.example.yp_playlist_maker.search.domain.api.SearchHistoryRepository
 import com.example.yp_playlist_maker.search.domain.api.TrackRepository
 import com.example.yp_playlist_maker.settings.data.impl.AppThemeImpl
 import com.example.yp_playlist_maker.settings.domain.api.AppThemeRepository
+import com.example.yp_playlist_maker.util.Converter
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -48,12 +48,12 @@ val repositoryModule = module {
         )
     }
 
-    factory<TrackDbConverter> { TrackDbConverter() }
+    factory<Converter> { Converter }
 
     single<FavouriteTracksRepository> {
         FavouriteTracksRepositoryImpl(
             appDatabase = get(),
-            trackDbConverter = get()
+            converter = get()
         )
     }
 

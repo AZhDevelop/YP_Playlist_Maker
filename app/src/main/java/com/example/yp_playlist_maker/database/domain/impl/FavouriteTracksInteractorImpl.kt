@@ -9,6 +9,14 @@ class FavouriteTracksInteractorImpl(
     private val repository: FavouriteTracksRepository
 ): FavouriteTracksInteractor {
 
+    override suspend fun insertTrack(track: Track) {
+        repository.insertTrack(track)
+    }
+
+    override suspend fun deleteTrack(track: Track) {
+        repository.deleteTrack(track)
+    }
+
     override fun getFavouriteTracks(): Flow<List<Track>> {
         return repository.getFavouriteTracks()
     }

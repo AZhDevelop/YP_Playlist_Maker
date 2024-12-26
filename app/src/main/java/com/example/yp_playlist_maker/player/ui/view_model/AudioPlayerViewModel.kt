@@ -35,7 +35,8 @@ class AudioPlayerViewModel(
     private fun setTrackData() {
         trackData.value = trackExtra?.let {
             Track(
-                trackName = it.trackName,
+                trackId = trackExtra.trackId,
+                trackName = trackExtra.trackName,
                 artistName = trackExtra.artistName,
                 trackTimeMillis = Converter.convertMillis(trackExtra.trackTimeMillis),
                 artworkUrl100 = Converter.convertUrl(trackExtra.artworkUrl100),
