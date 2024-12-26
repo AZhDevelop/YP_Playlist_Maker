@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import androidx.core.content.IntentCompat
+import androidx.room.Room
+import com.example.yp_playlist_maker.database.data.AppDatabase
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
 import com.example.yp_playlist_maker.search.data.network.RetrofitNetworkClient
 import com.example.yp_playlist_maker.search.data.network.TrackApi
@@ -59,6 +61,11 @@ val dataModule = module {
 
     factory<Track?> { (intent : Intent) ->
         IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
+    }
+
+    single<AppDatabase> {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
     }
 
 }
