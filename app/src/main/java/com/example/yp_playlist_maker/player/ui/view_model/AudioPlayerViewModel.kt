@@ -49,6 +49,7 @@ class AudioPlayerViewModel(
                 primaryGenreName = trackExtra.primaryGenreName,
                 country = trackExtra.country,
                 previewUrl = trackExtra.previewUrl,
+                isFavourite = trackExtra.isFavourite
             )
         }
     }

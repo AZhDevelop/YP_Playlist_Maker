@@ -34,7 +34,9 @@ object Converter {
             trackEntity.releaseDate,
             trackEntity.primaryGenreName,
             trackEntity.country,
-            trackEntity.previewUrl
+            trackEntity.previewUrl,
+
+            trackEntity.isFavourite
         )
     }
 
@@ -49,7 +51,9 @@ object Converter {
             track.releaseDate,
             track.primaryGenreName,
             track.country,
-            track.previewUrl
+            track.previewUrl,
+
+            track.isFavourite
         )
     }
 
