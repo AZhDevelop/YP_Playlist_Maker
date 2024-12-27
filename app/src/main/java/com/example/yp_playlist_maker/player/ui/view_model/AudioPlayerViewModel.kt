@@ -73,6 +73,16 @@ class AudioPlayerViewModel(
         }
     }
 
+    fun deleteTrackFromFavourites() {
+        viewModelScope.launch {
+            trackData.value?.let {
+                it.isFavourite = false
+                favouriteTracksInteractor.deleteTrack(it)
+            }
+            isFavourite.value = false
+        }
+    }
+
     init {
         setTrackData()
         trackData.value?.let { checkIsFavouriteTrack(it.trackId) }

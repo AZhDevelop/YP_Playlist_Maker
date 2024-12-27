@@ -19,6 +19,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<AudioPlayerViewModel> { parametersOf(intent) }
     private lateinit var binding: ActivityAudioplayerBinding
+    private var isTrackFavourite: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +34,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.play.setOnClickListener { viewModel.playbackControl() }
 
         binding.like.setOnClickListener {
-            Log.d("log", "Like button clicked")
-            viewModel.saveTrackToFavourites()
+            saveDeleteFavourites(isTrackFavourite)
         }
 
         binding.toolbar.setNavigationOnClickListener { finish() }
@@ -107,8 +107,21 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun handleIsFavourite(isFavourite: Boolean) {
         when (isFavourite) {
-            true -> binding.like.setBackgroundResource(R.drawable.btn_like_active)
-            false -> binding.like.setBackgroundResource(R.drawable.btn_like_non_active)
+            true -> {
+                binding.like.setBackgroundResource(R.drawable.btn_like_active)
+                isTrackFavourite = true
+            }
+            false -> {
+                binding.like.setBackgroundResource(R.drawable.btn_like_non_active)
+                isTrackFavourite = false
+            }
+        }
+    }
+
+    private fun saveDeleteFavourites(isFavourite: Boolean) {
+        when (isFavourite) {
+            true -> viewModel.deleteTrackFromFavourites()
+            false -> viewModel.saveTrackToFavourites()
         }
     }
 
