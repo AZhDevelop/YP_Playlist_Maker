@@ -34,6 +34,9 @@ class AudioPlayerViewModel(
     private val trackData = MutableLiveData<Track>()
     fun getTrackData(): LiveData<Track> = trackData
 
+    private val isFavourite = MutableLiveData(false)
+    fun getIsFavourite(): LiveData<Boolean> = isFavourite
+
     private fun setTrackData() {
         trackData.value = trackExtra?.let {
             Track(
@@ -54,14 +57,25 @@ class AudioPlayerViewModel(
         }
     }
 
+    private fun checkIsFavouriteTrack(trackId: String) {
+        viewModelScope.launch {
+            isFavourite.value = favouriteTracksInteractor.checkIsTrackFavourite(trackId)
+        }
+    }
+
     fun saveTrackToFavourites() {
         viewModelScope.launch {
-            trackData.value?.let { favouriteTracksInteractor.insertTrack(it) }
+            trackData.value?.let {
+                it.isFavourite = true
+                favouriteTracksInteractor.insertTrack(it)
+            }
+            isFavourite.value = true
         }
     }
 
     init {
         setTrackData()
+        trackData.value?.let { checkIsFavouriteTrack(it.trackId) }
         currentTime.value = DEFAULT_TIME
     }
 

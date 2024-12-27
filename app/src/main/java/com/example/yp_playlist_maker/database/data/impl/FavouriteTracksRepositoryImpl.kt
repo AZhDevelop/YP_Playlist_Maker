@@ -26,6 +26,10 @@ class FavouriteTracksRepositoryImpl(
         emit(convertFromTrackEntity(tracks))
     }
 
+    override suspend fun checkIsTrackFavourite(trackId: String): Boolean {
+        return appDatabase.trackDao().checkIsTrackFavourite(trackId)
+    }
+
     private fun convertFromTrackEntity(tracks: List<TrackEntity>): List<Track> {
         return tracks.map { track -> converter.convertTrackEntityToTrack(track) }
     }

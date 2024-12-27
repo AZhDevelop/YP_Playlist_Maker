@@ -84,6 +84,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModel.getTrackData().observe(this) { trackData ->
             fillTrackData(trackData)
         }
+
+        viewModel.getIsFavourite().observe(this) { isFavourite ->
+            handleIsFavourite(isFavourite)
+        }
     }
 
     private fun handlePlayerStatus(status: State.PlayerState) {
@@ -98,6 +102,13 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
             State.PlayerState.START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
             State.PlayerState.PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
+        }
+    }
+
+    private fun handleIsFavourite(isFavourite: Boolean) {
+        when (isFavourite) {
+            true -> binding.like.setBackgroundResource(R.drawable.btn_like_active)
+            false -> binding.like.setBackgroundResource(R.drawable.btn_like_non_active)
         }
     }
 
