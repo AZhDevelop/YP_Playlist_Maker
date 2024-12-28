@@ -36,7 +36,9 @@ val appModule = module {
     }
 
     viewModel<FavouritesFragmentViewModel> {
-        FavouritesFragmentViewModel()
+        FavouritesFragmentViewModel(
+            favouriteTracksInteractor = get()
+        )
     }
 
     viewModel<PlaylistsFragmentViewModel> {
