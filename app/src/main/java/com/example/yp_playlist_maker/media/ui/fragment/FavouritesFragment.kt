@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
@@ -16,6 +17,9 @@ import com.example.yp_playlist_maker.media.ui.view_model.FavouritesFragmentViewM
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.State
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouritesFragment: Fragment() {
@@ -23,6 +27,8 @@ class FavouritesFragment: Fragment() {
     private lateinit var binding: ActivityMediaFavouritesFragmentBinding
     private val viewModel by viewModel<FavouritesFragmentViewModel>()
     private val adapter = MediaTrackAdapter()
+    private var isClickAllowed = true
+    private var clickDebounceJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,11 +52,13 @@ class FavouritesFragment: Fragment() {
         viewModel.checkFavouriteTrackList()
 
         adapter.onTrackClick = {
-            val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
-            displayAudioPlayer.apply {
-                putExtra(INTENT_PUTTED_TRACK, it)
+            if (clickDebounce()) {
+                val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
+                displayAudioPlayer.apply {
+                    putExtra(INTENT_PUTTED_TRACK, it)
+                }
+                startActivity(displayAudioPlayer)
             }
-            startActivity(displayAudioPlayer)
         }
 
     }
@@ -101,6 +109,19 @@ class FavouritesFragment: Fragment() {
         binding.rvTrack.adapter = adapter
     }
 
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            clickDebounceJob?.cancel()
+            clickDebounceJob = lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
+        }
+        return current
+    }
+
     override fun onResume() {
         super.onResume()
         viewModel.checkFavouriteTrackList()
@@ -109,6 +130,7 @@ class FavouritesFragment: Fragment() {
     companion object {
         fun newInstance() = FavouritesFragment()
         private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
 }
