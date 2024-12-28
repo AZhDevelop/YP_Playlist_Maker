@@ -1,6 +1,5 @@
 package com.example.yp_playlist_maker.media.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,23 +20,17 @@ class FavouritesFragmentViewModel(
     private val favouriteTracksList = MutableLiveData<List<Track>>()
     fun getFavouriteTracksList(): LiveData<List<Track>> = favouriteTracksList
 
-//    init {
-//        fragmentState.value = State.FragmentState.ERROR
-//        checkFavouriteTrackList()
-//    }
-
     fun checkFavouriteTrackList() {
         viewModelScope.launch {
             favouriteTracksInteractor
                 .getFavouriteTracks()
                 .collect{ favouriteTrackList ->
-                    Log.d("log", "Tracks: ${favouriteTrackList.size}")
                     if (favouriteTrackList.isEmpty()) {
                         fragmentState.value = State.FragmentState.ERROR
-                        favouriteTracksList.value = favouriteTrackList
+                        favouriteTracksList.value = favouriteTrackList.reversed()
                     } else {
                         fragmentState.value = State.FragmentState.SUCCESS
-                        favouriteTracksList.value = favouriteTrackList
+                        favouriteTracksList.value = favouriteTrackList.reversed()
                     }
                 }
         }
