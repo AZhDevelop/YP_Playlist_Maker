@@ -43,7 +43,7 @@ class AudioPlayerViewModel(
                 trackId = trackExtra.trackId,
                 trackName = trackExtra.trackName,
                 artistName = trackExtra.artistName,
-                trackTimeMillis = Converter.convertMillis(trackExtra.trackTimeMillis),
+                trackTimeMillis = if (trackExtra.isFavourite) trackExtra.trackTimeMillis else Converter.convertMillis(trackExtra.trackTimeMillis),
                 artworkUrl100 = Converter.convertUrl(trackExtra.artworkUrl100),
                 collectionName = trackExtra.collectionName,
                 releaseDate = trackExtra.releaseDate

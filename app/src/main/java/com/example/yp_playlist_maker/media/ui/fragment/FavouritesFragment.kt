@@ -1,5 +1,6 @@
 package com.example.yp_playlist_maker.media.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.ActivityMediaFavouritesFragmentBinding
 import com.example.yp_playlist_maker.media.ui.MediaTrackAdapter
 import com.example.yp_playlist_maker.media.ui.view_model.FavouritesFragmentViewModel
+import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.State
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -42,6 +44,15 @@ class FavouritesFragment: Fragment() {
         setRecyclerView()
         setFavouritesFragmentObservers()
         viewModel.checkFavouriteTrackList()
+
+        adapter.onTrackClick = {
+            val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
+            displayAudioPlayer.apply {
+                putExtra(INTENT_PUTTED_TRACK, it)
+            }
+            startActivity(displayAudioPlayer)
+        }
+
     }
 
     private fun setFavouritesFragmentObservers() {
@@ -92,6 +103,7 @@ class FavouritesFragment: Fragment() {
 
     companion object {
         fun newInstance() = FavouritesFragment()
+        private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
     }
 
 }
