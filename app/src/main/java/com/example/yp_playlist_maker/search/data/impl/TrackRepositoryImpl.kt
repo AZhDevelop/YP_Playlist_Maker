@@ -22,6 +22,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                 if (response is TrackSearchResponse) {
                     val responseData = Resource.Success((response).results.map {
                             Track(
+                                it.trackId,
                                 it.trackName,
                                 it.artistName,
                                 it.trackTimeMillis,

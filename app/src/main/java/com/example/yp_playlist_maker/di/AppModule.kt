@@ -30,12 +30,15 @@ val appModule = module {
         val track = get<Track> { parametersOf(intent) }
         AudioPlayerViewModel(
             playTrackService = get(),
-            trackExtra = track
+            trackExtra = track,
+            favouriteTracksInteractor = get()
         )
     }
 
     viewModel<FavouritesFragmentViewModel> {
-        FavouritesFragmentViewModel()
+        FavouritesFragmentViewModel(
+            favouriteTracksInteractor = get()
+        )
     }
 
     viewModel<PlaylistsFragmentViewModel> {
