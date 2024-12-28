@@ -101,6 +101,11 @@ class FavouritesFragment: Fragment() {
         binding.rvTrack.adapter = adapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.checkFavouriteTrackList()
+    }
+
     companion object {
         fun newInstance() = FavouritesFragment()
         private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
