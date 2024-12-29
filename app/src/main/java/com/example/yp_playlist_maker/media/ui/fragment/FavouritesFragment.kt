@@ -24,7 +24,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouritesFragment: Fragment() {
 
-    private lateinit var binding: ActivityMediaFavouritesFragmentBinding
+    private var _binding: ActivityMediaFavouritesFragmentBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel by viewModel<FavouritesFragmentViewModel>()
     private val adapter = MediaTrackAdapter()
     private var isClickAllowed = true
@@ -35,7 +37,7 @@ class FavouritesFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ActivityMediaFavouritesFragmentBinding.inflate(inflater, container, false)
+        _binding = ActivityMediaFavouritesFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -125,6 +127,11 @@ class FavouritesFragment: Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.checkFavouriteTrackList()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

@@ -29,14 +29,15 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
 
-    private lateinit var binding: FragmentSearchBinding
     private lateinit var textWatcher: TextWatcher
+
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<SearchViewModel>()
     private val adapter = TrackAdapter()
     private var updateTrackHistory: Boolean = false
     private var onRestoreError: String = EMPTY_STRING
     private var isClickAllowed = true
-
     private var searchDebounceJob: Job? = null
     private var clickDebounceJob: Job? = null
 
@@ -45,7 +46,7 @@ class SearchFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -287,6 +288,11 @@ class SearchFragment: Fragment() {
             viewModel.updateTrackList()
             updateTrackHistory = false
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

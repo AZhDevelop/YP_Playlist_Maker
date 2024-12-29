@@ -13,7 +13,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
 
-    private lateinit var binding: ActivityMediaPlaylistsFragmentBinding
+    private var _binding: ActivityMediaPlaylistsFragmentBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<PlaylistsFragmentViewModel>()
 
     override fun onCreateView(
@@ -21,7 +22,7 @@ class PlaylistsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ActivityMediaPlaylistsFragmentBinding.inflate(inflater, container, false)
+        _binding = ActivityMediaPlaylistsFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -45,6 +46,11 @@ class PlaylistsFragment : Fragment() {
             btnPlaceholder.text = getString(R.string.new_playlist)
             imgPlaceholder.setImageResource(R.drawable.img_search_error)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
