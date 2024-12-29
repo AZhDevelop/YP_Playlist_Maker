@@ -105,22 +105,20 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun handleIsFavourite(isFavourite: Boolean) {
-        when (isFavourite) {
-            true -> {
-                binding.like.setBackgroundResource(R.drawable.btn_like_active)
-                isTrackFavourite = true
-            }
-            false -> {
-                binding.like.setBackgroundResource(R.drawable.btn_like_non_active)
-                isTrackFavourite = false
-            }
+        if (isFavourite) {
+            binding.like.setBackgroundResource(R.drawable.btn_like_active)
+            isTrackFavourite = true
+        } else {
+            binding.like.setBackgroundResource(R.drawable.btn_like_non_active)
+            isTrackFavourite = false
         }
     }
 
     private fun saveDeleteFavourites(isFavourite: Boolean) {
-        when (isFavourite) {
-            true -> viewModel.deleteTrackFromFavourites()
-            false -> viewModel.saveTrackToFavourites()
+        if (isFavourite) {
+            viewModel.deleteTrackFromFavourites()
+        } else {
+            viewModel.saveTrackToFavourites()
         }
     }
 

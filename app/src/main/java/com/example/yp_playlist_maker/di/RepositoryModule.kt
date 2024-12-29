@@ -52,7 +52,7 @@ val repositoryModule = module {
 
     single<FavouriteTracksRepository> {
         FavouriteTracksRepositoryImpl(
-            appDatabase = get(),
+            trackDao = get(),
             converter = get()
         )
     }

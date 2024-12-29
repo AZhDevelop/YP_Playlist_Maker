@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import androidx.core.content.IntentCompat
 import androidx.room.Room
 import com.example.yp_playlist_maker.database.data.AppDatabase
+import com.example.yp_playlist_maker.database.data.dao.TrackDao
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
 import com.example.yp_playlist_maker.search.data.network.RetrofitNetworkClient
 import com.example.yp_playlist_maker.search.data.network.TrackApi
@@ -68,5 +69,7 @@ val dataModule = module {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
             .build()
     }
+
+    single<TrackDao> { get<AppDatabase>().trackDao() }
 
 }
