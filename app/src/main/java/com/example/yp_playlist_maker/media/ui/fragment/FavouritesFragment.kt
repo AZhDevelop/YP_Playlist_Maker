@@ -12,10 +12,10 @@ import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.ActivityMediaFavouritesFragmentBinding
-import com.example.yp_playlist_maker.media.ui.MediaTrackAdapter
 import com.example.yp_playlist_maker.media.ui.view_model.FavouritesFragmentViewModel
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.domain.models.Track
+import com.example.yp_playlist_maker.search.ui.TrackAdapter
 import com.example.yp_playlist_maker.util.State
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -28,7 +28,7 @@ class FavouritesFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModel<FavouritesFragmentViewModel>()
-    private val adapter = MediaTrackAdapter()
+    private val adapter = TrackAdapter()
     private var isClickAllowed = true
     private var clickDebounceJob: Job? = null
 
