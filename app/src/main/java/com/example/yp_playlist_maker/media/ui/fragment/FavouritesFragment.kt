@@ -2,7 +2,6 @@ package com.example.yp_playlist_maker.media.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,8 @@ class FavouritesFragment: Fragment() {
     private var _binding: ActivityMediaFavouritesFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<FavouritesFragmentViewModel>()
-    private val adapter = TrackAdapter()
+    private var _adapter: TrackAdapter? = null
+    private val adapter get() = _adapter
     private var isClickAllowed = true
     private var clickDebounceJob: Job? = null
 
@@ -44,8 +44,6 @@ class FavouritesFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("log", "Adapter: $adapter")
-
         binding.apply {
             tvPlaceholder.text = getString(R.string.empty_media)
             imgPlaceholder.setImageResource(R.drawable.img_search_error)
@@ -55,7 +53,7 @@ class FavouritesFragment: Fragment() {
         setFavouritesFragmentObservers()
         viewModel.checkFavouriteTrackList()
 
-        adapter.onTrackClick = {
+        adapter?.onTrackClick = {
             if (clickDebounce()) {
                 val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
                 displayAudioPlayer.apply {
@@ -77,8 +75,8 @@ class FavouritesFragment: Fragment() {
     }
 
     private fun handleFavouriteTrackList(favouriteTracksList: List<Track>) {
-        adapter.data = favouriteTracksList
-        adapter.notifyDataSetChanged()
+        adapter?.data = favouriteTracksList
+        adapter?.notifyDataSetChanged()
     }
 
     private fun handleFragmentState(fragmentState: State.FragmentState) {
@@ -109,6 +107,7 @@ class FavouritesFragment: Fragment() {
     }
 
     private fun setRecyclerView() {
+        _adapter = TrackAdapter()
         binding.rvTrack.layoutManager = LinearLayoutManager(requireContext())
         binding.rvTrack.adapter = adapter
     }
@@ -134,7 +133,8 @@ class FavouritesFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        adapter.onTrackClick = null
+        adapter?.onTrackClick = null
+        _adapter = null
     }
 
     companion object {

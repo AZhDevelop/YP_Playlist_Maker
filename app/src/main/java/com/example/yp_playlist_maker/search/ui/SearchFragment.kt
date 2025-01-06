@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,8 @@ class SearchFragment: Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<SearchViewModel>()
-    private val adapter = TrackAdapter()
+    private var _adapter: TrackAdapter? = null
+    private val adapter get() = _adapter
     private var updateTrackHistory: Boolean = false
     private var onRestoreError: String = EMPTY_STRING
     private var isClickAllowed = true
@@ -104,7 +104,7 @@ class SearchFragment: Fragment() {
             enableSearchHistoryVisibility(false)
         }
 
-        adapter.onTrackClick = {
+        adapter?.onTrackClick = {
             if (clickDebounce()) {
                 viewModel.saveClickedTrack(it)
                 val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
@@ -131,8 +131,9 @@ class SearchFragment: Fragment() {
     }
 
     private fun setRecyclerView() {
+        _adapter = TrackAdapter()
         binding.rvTrack.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvTrack.adapter = adapter
+        binding.rvTrack.adapter = _adapter
     }
 
     private fun setTextWatcher() : TextWatcher {
@@ -177,8 +178,8 @@ class SearchFragment: Fragment() {
         }
 
         viewModel.getTrackListLiveData().observe(viewLifecycleOwner) { trackListLiveData ->
-            adapter.data = trackListLiveData
-            adapter.notifyDataSetChanged()
+            adapter?.data = trackListLiveData
+            adapter?.notifyDataSetChanged()
         }
     }
 
@@ -294,7 +295,8 @@ class SearchFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        adapter.onTrackClick = null
+        adapter?.onTrackClick = null
+        _adapter = null
     }
 
     companion object {
