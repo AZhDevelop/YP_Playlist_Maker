@@ -18,6 +18,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<AudioPlayerViewModel> { parametersOf(intent) }
     private lateinit var binding: ActivityAudioplayerBinding
+    private var isTrackFavourite: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         setupPlayerObservers()
 
         binding.play.setOnClickListener { viewModel.playbackControl() }
+
+        binding.like.setOnClickListener {
+            saveDeleteFavourites(isTrackFavourite)
+        }
 
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
@@ -78,6 +83,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModel.getTrackData().observe(this) { trackData ->
             fillTrackData(trackData)
         }
+
+        viewModel.getIsFavourite().observe(this) { isFavourite ->
+            handleIsFavourite(isFavourite)
+        }
     }
 
     private fun handlePlayerStatus(status: State.PlayerState) {
@@ -92,6 +101,24 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
             State.PlayerState.START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
             State.PlayerState.PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
+        }
+    }
+
+    private fun handleIsFavourite(isFavourite: Boolean) {
+        if (isFavourite) {
+            binding.like.setBackgroundResource(R.drawable.btn_like_active)
+            isTrackFavourite = true
+        } else {
+            binding.like.setBackgroundResource(R.drawable.btn_like_non_active)
+            isTrackFavourite = false
+        }
+    }
+
+    private fun saveDeleteFavourites(isFavourite: Boolean) {
+        if (isFavourite) {
+            viewModel.deleteTrackFromFavourites()
+        } else {
+            viewModel.saveTrackToFavourites()
         }
     }
 

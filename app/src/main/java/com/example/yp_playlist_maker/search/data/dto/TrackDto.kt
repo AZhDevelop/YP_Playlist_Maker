@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.search.data.dto
 
 data class TrackDto(
+    val trackId: String,
     val trackName: String,
     val artistName: String,
     val trackTimeMillis: String,
@@ -9,5 +10,7 @@ data class TrackDto(
     val releaseDate: String,
     val primaryGenreName: String,
     val country: String,
-    val previewUrl: String
+    val previewUrl: String,
+
+    var isFavourite: Boolean = false
 )

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yp_playlist_maker.database.domain.api.FavouriteTracksInteractor
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
@@ -17,7 +18,8 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
-    private val trackExtra: Track?
+    private val trackExtra: Track?,
+    private val favouriteTracksInteractor: FavouriteTracksInteractor
 ) : ViewModel() {
 
     private var trackTime: String = EMPTY_STRING
@@ -32,12 +34,16 @@ class AudioPlayerViewModel(
     private val trackData = MutableLiveData<Track>()
     fun getTrackData(): LiveData<Track> = trackData
 
+    private val isFavourite = MutableLiveData(false)
+    fun getIsFavourite(): LiveData<Boolean> = isFavourite
+
     private fun setTrackData() {
         trackData.value = trackExtra?.let {
             Track(
-                trackName = it.trackName,
+                trackId = trackExtra.trackId,
+                trackName = trackExtra.trackName,
                 artistName = trackExtra.artistName,
-                trackTimeMillis = Converter.convertMillis(trackExtra.trackTimeMillis),
+                trackTimeMillis = if (trackExtra.isFavourite) trackExtra.trackTimeMillis else Converter.convertMillis(trackExtra.trackTimeMillis),
                 artworkUrl100 = Converter.convertUrl(trackExtra.artworkUrl100),
                 collectionName = trackExtra.collectionName,
                 releaseDate = trackExtra.releaseDate
@@ -46,12 +52,40 @@ class AudioPlayerViewModel(
                 primaryGenreName = trackExtra.primaryGenreName,
                 country = trackExtra.country,
                 previewUrl = trackExtra.previewUrl,
+                isFavourite = trackExtra.isFavourite
             )
+        }
+    }
+
+    private fun checkIsFavouriteTrack(trackId: String) {
+        viewModelScope.launch {
+            isFavourite.value = favouriteTracksInteractor.checkIsTrackFavourite(trackId)
+        }
+    }
+
+    fun saveTrackToFavourites() {
+        viewModelScope.launch {
+            trackData.value?.let {
+                it.isFavourite = true
+                favouriteTracksInteractor.insertTrack(it)
+            }
+            isFavourite.value = true
+        }
+    }
+
+    fun deleteTrackFromFavourites() {
+        viewModelScope.launch {
+            trackData.value?.let {
+                it.isFavourite = false
+                favouriteTracksInteractor.deleteTrack(it)
+            }
+            isFavourite.value = false
         }
     }
 
     init {
         setTrackData()
+        trackData.value?.let { checkIsFavouriteTrack(it.trackId) }
         currentTime.value = DEFAULT_TIME
     }
 

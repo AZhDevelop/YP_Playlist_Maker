@@ -1,5 +1,7 @@
 package com.example.yp_playlist_maker.di
 
+import com.example.yp_playlist_maker.database.domain.api.FavouriteTracksInteractor
+import com.example.yp_playlist_maker.database.domain.impl.FavouriteTracksInteractorImpl
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.player.domain.impl.PlayTrackInteractorImpl
 import com.example.yp_playlist_maker.search.domain.api.SearchHistoryInteractor
@@ -36,6 +38,12 @@ val interactorModule = module {
     //Аудиоплеер
     factory<PlayTrackInteractor> {
         PlayTrackInteractorImpl(
+            repository = get()
+        )
+    }
+
+    factory<FavouriteTracksInteractor> {
+        FavouriteTracksInteractorImpl(
             repository = get()
         )
     }

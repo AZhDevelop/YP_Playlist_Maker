@@ -16,12 +16,14 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val artistName: TextView = itemView.findViewById(R.id.track_artist)
     private val trackTimeMillis: TextView = itemView.findViewById(R.id.track_length)
     private val artworkUrl100: ImageView = itemView.findViewById(R.id.track_image)
+    private var isFavourite: Boolean = false
 
     fun bind(item: Track) {
 
         trackName.text = item.trackName
         artistName.text = item.artistName
-        trackTimeMillis.text = Converter.convertMillis(item.trackTimeMillis)
+        isFavourite = item.isFavourite
+        trackTimeMillis.text = if (item.isFavourite) item.trackTimeMillis else Converter.convertMillis(item.trackTimeMillis)
 
         Glide.with(itemView)
             .load(item.artworkUrl100)
