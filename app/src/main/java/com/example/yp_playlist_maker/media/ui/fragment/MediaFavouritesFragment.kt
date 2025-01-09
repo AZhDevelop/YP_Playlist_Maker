@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
-import com.example.yp_playlist_maker.databinding.ActivityMediaFavouritesFragmentBinding
+import com.example.yp_playlist_maker.databinding.FragmentMediaFavouritesBinding
 import com.example.yp_playlist_maker.media.ui.view_model.FavouritesFragmentViewModel
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.domain.models.Track
@@ -22,9 +22,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FavouritesFragment: Fragment() {
+class MediaFavouritesFragment: Fragment() {
 
-    private var _binding: ActivityMediaFavouritesFragmentBinding? = null
+    private var _binding: FragmentMediaFavouritesBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<FavouritesFragmentViewModel>()
     private var _adapter: TrackAdapter? = null
@@ -37,7 +37,7 @@ class FavouritesFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = ActivityMediaFavouritesFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentMediaFavouritesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -138,7 +138,7 @@ class FavouritesFragment: Fragment() {
     }
 
     companion object {
-        fun newInstance() = FavouritesFragment()
+        fun newInstance() = MediaFavouritesFragment()
         private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }

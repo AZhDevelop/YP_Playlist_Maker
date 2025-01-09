@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.yp_playlist_maker.media.ui.fragment.FavouritesFragment
-import com.example.yp_playlist_maker.media.ui.fragment.PlaylistsFragment
+import com.example.yp_playlist_maker.media.ui.fragment.MediaFavouritesFragment
+import com.example.yp_playlist_maker.media.ui.fragment.MediaPlaylistsFragment
 
 class MediaViewPagerAdapter(
     fragmentManager: FragmentManager,
@@ -18,8 +18,8 @@ class MediaViewPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0 -> FavouritesFragment.newInstance()
-            else -> PlaylistsFragment.newInstance()
+            0 -> MediaFavouritesFragment.newInstance()
+            else -> MediaPlaylistsFragment.newInstance()
         }
     }
 }

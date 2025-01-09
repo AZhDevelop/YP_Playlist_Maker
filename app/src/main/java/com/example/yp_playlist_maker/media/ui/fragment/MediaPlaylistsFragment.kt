@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.yp_playlist_maker.R
-import com.example.yp_playlist_maker.databinding.ActivityMediaPlaylistsFragmentBinding
+import com.example.yp_playlist_maker.databinding.FragmentMediaPlaylistsBinding
 import com.example.yp_playlist_maker.media.ui.view_model.PlaylistsFragmentViewModel
 import com.example.yp_playlist_maker.util.State
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistsFragment : Fragment() {
+class MediaPlaylistsFragment : Fragment() {
 
-    private var _binding: ActivityMediaPlaylistsFragmentBinding? = null
+    private var _binding: FragmentMediaPlaylistsBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<PlaylistsFragmentViewModel>()
 
@@ -22,7 +22,7 @@ class PlaylistsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = ActivityMediaPlaylistsFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentMediaPlaylistsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -54,7 +54,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = PlaylistsFragment()
+        fun newInstance() = MediaPlaylistsFragment()
     }
 
 }
