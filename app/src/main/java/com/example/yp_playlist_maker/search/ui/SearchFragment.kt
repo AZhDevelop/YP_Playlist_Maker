@@ -28,7 +28,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
 
-    private lateinit var textWatcher: TextWatcher
+    private var _textWatcher: TextWatcher? = null
+    private val textWatcher get() = _textWatcher!!
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<SearchViewModel>()
@@ -56,7 +57,7 @@ class SearchFragment: Fragment() {
         setRecyclerView()
         setSearchFragmentObservers()
 
-        textWatcher = setTextWatcher()
+        _textWatcher = setTextWatcher()
 
         binding.etSearch.addTextChangedListener(textWatcher)
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
@@ -291,6 +292,7 @@ class SearchFragment: Fragment() {
         _binding = null
         adapter?.onTrackClick = null
         _adapter = null
+        _textWatcher = null
     }
 
     companion object {
