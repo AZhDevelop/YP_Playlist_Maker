@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
@@ -59,10 +58,6 @@ class SearchFragment: Fragment() {
         setSearchFragmentObservers()
 
         textWatcher = setTextWatcher()
-
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
 
         binding.etSearch.addTextChangedListener(textWatcher)
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->

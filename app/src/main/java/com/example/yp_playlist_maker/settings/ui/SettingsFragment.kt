@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.App
 import com.example.yp_playlist_maker.databinding.FragmentSettingsBinding
@@ -34,10 +33,6 @@ class SettingsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setSearchFragmentObservers()
-
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
 
         // Достаем значение true или false из памяти и меняем состояние Switch
         binding.themeSwitcher.isChecked = viewModel.getAppTheme()

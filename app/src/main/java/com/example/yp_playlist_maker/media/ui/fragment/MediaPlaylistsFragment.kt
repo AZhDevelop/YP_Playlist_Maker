@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.FragmentMediaPlaylistsBinding
 import com.example.yp_playlist_maker.media.ui.view_model.PlaylistsFragmentViewModel
@@ -38,6 +39,11 @@ class MediaPlaylistsFragment : Fragment() {
                 }
             }
         }
+
+        binding.btnPlaceholder.setOnClickListener {
+            findNavController().navigate(R.id.action_mediaFragment_to_playlistFragment)
+        }
+
     }
 
     private fun showNoPlaylistsError() {
