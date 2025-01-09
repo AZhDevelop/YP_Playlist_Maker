@@ -10,6 +10,8 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.app.gone
+import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
 
 class PlaylistFragment: Fragment() {
@@ -50,8 +52,16 @@ class PlaylistFragment: Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (editText.text.isEmpty()) {
                     editText.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
+                    binding.apply {
+                        tvPlaylistName.gone()
+                        tvPlaylistDescription.gone()
+                    }
                 } else {
                     editText.setBackgroundResource(R.drawable.playlist_text_drawable)
+                    binding.apply {
+                        tvPlaylistName.visible()
+                        tvPlaylistDescription.visible()
+                    }
                 }
             }
 
