@@ -29,7 +29,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment: Fragment() {
 
     private lateinit var textWatcher: TextWatcher
-
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<SearchViewModel>()

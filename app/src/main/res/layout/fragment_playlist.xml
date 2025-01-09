@@ -37,12 +37,12 @@
         app:layout_constraintTop_toTopOf="@id/img_placeholder_border" />
 
     <EditText
-        android:id="@+id/tv_playlist_name"
+        android:id="@+id/et_playlist_name"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/playlist_text_drawable"
+        android:background="@drawable/playlist_empty_text_drawable"
         android:fontFamily="@font/ys_display_regular"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
@@ -55,12 +55,12 @@
         app:layout_constraintTop_toBottomOf="@id/img_placeholder_border" />
 
     <EditText
-        android:id="@+id/tv_playlist_description"
+        android:id="@+id/et_playlist_description"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/playlist_text_drawable"
+        android:background="@drawable/playlist_empty_text_drawable"
         android:fontFamily="@font/ys_display_regular"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
@@ -70,7 +70,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_playlist_name" />
+        app:layout_constraintTop_toBottomOf="@id/et_playlist_name" />
 
     <Button
         android:layout_width="match_parent"
