@@ -24,8 +24,11 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
+import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
+import com.example.yp_playlist_maker.playlist.view_model.PlaylistViewModel
 import com.example.yp_playlist_maker.util.Converter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
@@ -37,6 +40,7 @@ class PlaylistFragment : Fragment() {
     private val playlistNameTextWatcher get() = _playlistNameTextWatcher
     private var _playlistDescriptionTextWatcher: TextWatcher? = null
     private val playlistDescriptionTextWatcher get() = _playlistDescriptionTextWatcher
+    private val viewModel by viewModel<PlaylistViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,6 +76,16 @@ class PlaylistFragment : Fragment() {
 
         binding.btnCreatePlaylist.setOnClickListener {
             Log.d("log", "Button clicked")
+            viewModel.createPlaylist(
+                Playlist(
+                    playlistId = 0,
+                    playlistName = "TestName",
+                    playlistDescription = "TestDescription",
+                    playlistCoverPath = "TestPath",
+                    trackIdList = "TestTrackList",
+                    playlistSize = "TestPlaylistSize"
+                )
+            )
         }
 
     }

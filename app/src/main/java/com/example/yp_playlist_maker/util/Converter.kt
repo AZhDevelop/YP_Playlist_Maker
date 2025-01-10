@@ -2,7 +2,9 @@ package com.example.yp_playlist_maker.util
 
 import android.content.res.Resources
 import android.util.DisplayMetrics
+import com.example.yp_playlist_maker.database.data.entity.PlaylistEntity
 import com.example.yp_playlist_maker.database.data.entity.TrackEntity
+import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -35,7 +37,6 @@ object Converter {
             trackEntity.primaryGenreName,
             trackEntity.country,
             trackEntity.previewUrl,
-
             trackEntity.isFavourite
         )
     }
@@ -52,8 +53,29 @@ object Converter {
             track.primaryGenreName,
             track.country,
             track.previewUrl,
-
             track.isFavourite
+        )
+    }
+
+    fun convertPlaylistEntityToPlaylist(playlistEntity: PlaylistEntity): Playlist {
+        return Playlist(
+            playlistEntity.playlistId,
+            playlistEntity.playlistName,
+            playlistEntity.playlistDescription,
+            playlistEntity.playlistCoverPath,
+            playlistEntity.trackIdList,
+            playlistEntity.playlistSize
+        )
+    }
+
+    fun convertPlaylistToPlaylistEntity(playlist: Playlist): PlaylistEntity {
+        return PlaylistEntity(
+            playlist.playlistId,
+            playlist.playlistName,
+            playlist.playlistDescription,
+            playlist.playlistCoverPath,
+            playlist.trackIdList,
+            playlist.playlistSize
         )
     }
 
