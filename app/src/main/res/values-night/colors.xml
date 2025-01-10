@@ -30,5 +30,7 @@
     <color name="main_background">#1A1B22</color>
     <color name="search_hint">@color/yp_black</color>
     <color name="track_value_color">@color/white</color>
+    <color name="playlist_text_hint">@color/white</color>
+    <color name="playlist_hint_background">@color/yp_black</color>
 
 </resources>
