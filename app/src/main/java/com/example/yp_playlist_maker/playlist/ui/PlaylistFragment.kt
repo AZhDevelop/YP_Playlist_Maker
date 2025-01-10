@@ -1,20 +1,27 @@
 package com.example.yp_playlist_maker.playlist.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
+import com.example.yp_playlist_maker.util.Converter
 
 class PlaylistFragment : Fragment() {
 
@@ -43,6 +50,19 @@ class PlaylistFragment : Fragment() {
 
         setFragmentElements()
         setEditTextWatchers()
+
+        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                loadTrackImage(uri)
+            } else {
+                Log.d("log", "Ничего не выбрано")
+            }
+        }
+
+        binding.imgPlaceholder.setOnClickListener {
+            Log.d("log", "Image clicked")
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
 
     }
 
@@ -104,12 +124,25 @@ class PlaylistFragment : Fragment() {
         }
     }
 
+    private fun loadTrackImage(uri: Uri) {
+        Glide.with(this)
+            .load(uri)
+            .centerCrop()
+            .transform(RoundedCorners(Converter.dpToPx(PLAYER_IMAGE_RADIUS)))
+            .placeholder(R.drawable.img_placeholder_audio_player)
+            .into(binding.imgPlaceholder)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
         _playlistNameTextWatcher = null
         _playlistDescriptionTextWatcher = null
+    }
+
+    companion object {
+        private const val PLAYER_IMAGE_RADIUS: Int = 8
     }
 
 }
