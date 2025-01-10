@@ -1,7 +1,10 @@
 package com.example.yp_playlist_maker.playlist.ui
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -10,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -22,6 +26,8 @@ import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
 import com.example.yp_playlist_maker.util.Converter
+import java.io.File
+import java.io.FileOutputStream
 
 class PlaylistFragment : Fragment() {
 
@@ -54,14 +60,18 @@ class PlaylistFragment : Fragment() {
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 loadTrackImage(uri)
+                saveImageToPrivateStorage(uri)
             } else {
-                Log.d("log", "Ничего не выбрано")
+                Toast.makeText(activity, "Изображение не выбрано", Toast.LENGTH_LONG).show()
             }
         }
 
         binding.imgPlaceholder.setOnClickListener {
-            Log.d("log", "Image clicked")
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+
+        binding.btnCreatePlaylist.setOnClickListener {
+            Log.d("log", "Button clicked")
         }
 
     }
@@ -133,6 +143,21 @@ class PlaylistFragment : Fragment() {
             .into(binding.imgPlaceholder)
     }
 
+    private fun saveImageToPrivateStorage(uri: Uri) {
+
+        val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists_covers")
+        if (!filePath.exists()){
+            filePath.mkdirs()
+        }
+        val fileCount = filePath.listFiles()?.size
+        val fileName = fileCount?.plus(1)
+        val file = File(filePath, "${fileName}.jpg")
+        val inputStream = requireActivity().contentResolver.openInputStream(uri)
+        val outputStream = FileOutputStream(file)
+        BitmapFactory
+            .decodeStream(inputStream)
+            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

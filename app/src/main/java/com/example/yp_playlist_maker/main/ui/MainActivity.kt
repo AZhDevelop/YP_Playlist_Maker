@@ -25,8 +25,6 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            Log.d("log", "Current destination: ${destination.id}")
-            Log.d("log", "Playlist fragment id: ${R.id.fragment_playlist}")
             if (destination.id == R.id.playlistFragment) {
                 binding.bottomNavigationView.gone()
             } else {
