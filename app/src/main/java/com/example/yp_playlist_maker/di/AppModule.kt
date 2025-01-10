@@ -1,8 +1,8 @@
 package com.example.yp_playlist_maker.di
 
 import android.content.Intent
-import com.example.yp_playlist_maker.media.ui.view_model.FavouritesFragmentViewModel
-import com.example.yp_playlist_maker.media.ui.view_model.PlaylistsFragmentViewModel
+import com.example.yp_playlist_maker.media.ui.view_model.MediaFavouritesFragmentViewModel
+import com.example.yp_playlist_maker.media.ui.view_model.MediaPlaylistsFragmentViewModel
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.playlist.view_model.PlaylistViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
@@ -36,14 +36,14 @@ val appModule = module {
         )
     }
 
-    viewModel<FavouritesFragmentViewModel> {
-        FavouritesFragmentViewModel(
+    viewModel<MediaFavouritesFragmentViewModel> {
+        MediaFavouritesFragmentViewModel(
             favouriteTracksInteractor = get()
         )
     }
 
-    viewModel<PlaylistsFragmentViewModel> {
-        PlaylistsFragmentViewModel()
+    viewModel<MediaPlaylistsFragmentViewModel> {
+        MediaPlaylistsFragmentViewModel()
     }
 
     viewModel<PlaylistViewModel> {

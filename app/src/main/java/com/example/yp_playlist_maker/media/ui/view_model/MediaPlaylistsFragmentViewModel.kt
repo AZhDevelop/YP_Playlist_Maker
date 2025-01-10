@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.yp_playlist_maker.util.State
 
-class PlaylistsFragmentViewModel: ViewModel() {
+class MediaPlaylistsFragmentViewModel: ViewModel() {
 
     private val fragmentState = MutableLiveData<State.FragmentState>()
     fun getFragmentState(): LiveData<State.FragmentState> = fragmentState

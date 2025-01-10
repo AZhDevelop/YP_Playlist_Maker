@@ -12,7 +12,7 @@ import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentMediaFavouritesBinding
-import com.example.yp_playlist_maker.media.ui.view_model.FavouritesFragmentViewModel
+import com.example.yp_playlist_maker.media.ui.view_model.MediaFavouritesFragmentViewModel
 import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.search.ui.TrackAdapter
@@ -26,7 +26,7 @@ class MediaFavouritesFragment: Fragment() {
 
     private var _binding: FragmentMediaFavouritesBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModel<FavouritesFragmentViewModel>()
+    private val viewModel by viewModel<MediaFavouritesFragmentViewModel>()
     private var _adapter: TrackAdapter? = null
     private val adapter get() = _adapter
     private var isClickAllowed = true

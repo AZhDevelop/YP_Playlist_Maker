@@ -10,7 +10,7 @@ import com.example.yp_playlist_maker.util.State
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class FavouritesFragmentViewModel(
+class MediaFavouritesFragmentViewModel(
     private val favouriteTracksInteractor: FavouriteTracksInteractor
 ): ViewModel() {
 

@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.databinding.FragmentMediaPlaylistsBinding
-import com.example.yp_playlist_maker.media.ui.view_model.PlaylistsFragmentViewModel
+import com.example.yp_playlist_maker.media.ui.view_model.MediaPlaylistsFragmentViewModel
 import com.example.yp_playlist_maker.util.State
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -16,7 +16,7 @@ class MediaPlaylistsFragment : Fragment() {
 
     private var _binding: FragmentMediaPlaylistsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModel<PlaylistsFragmentViewModel>()
+    private val viewModel by viewModel<MediaPlaylistsFragmentViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
