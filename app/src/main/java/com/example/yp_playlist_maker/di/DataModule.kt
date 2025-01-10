@@ -1,10 +1,12 @@
 package com.example.yp_playlist_maker.di
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
+import android.os.Environment
 import androidx.core.content.IntentCompat
 import androidx.room.Room
 import com.example.yp_playlist_maker.database.data.AppDatabase
@@ -21,6 +23,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 
 private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
 private const val TRACK_LIST_KEY: String = "track_list_key"
@@ -73,5 +76,13 @@ val dataModule = module {
 
     single<TrackDao> { get<AppDatabase>().trackDao() }
     single<PlaylistDao> { get<AppDatabase>().playlistDao() }
+
+    single<File> {
+        File(androidContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists_covers")
+    }
+
+    single<ContentResolver> {
+        androidContext().contentResolver
+    }
 
 }

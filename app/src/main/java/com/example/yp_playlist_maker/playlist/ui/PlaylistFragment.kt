@@ -64,7 +64,7 @@ class PlaylistFragment : Fragment() {
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 loadTrackImage(uri)
-                saveImageToPrivateStorage(uri)
+                viewModel.saveImageToPrivateStorage(uri)
             } else {
                 Toast.makeText(activity, "Изображение не выбрано", Toast.LENGTH_LONG).show()
             }
@@ -76,16 +76,7 @@ class PlaylistFragment : Fragment() {
 
         binding.btnCreatePlaylist.setOnClickListener {
             Log.d("log", "Button clicked")
-            viewModel.createPlaylist(
-                Playlist(
-                    playlistId = 0,
-                    playlistName = "TestName",
-                    playlistDescription = "TestDescription",
-                    playlistCoverPath = "TestPath",
-                    trackIdList = "TestTrackList",
-                    playlistSize = "TestPlaylistSize"
-                )
-            )
+            viewModel.createPlaylist()
         }
 
     }
@@ -157,21 +148,21 @@ class PlaylistFragment : Fragment() {
             .into(binding.imgPlaceholder)
     }
 
-    private fun saveImageToPrivateStorage(uri: Uri) {
-
-        val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists_covers")
-        if (!filePath.exists()){
-            filePath.mkdirs()
-        }
-        val fileCount = filePath.listFiles()?.size
-        val fileName = fileCount?.plus(1)
-        val file = File(filePath, "${fileName}.jpg")
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(file)
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-    }
+//    private fun saveImageToPrivateStorage(uri: Uri) {
+//
+//        val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists_covers")
+//        if (!filePath.exists()){
+//            filePath.mkdirs()
+//        }
+//        val fileCount = filePath.listFiles()?.size
+//        val fileName = fileCount?.plus(1)
+//        val file = File(filePath, "${fileName}.jpg")
+//        val inputStream = requireActivity().contentResolver.openInputStream(uri)
+//        val outputStream = FileOutputStream(file)
+//        BitmapFactory
+//            .decodeStream(inputStream)
+//            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
