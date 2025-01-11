@@ -1,10 +1,7 @@
 package com.example.yp_playlist_maker.playlist.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -24,13 +21,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
-import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
 import com.example.yp_playlist_maker.playlist.view_model.PlaylistViewModel
-import com.example.yp_playlist_maker.util.Converter
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
 
 class PlaylistFragment : Fragment() {
 
@@ -64,6 +57,9 @@ class PlaylistFragment : Fragment() {
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 loadTrackImage(uri)
+                // Надо пересмотреть возможность сохранения только при нажатии на кнопку,
+                // а не каждый раз при выборе изображения
+                // Сделать проверку на null
                 viewModel.saveImageToPrivateStorage(uri)
             } else {
                 Toast.makeText(activity, "Изображение не выбрано", Toast.LENGTH_LONG).show()
@@ -75,8 +71,12 @@ class PlaylistFragment : Fragment() {
         }
 
         binding.btnCreatePlaylist.setOnClickListener {
-            Log.d("log", "Button clicked")
-            viewModel.createPlaylist()
+            viewModel.createPlaylist(
+                playlistName = binding.etPlaylistName.text.toString(),
+                playlistDescription = binding.etPlaylistDescription.text.toString()
+            )
+            findNavController().navigateUp()
+            Toast.makeText(activity, "Плейлист успешно создан", Toast.LENGTH_LONG).show()
         }
 
     }
@@ -143,26 +143,10 @@ class PlaylistFragment : Fragment() {
         Glide.with(this)
             .load(uri)
             .centerCrop()
-            .transform(RoundedCorners(Converter.dpToPx(PLAYER_IMAGE_RADIUS)))
+            .transform(RoundedCorners(viewModel.getRoundedCorners(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)
             .into(binding.imgPlaceholder)
     }
-
-//    private fun saveImageToPrivateStorage(uri: Uri) {
-//
-//        val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists_covers")
-//        if (!filePath.exists()){
-//            filePath.mkdirs()
-//        }
-//        val fileCount = filePath.listFiles()?.size
-//        val fileName = fileCount?.plus(1)
-//        val file = File(filePath, "${fileName}.jpg")
-//        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-//        val outputStream = FileOutputStream(file)
-//        BitmapFactory
-//            .decodeStream(inputStream)
-//            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

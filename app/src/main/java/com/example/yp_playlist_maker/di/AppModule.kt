@@ -43,7 +43,9 @@ val appModule = module {
     }
 
     viewModel<MediaPlaylistsFragmentViewModel> {
-        MediaPlaylistsFragmentViewModel()
+        MediaPlaylistsFragmentViewModel(
+            playlistsInteractor = get()
+        )
     }
 
     viewModel<PlaylistViewModel> {
