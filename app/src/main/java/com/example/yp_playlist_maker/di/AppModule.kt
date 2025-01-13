@@ -4,7 +4,7 @@ import android.content.Intent
 import com.example.yp_playlist_maker.media.ui.view_model.MediaFavouritesFragmentViewModel
 import com.example.yp_playlist_maker.media.ui.view_model.MediaPlaylistsFragmentViewModel
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
-import com.example.yp_playlist_maker.playlist.view_model.PlaylistViewModel
+import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel

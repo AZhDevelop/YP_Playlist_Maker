@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,7 @@ import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
-import com.example.yp_playlist_maker.playlist.view_model.PlaylistViewModel
+import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment : Fragment() {

@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker.playlist.view_model
+package com.example.yp_playlist_maker.playlist.ui.view_model
 
 import android.content.ContentResolver
 import android.graphics.Bitmap
@@ -37,7 +37,7 @@ class PlaylistViewModel(
                         "${playlistsDirectory.path}/${fileName}.jpg"
                     },
                     trackIdList = "",
-                    playlistSize = ""
+                    playlistSize = "0 треков"
                 )
             )
         }
