@@ -18,16 +18,31 @@ class PlaylistViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
     fun bind(item: Playlist) {
 
+        val imagePath = item.playlistCoverPath
+
         playlistName.text = item.playlistName
-        playlistSize.text = item.playlistSize
+        playlistSize.text = getPlaylistSize(item)
 
-        Glide.with(itemView)
-            .load(item.playlistCoverPath)
-            .centerCrop()
-            .transform(RoundedCorners(Converter.dpToPx(PLAYLIST_COVER_RADIUS)))
-            .placeholder(R.drawable.image_placeholder)
-            .into(playlistCover)
+        if (imagePath == "null") {
+            Glide.with(itemView)
+                .load(R.drawable.image_placeholder)
+                .into(playlistCover)
+        } else {
+            Glide.with(itemView)
+                .load(item.playlistCoverPath)
+                .centerCrop()
+                .transform(RoundedCorners(Converter.dpToPx(PLAYLIST_COVER_RADIUS)))
+                .into(playlistCover)
+        }
+    }
 
+    private fun getPlaylistSize(item: Playlist): String {
+        val playlistSizeFromDb = item.playlistSize
+        if (playlistSizeFromDb == "") {
+            return "0 треков"
+        } else {
+            return "0 треков"
+        }
     }
 
     companion object {

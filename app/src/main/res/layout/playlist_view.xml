@@ -9,7 +9,6 @@
         android:id="@+id/playlist_cover"
         android:layout_width="160dp"
         android:layout_height="160dp"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/img_placeholder_audio_player" />

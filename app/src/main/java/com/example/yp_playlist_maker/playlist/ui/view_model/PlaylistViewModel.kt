@@ -37,7 +37,7 @@ class PlaylistViewModel(
                         "${playlistsDirectory.path}/${fileName}.jpg"
                     },
                     trackIdList = "",
-                    playlistSize = "0 треков"
+                    playlistSize = ""
                 )
             )
         }
