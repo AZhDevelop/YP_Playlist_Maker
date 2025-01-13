@@ -20,7 +20,7 @@
         android:layout_marginTop="46dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_placeholder"
+        app:layout_constraintTop_toBottomOf="@+id/btn_placeholder"
         tools:src="@drawable/img_search_error" />
 
     <TextView
@@ -30,5 +30,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_placeholder"
         tools:text="Вы не создали\nни одного плейлиста" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_playlists"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/margin_base_16"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_placeholder" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

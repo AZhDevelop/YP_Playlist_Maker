@@ -1,6 +1,5 @@
 package com.example.yp_playlist_maker.media.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.yp_playlist_maker.database.domain.api.PlaylistsInteractor
 import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.util.State
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class MediaPlaylistsFragmentViewModel(
@@ -25,7 +25,7 @@ class MediaPlaylistsFragmentViewModel(
         checkPlaylistList()
     }
 
-    private fun checkPlaylistList() {
+    fun checkPlaylistList() {
         viewModelScope.launch {
             playlistsInteractor
                 .getPlaylistList()
@@ -36,9 +36,13 @@ class MediaPlaylistsFragmentViewModel(
                     } else {
                         fragmentState.value = State.FragmentState.SUCCESS
                         playlistList.value = plList
-                        Log.d("log", "${playlistList.value}")
                     }
                 }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
     }
 }

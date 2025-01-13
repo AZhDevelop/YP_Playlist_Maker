@@ -28,7 +28,7 @@ class MediaFavouritesFragment: Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModel<MediaFavouritesFragmentViewModel>()
     private var _adapter: TrackAdapter? = null
-    private val adapter get() = _adapter
+    private val adapter get() = _adapter!!
     private var isClickAllowed = true
     private var clickDebounceJob: Job? = null
 
@@ -53,7 +53,7 @@ class MediaFavouritesFragment: Fragment() {
         setFavouritesFragmentObservers()
         viewModel.checkFavouriteTrackList()
 
-        adapter?.onTrackClick = {
+        adapter.onTrackClick = {
             if (clickDebounce()) {
                 val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
                 displayAudioPlayer.apply {
@@ -75,8 +75,8 @@ class MediaFavouritesFragment: Fragment() {
     }
 
     private fun handleFavouriteTrackList(favouriteTracksList: List<Track>) {
-        adapter?.data = favouriteTracksList
-        adapter?.notifyDataSetChanged()
+        adapter.data = favouriteTracksList
+        adapter.notifyDataSetChanged()
     }
 
     private fun handleFragmentState(fragmentState: State.FragmentState) {
@@ -133,7 +133,7 @@ class MediaFavouritesFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        adapter?.onTrackClick = null
+        adapter.onTrackClick = null
         _adapter = null
     }
 
