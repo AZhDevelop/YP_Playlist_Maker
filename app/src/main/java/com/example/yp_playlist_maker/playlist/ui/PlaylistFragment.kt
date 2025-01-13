@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
 import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment : Fragment() {
@@ -33,6 +35,8 @@ class PlaylistFragment : Fragment() {
     private var _playlistDescriptionTextWatcher: TextWatcher? = null
     private val playlistDescriptionTextWatcher get() = _playlistDescriptionTextWatcher
     private val viewModel by viewModel<PlaylistViewModel>()
+    private var isCoverSet: Boolean = false
+    private var isTextSet: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,8 +50,16 @@ class PlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                checkPlaylistCreation()
+            }
+        })
+
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+            checkPlaylistCreation()
         }
 
         setFragmentElements()
@@ -60,6 +72,7 @@ class PlaylistFragment : Fragment() {
                 // а не каждый раз при выборе изображения
                 // Сделать проверку на null
                 viewModel.saveImageToPrivateStorage(uri)
+                isCoverSet = true
             } else {
                 Toast.makeText(activity, "Изображение не выбрано", Toast.LENGTH_LONG).show()
             }
@@ -91,10 +104,12 @@ class PlaylistFragment : Fragment() {
                     editText.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
                     textView.gone()
                     checkButtonIsAvailable()
+                    isTextSet = false
                 } else {
                     editText.setBackgroundResource(R.drawable.playlist_text_drawable)
                     textView.visible()
                     checkButtonIsAvailable()
+                    isTextSet = true
                 }
             }
 
@@ -145,6 +160,24 @@ class PlaylistFragment : Fragment() {
             .transform(RoundedCorners(viewModel.getRoundedCorners(PLAYER_IMAGE_RADIUS)))
             .placeholder(R.drawable.img_placeholder_audio_player)
             .into(binding.imgPlaceholder)
+    }
+
+    private fun checkPlaylistCreation() {
+        if (isCoverSet || isTextSet) {
+            showCancelDialog()
+        } else {
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun showCancelDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Завершить создание плейлиста?")
+            .setNeutralButton("Отмена") { _, _ -> }
+            .setPositiveButton("Завершить") { _, _ ->
+                findNavController().navigateUp()
+            }
+            .show()
     }
 
     override fun onDestroyView() {
