@@ -32,5 +32,6 @@
     <color name="track_value_color">@color/yp_black</color>
     <color name="playlist_text_hint">@color/yp_black</color>
     <color name="playlist_hint_background">@color/white</color>
+    <color name="bottomsheet_rectangle">@color/yp_light_gray</color>
 
 </resources>

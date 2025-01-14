@@ -1,7 +1,10 @@
 package com.example.yp_playlist_maker.player.ui
 
+import android.animation.ArgbEvaluator
 import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -11,6 +14,7 @@ import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.State
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -26,6 +30,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding = ActivityAudioplayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val bottomSheetContainer = binding.bottomSheet
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
         viewModel.preparePlayer()
 
         setupPlayerObservers()
@@ -35,6 +43,24 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.like.setOnClickListener {
             saveDeleteFavourites(isTrackFavourite)
         }
+
+        binding.addToPlaylist.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                val startColor = getColor(R.color.main_background)
+                val endColor = TRANSPARENT_BACKGROUND
+                val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
+                val blendedColor = ArgbEvaluator().evaluate(normalizedOffset, startColor, endColor) as Int
+                binding.audioplayerActivity.setBackgroundColor(blendedColor)
+            }
+        })
 
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
@@ -126,6 +152,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val PLAYER_IMAGE_RADIUS: Int = 8
         private const val ALPHA_25 = 0.25F
         private const val ALPHA_100 = 1F
+        private val TRANSPARENT_BACKGROUND = Color.argb(128, 26, 27, 34)
     }
 
 }

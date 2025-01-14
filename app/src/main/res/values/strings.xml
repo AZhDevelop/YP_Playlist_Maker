@@ -44,6 +44,9 @@
     <string name="track_country">Страна</string>
     <string name="default_time">00:00</string>
 
+    <!-- Экран плеера BottomSheet -->
+    <string name="add_to_playlist">Добавить в плейлист</string>
+
     <!-- Экран создания плейлиста -->
     <string name="playlist_name">Название*</string>
     <string name="playlist_description">Описание</string>
