@@ -6,8 +6,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
+import android.os.Bundle
 import android.os.Environment
 import androidx.core.content.IntentCompat
+import androidx.core.os.BundleCompat
 import androidx.room.Room
 import com.example.yp_playlist_maker.database.data.AppDatabase
 import com.example.yp_playlist_maker.database.data.dao.PlaylistDao
@@ -63,10 +65,6 @@ val dataModule = module {
 
     factory<MediaPlayer> {
         MediaPlayer()
-    }
-
-    factory<Track?> { (intent : Intent) ->
-        IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
     }
 
     single<AppDatabase> {

@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
@@ -18,7 +19,7 @@ import com.example.yp_playlist_maker.app.hideKeyboard
 import com.example.yp_playlist_maker.app.invisible
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentSearchBinding
-import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
+import com.example.yp_playlist_maker.player.ui.AudioPlayerFragment
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.util.State
 import kotlinx.coroutines.Job
@@ -102,11 +103,8 @@ class SearchFragment: Fragment() {
         adapter?.onTrackClick = {
             if (clickDebounce()) {
                 viewModel.saveClickedTrack(it)
-                val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
-                displayAudioPlayer.apply {
-                    putExtra(INTENT_PUTTED_TRACK, it)
-                }
-                startActivity(displayAudioPlayer)
+                val action = SearchFragmentDirections.actionSearchFragmentToAudioPlayerFragment(it)
+                findNavController().navigate(action)
                 if (binding.etSearch.text.isEmpty()) {
                     updateTrackHistory = true
                 }

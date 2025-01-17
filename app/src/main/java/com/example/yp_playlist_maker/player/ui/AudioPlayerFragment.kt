@@ -1,16 +1,19 @@
 package com.example.yp_playlist_maker.player.ui
 
 import android.animation.ArgbEvaluator
-import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
-import com.example.yp_playlist_maker.databinding.ActivityAudioplayerBinding
+import com.example.yp_playlist_maker.databinding.FragmentAudioplayerBinding
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.State
@@ -18,17 +21,28 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class AudioPlayerActivity : AppCompatActivity() {
+class AudioPlayerFragment : Fragment() {
 
-    private val viewModel by viewModel<AudioPlayerViewModel> { parametersOf(intent) }
-    private lateinit var binding: ActivityAudioplayerBinding
+    private val trackArgs by navArgs<AudioPlayerFragmentArgs>()
+    private val viewModel by viewModel<AudioPlayerViewModel>()
+    private var _binding: FragmentAudioplayerBinding? = null
+    private val binding get() = _binding!!
     private var isTrackFavourite: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        binding = ActivityAudioplayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentAudioplayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val track = trackArgs.track
+        viewModel.setTrackData(track)
 
         val bottomSheetContainer = binding.bottomSheet
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
@@ -54,7 +68,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                val startColor = getColor(R.color.main_background)
+                val startColor = R.color.main_background
                 val endColor = TRANSPARENT_BACKGROUND
                 val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
                 val blendedColor = ArgbEvaluator().evaluate(normalizedOffset, startColor, endColor) as Int
@@ -62,7 +76,9 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
         })
 
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     override fun onStop() {
@@ -98,19 +114,19 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun setupPlayerObservers() {
-        viewModel.getAudioPlayerStatus().observe(this) { status ->
+        viewModel.getAudioPlayerStatus().observe(viewLifecycleOwner) { status ->
             handlePlayerStatus(status)
         }
 
-        viewModel.getCurrentTime().observe(this) { currentTime ->
+        viewModel.getCurrentTime().observe(viewLifecycleOwner) { currentTime ->
             binding.playTime.text = currentTime
         }
 
-        viewModel.getTrackData().observe(this) { trackData ->
+        viewModel.getTrackData().observe(viewLifecycleOwner) { trackData ->
             fillTrackData(trackData)
         }
 
-        viewModel.getIsFavourite().observe(this) { isFavourite ->
+        viewModel.getIsFavourite().observe(viewLifecycleOwner) { isFavourite ->
             handleIsFavourite(isFavourite)
         }
     }
@@ -146,6 +162,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         } else {
             viewModel.saveTrackToFavourites()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

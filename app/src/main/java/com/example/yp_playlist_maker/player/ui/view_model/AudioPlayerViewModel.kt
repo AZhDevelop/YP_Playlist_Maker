@@ -18,7 +18,6 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
-    private val trackExtra: Track?,
     private val favouriteTracksInteractor: FavouriteTracksInteractor
 ) : ViewModel() {
 
@@ -37,24 +36,22 @@ class AudioPlayerViewModel(
     private val isFavourite = MutableLiveData(false)
     fun getIsFavourite(): LiveData<Boolean> = isFavourite
 
-    private fun setTrackData() {
-        trackData.value = trackExtra?.let {
-            Track(
-                trackId = trackExtra.trackId,
-                trackName = trackExtra.trackName,
-                artistName = trackExtra.artistName,
-                trackTimeMillis = if (trackExtra.isFavourite) trackExtra.trackTimeMillis else Converter.convertMillis(trackExtra.trackTimeMillis),
-                artworkUrl100 = Converter.convertUrl(trackExtra.artworkUrl100),
-                collectionName = trackExtra.collectionName,
-                releaseDate = trackExtra.releaseDate
-                    .replaceAfter(DASH, EMPTY_STRING)
-                    .replace(DASH, EMPTY_STRING),
-                primaryGenreName = trackExtra.primaryGenreName,
-                country = trackExtra.country,
-                previewUrl = trackExtra.previewUrl,
-                isFavourite = trackExtra.isFavourite
-            )
-        }
+    fun setTrackData(track: Track) {
+        trackData.value = Track(
+            trackId = track.trackId,
+            trackName = track.trackName,
+            artistName = track.artistName,
+            trackTimeMillis = if (track.isFavourite) track.trackTimeMillis else Converter.convertMillis(track.trackTimeMillis),
+            artworkUrl100 = Converter.convertUrl(track.artworkUrl100),
+            collectionName = track.collectionName,
+            releaseDate = track.releaseDate
+                .replaceAfter(DASH, EMPTY_STRING)
+                .replace(DASH, EMPTY_STRING),
+            primaryGenreName = track.primaryGenreName,
+            country = track.country,
+            previewUrl = track.previewUrl,
+            isFavourite = track.isFavourite
+        )
     }
 
     private fun checkIsFavouriteTrack(trackId: String) {
@@ -84,7 +81,6 @@ class AudioPlayerViewModel(
     }
 
     init {
-        setTrackData()
         trackData.value?.let { checkIsFavouriteTrack(it.trackId) }
         currentTime.value = DEFAULT_TIME
     }

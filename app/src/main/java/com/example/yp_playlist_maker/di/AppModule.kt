@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.di
 
 import android.content.Intent
+import android.os.Bundle
 import com.example.yp_playlist_maker.media.ui.view_model.MediaFavouritesFragmentViewModel
 import com.example.yp_playlist_maker.media.ui.view_model.MediaPlaylistsFragmentViewModel
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
@@ -27,11 +28,9 @@ val appModule = module {
         )
     }
 
-    viewModel<AudioPlayerViewModel> { (intent : Intent) ->
-        val track = get<Track> { parametersOf(intent) }
+    viewModel<AudioPlayerViewModel> {
         AudioPlayerViewModel(
             playTrackService = get(),
-            trackExtra = track,
             favouriteTracksInteractor = get()
         )
     }

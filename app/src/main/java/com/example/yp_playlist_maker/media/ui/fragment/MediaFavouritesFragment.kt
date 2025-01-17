@@ -13,7 +13,7 @@ import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentMediaFavouritesBinding
 import com.example.yp_playlist_maker.media.ui.view_model.MediaFavouritesFragmentViewModel
-import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
+import com.example.yp_playlist_maker.player.ui.AudioPlayerFragment
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.search.ui.TrackAdapter
 import com.example.yp_playlist_maker.util.State
@@ -55,7 +55,7 @@ class MediaFavouritesFragment: Fragment() {
 
         adapter.onTrackClick = {
             if (clickDebounce()) {
-                val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
+                val displayAudioPlayer = Intent(requireContext(), AudioPlayerFragment::class.java)
                 displayAudioPlayer.apply {
                     putExtra(INTENT_PUTTED_TRACK, it)
                 }

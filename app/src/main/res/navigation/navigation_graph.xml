@@ -17,7 +17,11 @@
         android:id="@+id/searchFragment"
         android:name="com.example.yp_playlist_maker.search.ui.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search"/>
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.yp_playlist_maker.settings.ui.SettingsFragment"
@@ -28,4 +32,14 @@
         android:name="com.example.yp_playlist_maker.playlist.ui.PlaylistFragment"
         android:label="fragment_playlist"
         tools:layout="@layout/fragment_playlist" />
+    <fragment
+        android:id="@+id/audioPlayerFragment"
+        android:name="com.example.yp_playlist_maker.player.ui.AudioPlayerFragment"
+        android:label="fragment_audioplayer"
+        tools:layout="@layout/fragment_audioplayer" >
+            <argument
+                android:name="track"
+                app:argType="com.example.yp_playlist_maker.search.domain.models.Track"
+                app:nullable="false" />
+    </fragment>
 </navigation>
