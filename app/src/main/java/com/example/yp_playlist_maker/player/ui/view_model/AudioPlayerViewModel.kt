@@ -37,11 +37,12 @@ class AudioPlayerViewModel(
     fun getIsFavourite(): LiveData<Boolean> = isFavourite
 
     fun setTrackData(track: Track) {
+        val isFavourite = checkIsFavouriteTrack(track.trackId)
         trackData.value = Track(
             trackId = track.trackId,
             trackName = track.trackName,
             artistName = track.artistName,
-            trackTimeMillis = if (track.isFavourite) track.trackTimeMillis else Converter.convertMillis(track.trackTimeMillis),
+            trackTimeMillis = if (isFavourite) track.trackTimeMillis else Converter.convertMillis(track.trackTimeMillis),
             artworkUrl100 = Converter.convertUrl(track.artworkUrl100),
             collectionName = track.collectionName,
             releaseDate = track.releaseDate
@@ -50,14 +51,15 @@ class AudioPlayerViewModel(
             primaryGenreName = track.primaryGenreName,
             country = track.country,
             previewUrl = track.previewUrl,
-            isFavourite = track.isFavourite
+            isFavourite = isFavourite
         )
     }
 
-    private fun checkIsFavouriteTrack(trackId: String) {
+    private fun checkIsFavouriteTrack(trackId: String): Boolean {
         viewModelScope.launch {
             isFavourite.value = favouriteTracksInteractor.checkIsTrackFavourite(trackId)
         }
+        return isFavourite.value!!
     }
 
     fun saveTrackToFavourites() {
@@ -81,7 +83,6 @@ class AudioPlayerViewModel(
     }
 
     init {
-        trackData.value?.let { checkIsFavouriteTrack(it.trackId) }
         currentTime.value = DEFAULT_TIME
     }
 

@@ -3,6 +3,7 @@ package com.example.yp_playlist_maker.player.ui
 import android.animation.ArgbEvaluator
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,6 @@ import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.State
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 class AudioPlayerFragment : Fragment() {
 
@@ -42,6 +42,7 @@ class AudioPlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val track = trackArgs.track
+        Log.d("log", "Track args: $track")
         viewModel.setTrackData(track)
 
         val bottomSheetContainer = binding.bottomSheet
