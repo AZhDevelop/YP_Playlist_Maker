@@ -18,7 +18,11 @@ object Converter {
     }
 
     fun convertMillis(time: String): String {
-        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time.toInt()).toString()
+        return try{
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(time.toInt()).toString()
+        } catch (e: Exception) {
+            time
+        }
     }
 
     fun convertUrl(url: String): String {

@@ -44,7 +44,7 @@ class AudioPlayerViewModel(
                     trackId = track.trackId,
                     trackName = track.trackName,
                     artistName = track.artistName,
-                    trackTimeMillis = if (isFav) track.trackTimeMillis else Converter.convertMillis(track.trackTimeMillis),
+                    trackTimeMillis = Converter.convertMillis(track.trackTimeMillis),
                     artworkUrl100 = Converter.convertUrl(track.artworkUrl100),
                     releaseDate = track.releaseDate
                         .replaceAfter(DASH, EMPTY_STRING)
