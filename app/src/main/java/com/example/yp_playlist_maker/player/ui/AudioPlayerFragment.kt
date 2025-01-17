@@ -3,7 +3,6 @@ package com.example.yp_playlist_maker.player.ui
 import android.animation.ArgbEvaluator
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +41,11 @@ class AudioPlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (viewModel.backgroundColor.value == Color.TRANSPARENT) {
+            val defaultColor = ContextCompat.getColor(requireContext(), R.color.main_background)
+            viewModel.setBackgroundColor(defaultColor)
+        }
+
         val track = trackArgs.track
         viewModel.setTrackData(track)
 
@@ -76,6 +80,7 @@ class AudioPlayerFragment : Fragment() {
                 val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
                 val blendedColor = ArgbEvaluator().evaluate(normalizedOffset, startColor, endColor) as Int
                 binding.audioplayerFragment.setBackgroundColor(blendedColor)
+                viewModel.setBackgroundColor(blendedColor)
             }
         })
 
@@ -131,6 +136,10 @@ class AudioPlayerFragment : Fragment() {
 
         viewModel.isFavourite.observe(viewLifecycleOwner) { isFavourite ->
             handleIsFavourite(isFavourite)
+        }
+
+        viewModel.backgroundColor.observe(viewLifecycleOwner) { color ->
+            binding.audioplayerFragment.setBackgroundColor(color)
         }
     }
 

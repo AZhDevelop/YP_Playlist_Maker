@@ -1,5 +1,6 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
+import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,6 +36,13 @@ class AudioPlayerViewModel(
 
     private val _isFavourite = MutableLiveData<Boolean>()
     val isFavourite: LiveData<Boolean> get() = _isFavourite
+
+    private val _backgroundColor = MutableLiveData<Int>()
+    val backgroundColor: LiveData<Int> get() = _backgroundColor
+
+    fun setBackgroundColor(color: Int) {
+        _backgroundColor.value = color
+    }
 
     fun setTrackData(track: Track) {
         viewModelScope.launch {
@@ -80,6 +88,7 @@ class AudioPlayerViewModel(
     }
 
     init {
+        _backgroundColor.value = Color.TRANSPARENT
         currentTime.value = DEFAULT_TIME
     }
 
