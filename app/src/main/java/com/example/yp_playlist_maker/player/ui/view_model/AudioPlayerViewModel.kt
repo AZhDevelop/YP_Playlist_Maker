@@ -33,33 +33,30 @@ class AudioPlayerViewModel(
     private val trackData = MutableLiveData<Track>()
     fun getTrackData(): LiveData<Track> = trackData
 
-    private val isFavourite = MutableLiveData(false)
-    fun getIsFavourite(): LiveData<Boolean> = isFavourite
+    private val _isFavourite = MutableLiveData<Boolean>()
+    val isFavourite: LiveData<Boolean> get() = _isFavourite
 
     fun setTrackData(track: Track) {
-        val isFavourite = checkIsFavouriteTrack(track.trackId)
-        trackData.value = Track(
-            trackId = track.trackId,
-            trackName = track.trackName,
-            artistName = track.artistName,
-            trackTimeMillis = if (isFavourite) track.trackTimeMillis else Converter.convertMillis(track.trackTimeMillis),
-            artworkUrl100 = Converter.convertUrl(track.artworkUrl100),
-            collectionName = track.collectionName,
-            releaseDate = track.releaseDate
-                .replaceAfter(DASH, EMPTY_STRING)
-                .replace(DASH, EMPTY_STRING),
-            primaryGenreName = track.primaryGenreName,
-            country = track.country,
-            previewUrl = track.previewUrl,
-            isFavourite = isFavourite
-        )
-    }
-
-    private fun checkIsFavouriteTrack(trackId: String): Boolean {
         viewModelScope.launch {
-            isFavourite.value = favouriteTracksInteractor.checkIsTrackFavourite(trackId)
+            _isFavourite.value = favouriteTracksInteractor.checkIsTrackFavourite(track.trackId)
+            _isFavourite.value?.let { isFav ->
+                trackData.value = track.copy(
+                    trackId = track.trackId,
+                    trackName = track.trackName,
+                    artistName = track.artistName,
+                    trackTimeMillis = if (isFav) track.trackTimeMillis else Converter.convertMillis(track.trackTimeMillis),
+                    artworkUrl100 = Converter.convertUrl(track.artworkUrl100),
+                    releaseDate = track.releaseDate
+                        .replaceAfter(DASH, EMPTY_STRING)
+                        .replace(DASH, EMPTY_STRING),
+                    primaryGenreName = track.primaryGenreName,
+                    country = track.country,
+                    previewUrl = track.previewUrl,
+                    isFavourite = isFav
+                )
+                preparePlayer()
+            }
         }
-        return isFavourite.value!!
     }
 
     fun saveTrackToFavourites() {
@@ -68,7 +65,7 @@ class AudioPlayerViewModel(
                 it.isFavourite = true
                 favouriteTracksInteractor.insertTrack(it)
             }
-            isFavourite.value = true
+            _isFavourite.value = true
         }
     }
 
@@ -78,7 +75,7 @@ class AudioPlayerViewModel(
                 it.isFavourite = false
                 favouriteTracksInteractor.deleteTrack(it)
             }
-            isFavourite.value = false
+            _isFavourite.value = false
         }
     }
 
@@ -86,7 +83,7 @@ class AudioPlayerViewModel(
         currentTime.value = DEFAULT_TIME
     }
 
-    fun preparePlayer() {
+    private fun preparePlayer() {
         trackData.value?.let {
             playTrackService.preparePlayer(
                 it.previewUrl,

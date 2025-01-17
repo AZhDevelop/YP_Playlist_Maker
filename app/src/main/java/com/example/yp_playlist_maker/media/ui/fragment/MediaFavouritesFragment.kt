@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentMediaFavouritesBinding
+import com.example.yp_playlist_maker.media.ui.MediaFragmentDirections
 import com.example.yp_playlist_maker.media.ui.view_model.MediaFavouritesFragmentViewModel
 import com.example.yp_playlist_maker.player.ui.AudioPlayerFragment
 import com.example.yp_playlist_maker.search.domain.models.Track
@@ -55,11 +57,8 @@ class MediaFavouritesFragment: Fragment() {
 
         adapter.onTrackClick = {
             if (clickDebounce()) {
-                val displayAudioPlayer = Intent(requireContext(), AudioPlayerFragment::class.java)
-                displayAudioPlayer.apply {
-                    putExtra(INTENT_PUTTED_TRACK, it)
-                }
-                startActivity(displayAudioPlayer)
+                val action = MediaFragmentDirections.actionMediaFragmentToAudioPlayerFragment2(it)
+                findNavController().navigate(action)
             }
         }
 

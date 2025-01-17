@@ -42,14 +42,11 @@ class AudioPlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val track = trackArgs.track
-        Log.d("log", "Track args: $track")
         viewModel.setTrackData(track)
 
         val bottomSheetContainer = binding.bottomSheet
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
-        viewModel.preparePlayer()
 
         setupPlayerObservers()
 
@@ -73,7 +70,7 @@ class AudioPlayerFragment : Fragment() {
                 val endColor = TRANSPARENT_BACKGROUND
                 val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
                 val blendedColor = ArgbEvaluator().evaluate(normalizedOffset, startColor, endColor) as Int
-                binding.audioplayerActivity.setBackgroundColor(blendedColor)
+                binding.audioplayerFragment.setBackgroundColor(blendedColor)
             }
         })
 
@@ -127,7 +124,7 @@ class AudioPlayerFragment : Fragment() {
             fillTrackData(trackData)
         }
 
-        viewModel.getIsFavourite().observe(viewLifecycleOwner) { isFavourite ->
+        viewModel.isFavourite.observe(viewLifecycleOwner) { isFavourite ->
             handleIsFavourite(isFavourite)
         }
     }
