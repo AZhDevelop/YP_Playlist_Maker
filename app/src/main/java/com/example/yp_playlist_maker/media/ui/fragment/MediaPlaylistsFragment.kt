@@ -42,7 +42,6 @@ class MediaPlaylistsFragment : Fragment() {
 
         binding.apply {
             tvPlaceholder.text = getString(R.string.no_playlists)
-            btnPlaceholder.text = getString(R.string.new_playlist)
             imgPlaceholder.setImageResource(R.drawable.img_search_error)
         }
 

@@ -44,5 +44,8 @@
                 android:name="track"
                 app:argType="com.example.yp_playlist_maker.search.domain.models.Track"
                 app:nullable="false" />
+        <action
+            android:id="@+id/action_audioPlayerFragment_to_playlistFragment"
+            app:destination="@id/playlistFragment" />
     </fragment>
 </navigation>

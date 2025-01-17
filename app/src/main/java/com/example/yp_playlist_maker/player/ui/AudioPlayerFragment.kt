@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -60,13 +61,17 @@ class AudioPlayerFragment : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
+        binding.btnBottomSheet.setOnClickListener {
+            findNavController().navigate(R.id.action_audioPlayerFragment_to_playlistFragment)
+        }
+
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                val startColor = R.color.main_background
+                val startColor = ContextCompat.getColor(requireContext(), R.color.main_background)
                 val endColor = TRANSPARENT_BACKGROUND
                 val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
                 val blendedColor = ArgbEvaluator().evaluate(normalizedOffset, startColor, endColor) as Int
