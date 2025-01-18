@@ -62,6 +62,7 @@ class AudioPlayerFragment : Fragment() {
 
         setRecyclerView()
         setupPlayerObservers()
+        viewModel.checkPlaylistList()
 
         binding.play.setOnClickListener { viewModel.playbackControl() }
 
@@ -102,6 +103,7 @@ class AudioPlayerFragment : Fragment() {
             val playlistName = it.playlistName
             val toastMessage = "Track \"$trackName\" added to playlist \"$playlistName\""
             Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_LONG).show()
+            viewModel.saveTrackToPlaylist(playlistName)
         }
 
     }

@@ -96,6 +96,15 @@ class AudioPlayerViewModel(
         }
     }
 
+    fun saveTrackToPlaylist(playlistName: String) {
+        viewModelScope.launch {
+            trackData.value?.let {
+                it.playlistName = playlistName
+                favouriteTracksInteractor.insertTrack(it)
+            }
+        }
+    }
+
     init {
         _backgroundColor.value = Color.TRANSPARENT
         currentTime.value = DEFAULT_TIME
