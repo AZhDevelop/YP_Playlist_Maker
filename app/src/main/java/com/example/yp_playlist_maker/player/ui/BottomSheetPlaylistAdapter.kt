@@ -8,6 +8,7 @@ import com.example.yp_playlist_maker.database.domain.models.Playlist
 
 class BottomSheetPlaylistAdapter: RecyclerView.Adapter<BottomSheetPlaylistViewHolder>() {
 
+    var onPlaylistClick: ((Playlist) -> Unit)? = null
     var data: List<Playlist> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BottomSheetPlaylistViewHolder {
@@ -21,6 +22,9 @@ class BottomSheetPlaylistAdapter: RecyclerView.Adapter<BottomSheetPlaylistViewHo
 
     override fun onBindViewHolder(holder: BottomSheetPlaylistViewHolder, position: Int) {
         holder.bind(data[position])
+        holder.itemView.setOnClickListener {
+            onPlaylistClick?.invoke(data[position])
+        }
     }
 
 }

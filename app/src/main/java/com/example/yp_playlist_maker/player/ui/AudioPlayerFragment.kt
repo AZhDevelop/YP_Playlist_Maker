@@ -3,9 +3,11 @@ package com.example.yp_playlist_maker.player.ui
 import android.animation.ArgbEvaluator
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -24,7 +26,7 @@ import com.example.yp_playlist_maker.util.State
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class AudioPlayerFragment: Fragment() {
+class AudioPlayerFragment : Fragment() {
 
     private val viewModel by viewModel<AudioPlayerViewModel>()
     private val trackArgs by navArgs<AudioPlayerFragmentArgs>()
@@ -75,7 +77,8 @@ class AudioPlayerFragment: Fragment() {
             findNavController().navigate(R.id.action_audioPlayerFragment_to_playlistFragment)
         }
 
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 
             }
@@ -93,6 +96,14 @@ class AudioPlayerFragment: Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+
+        adapter.onPlaylistClick = {
+            val trackName = binding.trackName.text
+            val playlistName = it.playlistName
+            val toastMessage = "Track \"$trackName\" added to playlist \"$playlistName\""
+            Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_LONG).show()
+        }
+
     }
 
     override fun onStop() {
@@ -166,6 +177,7 @@ class AudioPlayerFragment: Fragment() {
             State.BottomSheetState.EMPTY -> {
                 binding.rvBottomSheet.gone()
             }
+
             State.BottomSheetState.SUCCESS -> {
                 binding.rvBottomSheet.visible()
             }
@@ -179,9 +191,11 @@ class AudioPlayerFragment: Fragment() {
                 binding.play.isEnabled = true
                 binding.play.alpha = ALPHA_100
             }
+
             State.PlayerState.COMPLETED -> {
                 binding.play.setBackgroundResource(R.drawable.btn_play)
             }
+
             State.PlayerState.START -> binding.play.setBackgroundResource(R.drawable.btn_pause)
             State.PlayerState.PAUSE -> binding.play.setBackgroundResource(R.drawable.btn_play)
         }

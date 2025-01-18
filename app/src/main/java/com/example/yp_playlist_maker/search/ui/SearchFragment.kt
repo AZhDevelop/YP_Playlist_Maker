@@ -35,7 +35,7 @@ class SearchFragment: Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModel<SearchViewModel>()
     private var _adapter: TrackAdapter? = null
-    private val adapter get() = _adapter
+    private val adapter get() = _adapter!!
     private var updateTrackHistory: Boolean = false
     private var onRestoreError: String = EMPTY_STRING
     private var isClickAllowed = true
@@ -100,7 +100,7 @@ class SearchFragment: Fragment() {
             enableSearchHistoryVisibility(false)
         }
 
-        adapter?.onTrackClick = {
+        adapter.onTrackClick = {
             if (clickDebounce()) {
                 viewModel.saveClickedTrack(it)
                 val action = SearchFragmentDirections.actionSearchFragmentToAudioPlayerFragment(it)
@@ -171,8 +171,8 @@ class SearchFragment: Fragment() {
         }
 
         viewModel.getTrackListLiveData().observe(viewLifecycleOwner) { trackListLiveData ->
-            adapter?.data = trackListLiveData
-            adapter?.notifyDataSetChanged()
+            adapter.data = trackListLiveData
+            adapter.notifyDataSetChanged()
         }
     }
 
@@ -288,7 +288,7 @@ class SearchFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        adapter?.onTrackClick = null
+        adapter.onTrackClick = null
         _adapter = null
         _textWatcher = null
     }
