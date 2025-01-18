@@ -104,6 +104,7 @@ class AudioPlayerFragment : Fragment() {
             val toastMessage = "Track \"$trackName\" added to playlist \"$playlistName\""
             Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_LONG).show()
             viewModel.saveTrackToPlaylist(playlistName)
+            viewModel.addTrackToPlaylist(track, it)
         }
 
     }

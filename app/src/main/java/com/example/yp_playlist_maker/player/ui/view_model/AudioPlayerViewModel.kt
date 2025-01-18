@@ -179,6 +179,14 @@ class AudioPlayerViewModel(
         }
     }
 
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            playlist.trackIdList = track.trackId
+            playlist.playlistSize = "3"
+            playlistsInteractor.updateTrackIdList(playlist)
+        }
+    }
+
     override fun onCleared() {
         playTrackService.releasePlayer()
         viewModelScope.cancel()

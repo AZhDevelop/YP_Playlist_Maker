@@ -1,5 +1,6 @@
 package com.example.yp_playlist_maker.database.domain.impl
 
+import com.example.yp_playlist_maker.database.data.entity.PlaylistEntity
 import com.example.yp_playlist_maker.database.domain.api.PlaylistsInteractor
 import com.example.yp_playlist_maker.database.domain.api.PlaylistsRepository
 import com.example.yp_playlist_maker.database.domain.models.Playlist
@@ -15,6 +16,10 @@ class PlaylistsInteractorImpl(
 
     override fun getPlaylistList(): Flow<List<Playlist>> {
         return repository.getPlaylistList()
+    }
+
+    override suspend fun updateTrackIdList(playlist: Playlist) {
+        repository.updateTrackIdList(playlist)
     }
 
 }
