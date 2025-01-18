@@ -10,10 +10,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
+import com.example.yp_playlist_maker.app.visible
+import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.databinding.FragmentAudioplayerBinding
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
@@ -21,12 +24,14 @@ import com.example.yp_playlist_maker.util.State
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class AudioPlayerFragment : Fragment() {
+class AudioPlayerFragment: Fragment() {
 
-    private val trackArgs by navArgs<AudioPlayerFragmentArgs>()
     private val viewModel by viewModel<AudioPlayerViewModel>()
+    private val trackArgs by navArgs<AudioPlayerFragmentArgs>()
     private var _binding: FragmentAudioplayerBinding? = null
     private val binding get() = _binding!!
+    private var _adapter: BottomSheetPlaylistAdapter? = null
+    private val adapter get() = _adapter!!
     private var isTrackFavourite: Boolean = false
 
     override fun onCreateView(
@@ -53,6 +58,7 @@ class AudioPlayerFragment : Fragment() {
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
+        setRecyclerView()
         setupPlayerObservers()
 
         binding.play.setOnClickListener { viewModel.playbackControl() }
@@ -141,6 +147,29 @@ class AudioPlayerFragment : Fragment() {
         viewModel.backgroundColor.observe(viewLifecycleOwner) { color ->
             binding.audioplayerFragment.setBackgroundColor(color)
         }
+
+        viewModel.getPlaylistList().observe(viewLifecycleOwner) { playlistsList ->
+            handlePlaylistsList(playlistsList)
+        }
+        viewModel.getBottomSheetState().observe(viewLifecycleOwner) { bottomSheetState ->
+            handleFragmentState(bottomSheetState)
+        }
+    }
+
+    private fun handlePlaylistsList(playlistsList: List<Playlist>) {
+        adapter.data = playlistsList
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun handleFragmentState(bottomSheetState: State.BottomSheetState) {
+        when (bottomSheetState) {
+            State.BottomSheetState.EMPTY -> {
+                binding.rvBottomSheet.gone()
+            }
+            State.BottomSheetState.SUCCESS -> {
+                binding.rvBottomSheet.visible()
+            }
+        }
     }
 
     private fun handlePlayerStatus(status: State.PlayerState) {
@@ -176,9 +205,16 @@ class AudioPlayerFragment : Fragment() {
         }
     }
 
+    private fun setRecyclerView() {
+        _adapter = BottomSheetPlaylistAdapter()
+        binding.rvBottomSheet.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvBottomSheet.adapter = adapter
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        _adapter = null
     }
 
     companion object {

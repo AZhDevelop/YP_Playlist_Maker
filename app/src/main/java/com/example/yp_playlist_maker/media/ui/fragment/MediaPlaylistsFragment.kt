@@ -68,7 +68,6 @@ class MediaPlaylistsFragment : Fragment() {
         viewModel.getFragmentState().observe(viewLifecycleOwner) { fragmentState ->
             handleFragmentState(fragmentState)
         }
-
     }
 
     private fun handlePlaylistsList(playlistsList: List<Playlist>) {

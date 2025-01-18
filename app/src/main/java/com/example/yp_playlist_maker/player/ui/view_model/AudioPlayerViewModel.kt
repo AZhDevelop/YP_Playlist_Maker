@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yp_playlist_maker.database.domain.api.FavouriteTracksInteractor
+import com.example.yp_playlist_maker.database.domain.api.PlaylistsInteractor
+import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
@@ -19,7 +21,8 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
-    private val favouriteTracksInteractor: FavouriteTracksInteractor
+    private val favouriteTracksInteractor: FavouriteTracksInteractor,
+    private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
 
     private var trackTime: String = EMPTY_STRING
@@ -43,6 +46,12 @@ class AudioPlayerViewModel(
     fun setBackgroundColor(color: Int) {
         _backgroundColor.value = color
     }
+
+    private val playlistList = MutableLiveData<List<Playlist>>()
+    fun getPlaylistList(): LiveData<List<Playlist>> = playlistList
+
+    private val bottomSheetState = MutableLiveData<State.BottomSheetState>()
+    fun getBottomSheetState(): LiveData<State.BottomSheetState> = bottomSheetState
 
     fun setTrackData(track: Track) {
         viewModelScope.launch {
@@ -90,6 +99,7 @@ class AudioPlayerViewModel(
     init {
         _backgroundColor.value = Color.TRANSPARENT
         currentTime.value = DEFAULT_TIME
+        checkPlaylistList()
     }
 
     private fun preparePlayer() {
@@ -128,11 +138,6 @@ class AudioPlayerViewModel(
         )
     }
 
-    override fun onCleared() {
-        playTrackService.releasePlayer()
-        viewModelScope.cancel()
-    }
-
     private fun updateTrackTime() {
         updateTrackTimeJob = viewModelScope.launch {
             while (audioPlayerStatus.value == State.PlayerState.START) {
@@ -147,6 +152,27 @@ class AudioPlayerViewModel(
 
     fun getRoundedCorners(playerImageRadius: Int): Int {
         return Converter.dpToPx(playerImageRadius)
+    }
+
+    fun checkPlaylistList() {
+        viewModelScope.launch {
+            playlistsInteractor
+                .getPlaylistList()
+                .collect{ plList ->
+                    if (plList.isEmpty()) {
+                        bottomSheetState.value = State.BottomSheetState.EMPTY
+                        playlistList.value = plList
+                    } else {
+                        bottomSheetState.value = State.BottomSheetState.SUCCESS
+                        playlistList.value = plList
+                    }
+                }
+        }
+    }
+
+    override fun onCleared() {
+        playTrackService.releasePlayer()
+        viewModelScope.cancel()
     }
 
     companion object {
