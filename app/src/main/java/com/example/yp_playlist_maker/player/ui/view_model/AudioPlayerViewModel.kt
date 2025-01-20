@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
 import android.graphics.Color
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,8 @@ import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
 import com.example.yp_playlist_maker.util.State
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -22,7 +25,8 @@ import java.util.Locale
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
     private val favouriteTracksInteractor: FavouriteTracksInteractor,
-    private val playlistsInteractor: PlaylistsInteractor
+    private val playlistsInteractor: PlaylistsInteractor,
+    private val gson: Gson
 ) : ViewModel() {
 
     private var trackTime: String = EMPTY_STRING
@@ -181,8 +185,23 @@ class AudioPlayerViewModel(
 
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         viewModelScope.launch {
-            playlist.trackIdList = track.trackId
-            playlist.playlistSize = "3"
+            val trackIdList = mutableListOf<String>()
+            val trackIdListValue = playlistsInteractor.getTrackIdList(playlist.playlistName)
+            var existingTrackIdList: List<String> = listOf()
+
+            if (trackIdListValue != "") {
+                existingTrackIdList = gson.fromJson(
+                    playlistsInteractor.getTrackIdList(playlist.playlistName),
+                    object : TypeToken<List<String>>() {}.type
+                )
+            }
+
+            trackIdList.addAll(existingTrackIdList)
+
+            trackIdList.add(track.trackId)
+            Log.d("log", "Track id list: $trackIdList")
+            playlist.playlistSize = trackIdList.size.toString()
+            playlist.trackIdList = gson.toJson(trackIdList)
             playlistsInteractor.updateTrackIdList(playlist)
         }
     }

@@ -22,4 +22,8 @@ class PlaylistsInteractorImpl(
         repository.updateTrackIdList(playlist)
     }
 
+    override suspend fun getTrackIdList(playlistName: String): String {
+        return repository.getTrackIdList(playlistName)
+    }
+
 }

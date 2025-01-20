@@ -32,7 +32,8 @@ val appModule = module {
         AudioPlayerViewModel(
             playTrackService = get(),
             favouriteTracksInteractor = get(),
-            playlistsInteractor = get()
+            playlistsInteractor = get(),
+            gson = get()
         )
     }
 
