@@ -35,7 +35,8 @@ class PlaylistViewModel(
                         "null"
                     } else {
                         "${playlistsDirectory.path}/${fileName}.jpg"
-                    }
+                    },
+                    playlistSize = 0
                 )
             )
         }

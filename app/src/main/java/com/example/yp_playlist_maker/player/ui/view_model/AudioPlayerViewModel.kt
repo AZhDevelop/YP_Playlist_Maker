@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
 import android.graphics.Color
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -202,7 +203,14 @@ class AudioPlayerViewModel(
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         viewModelScope.launch {
             val trackToPlaylist = setTrackToPlaylist(playlist, track)
+            var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId)
+            Log.d("log", "Get playlist Size: $playlistSize")
             tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
+            playlistSize += 1
+            playlist.playlistSize = playlistSize
+            Log.d("log", "Set playlist Size: ${playlist.playlistSize}")
+            playlistsInteractor.updatePlaylistSize(playlist)
+            Log.d("log", "Playlist: $playlist")
         }
     }
 

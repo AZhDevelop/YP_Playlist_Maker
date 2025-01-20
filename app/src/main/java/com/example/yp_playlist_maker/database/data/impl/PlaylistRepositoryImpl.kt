@@ -22,6 +22,14 @@ class PlaylistRepositoryImpl(
         emit(convertFromPlaylistEntity(playlists))
     }
 
+    override suspend fun updatePlaylistSize(playlist: Playlist) {
+        playlistDao.updatePlaylistSize(converter.convertPlaylistToPlaylistEntity(playlist))
+    }
+
+    override suspend fun getPlaylistSize(playlistId: Int): Int {
+        return playlistDao.getPlaylistSize(playlistId)
+    }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> converter.convertPlaylistEntityToPlaylist(playlist) }
     }

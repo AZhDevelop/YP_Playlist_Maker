@@ -9,5 +9,6 @@ data class PlaylistEntity(
     val playlistId: Int,
     val playlistName: String,
     val playlistDescription: String,
-    val playlistCoverPath: String
+    val playlistCoverPath: String,
+    var playlistSize: Int
 )

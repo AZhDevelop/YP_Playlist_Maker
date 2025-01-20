@@ -70,7 +70,8 @@ object Converter {
             playlistEntity.playlistId,
             playlistEntity.playlistName,
             playlistEntity.playlistDescription,
-            playlistEntity.playlistCoverPath
+            playlistEntity.playlistCoverPath,
+            playlistEntity.playlistSize
         )
     }
 
@@ -79,7 +80,8 @@ object Converter {
             playlist.playlistId,
             playlist.playlistName,
             playlist.playlistDescription,
-            playlist.playlistCoverPath
+            playlist.playlistCoverPath,
+            playlist.playlistSize
         )
     }
 
