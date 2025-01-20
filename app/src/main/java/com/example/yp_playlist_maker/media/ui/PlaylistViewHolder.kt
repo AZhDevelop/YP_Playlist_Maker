@@ -21,7 +21,7 @@ class PlaylistViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val imagePath = item.playlistCoverPath
 
         playlistName.text = item.playlistName
-        playlistSize.text = getPlaylistSize()
+        playlistSize.text = Converter.convertPlaylistSizeValue(item.playlistSize)
 
         if (imagePath == "null") {
             Glide.with(itemView)
@@ -34,10 +34,6 @@ class PlaylistViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
                 .transform(RoundedCorners(Converter.dpToPx(PLAYLIST_COVER_RADIUS)))
                 .into(playlistCover)
         }
-    }
-
-    private fun getPlaylistSize(): String {
-        return "0 треков"
     }
 
     companion object {

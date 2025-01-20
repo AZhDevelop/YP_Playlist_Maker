@@ -31,6 +31,17 @@ object Converter {
         return url.replaceAfterLast('/',"512x512bb.jpg")
     }
 
+    fun convertPlaylistSizeValue(playlistSize: String): String {
+        val size = playlistSize.toInt()
+        return if (size % 10 == 1) {
+            "$size трек"
+        } else if (size % 10 in 2..4) {
+            "$size трека"
+        } else {
+            "$size треков"
+        }
+    }
+
     fun convertTrackEntityToTrack(trackEntity: TrackEntity): Track {
         return Track(
             trackEntity.trackId,
