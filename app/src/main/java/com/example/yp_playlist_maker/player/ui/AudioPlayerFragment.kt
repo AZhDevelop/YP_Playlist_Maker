@@ -76,6 +76,7 @@ class AudioPlayerFragment : Fragment() {
         }
 
         binding.addToPlaylist.setOnClickListener {
+            viewModel.checkPlaylistList()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
@@ -107,11 +108,11 @@ class AudioPlayerFragment : Fragment() {
             if (clickDebounce()) {
                 val trackName = binding.trackName.text
                 val playlistName = it.playlistName
-                val toastMessage = "Track \"$trackName\" added to playlist \"$playlistName\""
-                Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_LONG).show()
+                val toastMessage = "Track \"$trackName\"\nadded to playlist \"$playlistName\""
+                Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
                 viewModel.saveTrackToPlaylist(playlistName)
                 viewModel.addTrackToPlaylist(track, it)
-                adapter.notifyDataSetChanged()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
 
