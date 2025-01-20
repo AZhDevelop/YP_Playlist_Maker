@@ -14,6 +14,8 @@ import androidx.room.Room
 import com.example.yp_playlist_maker.database.data.AppDatabase
 import com.example.yp_playlist_maker.database.data.dao.PlaylistDao
 import com.example.yp_playlist_maker.database.data.dao.TrackDao
+import com.example.yp_playlist_maker.database.data.dao.TracksInPlaylistsDao
+import com.example.yp_playlist_maker.database.data.entity.TracksInPlaylistsEntity
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
 import com.example.yp_playlist_maker.search.data.network.RetrofitNetworkClient
 import com.example.yp_playlist_maker.search.data.network.TrackApi
@@ -82,5 +84,7 @@ val dataModule = module {
     single<ContentResolver> {
         androidContext().contentResolver
     }
+
+    single<TracksInPlaylistsDao> { get<AppDatabase>().tracksInPlaylistsDao() }
 
 }

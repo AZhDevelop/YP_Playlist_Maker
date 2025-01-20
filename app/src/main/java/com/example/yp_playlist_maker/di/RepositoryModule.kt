@@ -2,8 +2,10 @@ package com.example.yp_playlist_maker.di
 
 import com.example.yp_playlist_maker.database.data.impl.FavouriteTracksRepositoryImpl
 import com.example.yp_playlist_maker.database.data.impl.PlaylistRepositoryImpl
+import com.example.yp_playlist_maker.database.data.impl.TracksInPlaylistsRepositoryImpl
 import com.example.yp_playlist_maker.database.domain.api.FavouriteTracksRepository
 import com.example.yp_playlist_maker.database.domain.api.PlaylistsRepository
+import com.example.yp_playlist_maker.database.domain.api.TracksInPlaylistsRepository
 import com.example.yp_playlist_maker.player.data.impl.PlayTrackRepositoryImpl
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackRepository
 import com.example.yp_playlist_maker.search.data.impl.SearchHistoryRepositoryImpl
@@ -62,6 +64,13 @@ val repositoryModule = module {
     single<PlaylistsRepository> {
         PlaylistRepositoryImpl(
             playlistDao = get(),
+            converter = get()
+        )
+    }
+
+    single<TracksInPlaylistsRepository> {
+        TracksInPlaylistsRepositoryImpl(
+            tracksInPlaylistsDao = get(),
             converter = get()
         )
     }

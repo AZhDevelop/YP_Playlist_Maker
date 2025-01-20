@@ -4,7 +4,9 @@ import android.content.res.Resources
 import android.util.DisplayMetrics
 import com.example.yp_playlist_maker.database.data.entity.PlaylistEntity
 import com.example.yp_playlist_maker.database.data.entity.TrackEntity
+import com.example.yp_playlist_maker.database.data.entity.TracksInPlaylistsEntity
 import com.example.yp_playlist_maker.database.domain.models.Playlist
+import com.example.yp_playlist_maker.database.domain.models.TracksInPlaylists
 import com.example.yp_playlist_maker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -82,6 +84,40 @@ object Converter {
             playlist.playlistCoverPath,
             playlist.trackIdList,
             playlist.playlistSize
+        )
+    }
+
+    fun convertToTracksInPlaylist(tracksInPlaylistsEntity: TracksInPlaylistsEntity) : TracksInPlaylists {
+        return TracksInPlaylists(
+            tracksInPlaylistsEntity.elementId,
+            tracksInPlaylistsEntity.playlistId,
+            tracksInPlaylistsEntity.trackId,
+            tracksInPlaylistsEntity.trackName,
+            tracksInPlaylistsEntity.artistName,
+            tracksInPlaylistsEntity.trackTimeMillis,
+            tracksInPlaylistsEntity.artworkUrl100,
+            tracksInPlaylistsEntity.collectionName,
+            tracksInPlaylistsEntity.releaseDate,
+            tracksInPlaylistsEntity.primaryGenreName,
+            tracksInPlaylistsEntity.country,
+            tracksInPlaylistsEntity.previewUrl
+        )
+    }
+
+    fun convertToTracksInPlaylistsEntity(tracksInPlaylists: TracksInPlaylists) : TracksInPlaylistsEntity {
+        return TracksInPlaylistsEntity(
+            tracksInPlaylists.elementId,
+            tracksInPlaylists.playlistId,
+            tracksInPlaylists.trackId,
+            tracksInPlaylists.trackName,
+            tracksInPlaylists.artistName,
+            tracksInPlaylists.trackTimeMillis,
+            tracksInPlaylists.artworkUrl100,
+            tracksInPlaylists.collectionName,
+            tracksInPlaylists.releaseDate,
+            tracksInPlaylists.primaryGenreName,
+            tracksInPlaylists.country,
+            tracksInPlaylists.previewUrl
         )
     }
 

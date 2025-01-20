@@ -33,6 +33,7 @@ val appModule = module {
             playTrackService = get(),
             favouriteTracksInteractor = get(),
             playlistsInteractor = get(),
+            tracksInPlaylistsInteractor = get(),
             gson = get()
         )
     }

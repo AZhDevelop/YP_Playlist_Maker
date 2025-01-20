@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yp_playlist_maker.database.domain.api.FavouriteTracksInteractor
 import com.example.yp_playlist_maker.database.domain.api.PlaylistsInteractor
+import com.example.yp_playlist_maker.database.domain.api.TracksInPlaylistsInteractor
 import com.example.yp_playlist_maker.database.domain.models.Playlist
+import com.example.yp_playlist_maker.database.domain.models.TracksInPlaylists
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
@@ -26,6 +28,7 @@ class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
     private val favouriteTracksInteractor: FavouriteTracksInteractor,
     private val playlistsInteractor: PlaylistsInteractor,
+    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor,
     private val gson: Gson
 ) : ViewModel() {
 
@@ -78,6 +81,23 @@ class AudioPlayerViewModel(
                 preparePlayer()
             }
         }
+    }
+
+    private fun setTrackToPlaylist(playlist: Playlist, track: Track): TracksInPlaylists {
+        return TracksInPlaylists(
+            elementId = 0,
+            playlistId = playlist.playlistId,
+            trackId = track.trackId,
+            trackName = track.trackName,
+            artistName = track.artistName,
+            trackTimeMillis = track.trackTimeMillis,
+            artworkUrl100 = track.artworkUrl100,
+            collectionName = track.collectionName,
+            releaseDate = track.releaseDate,
+            primaryGenreName = track.primaryGenreName,
+            country = track.country,
+            previewUrl = track.previewUrl
+        )
     }
 
     fun saveTrackToFavourites() {
@@ -184,6 +204,8 @@ class AudioPlayerViewModel(
     }
 
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        val trackToPlaylist = setTrackToPlaylist(playlist, track)
+
         viewModelScope.launch {
             val trackIdList = mutableListOf<String>()
             val trackIdListValue = playlistsInteractor.getTrackIdList(playlist.playlistName)
@@ -196,6 +218,8 @@ class AudioPlayerViewModel(
                 )
             }
 
+
+            tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
             trackIdList.addAll(existingTrackIdList)
 
             trackIdList.add(track.trackId)
