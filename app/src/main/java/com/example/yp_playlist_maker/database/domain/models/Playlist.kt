@@ -7,7 +7,5 @@ data class Playlist(
     val playlistId: Int,
     val playlistName: String,
     val playlistDescription: String,
-    val playlistCoverPath: String,
-    var trackIdList: String,
-    var playlistSize: String
+    val playlistCoverPath: String
 )

@@ -204,29 +204,9 @@ class AudioPlayerViewModel(
     }
 
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
-        val trackToPlaylist = setTrackToPlaylist(playlist, track)
-
         viewModelScope.launch {
-            val trackIdList = mutableListOf<String>()
-            val trackIdListValue = playlistsInteractor.getTrackIdList(playlist.playlistName)
-            var existingTrackIdList: List<String> = listOf()
-
-            if (trackIdListValue != "") {
-                existingTrackIdList = gson.fromJson(
-                    playlistsInteractor.getTrackIdList(playlist.playlistName),
-                    object : TypeToken<List<String>>() {}.type
-                )
-            }
-
-
+            val trackToPlaylist = setTrackToPlaylist(playlist, track)
             tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
-            trackIdList.addAll(existingTrackIdList)
-
-            trackIdList.add(track.trackId)
-            Log.d("log", "Track id list: $trackIdList")
-            playlist.playlistSize = trackIdList.size.toString()
-            playlist.trackIdList = gson.toJson(trackIdList)
-            playlistsInteractor.updateTrackIdList(playlist)
         }
     }
 

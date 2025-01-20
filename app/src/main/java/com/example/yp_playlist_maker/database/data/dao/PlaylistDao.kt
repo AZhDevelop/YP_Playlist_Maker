@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.example.yp_playlist_maker.database.data.entity.PlaylistEntity
 
 @Dao
@@ -16,9 +15,4 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlist_table")
     suspend fun getPlaylistList(): List<PlaylistEntity>
 
-    @Update
-    suspend fun updateTrackIdList(playlist: PlaylistEntity)
-
-    @Query("SELECT trackIdList FROM playlist_table WHERE playlistName = :playlistName")
-    suspend fun getTrackIdList(playlistName: String): String
 }

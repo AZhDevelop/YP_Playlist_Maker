@@ -22,14 +22,6 @@ class PlaylistRepositoryImpl(
         emit(convertFromPlaylistEntity(playlists))
     }
 
-    override suspend fun updateTrackIdList(playlist: Playlist) {
-        playlistDao.updateTrackIdList(converter.convertPlaylistToPlaylistEntity(playlist))
-    }
-
-    override suspend fun getTrackIdList(playlistName: String): String {
-        return playlistDao.getTrackIdList(playlistName)
-    }
-
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> converter.convertPlaylistEntityToPlaylist(playlist) }
     }
