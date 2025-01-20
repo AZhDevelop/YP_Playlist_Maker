@@ -203,14 +203,11 @@ class AudioPlayerViewModel(
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         viewModelScope.launch {
             val trackToPlaylist = setTrackToPlaylist(playlist, track)
-            var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId)
-            Log.d("log", "Get playlist Size: $playlistSize")
+            var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId).toInt()
             tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
             playlistSize += 1
-            playlist.playlistSize = playlistSize
-            Log.d("log", "Set playlist Size: ${playlist.playlistSize}")
+            playlist.playlistSize = playlistSize.toString()
             playlistsInteractor.updatePlaylistSize(playlist)
-            Log.d("log", "Playlist: $playlist")
         }
     }
 

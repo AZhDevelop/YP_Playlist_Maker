@@ -26,7 +26,7 @@ class PlaylistRepositoryImpl(
         playlistDao.updatePlaylistSize(converter.convertPlaylistToPlaylistEntity(playlist))
     }
 
-    override suspend fun getPlaylistSize(playlistId: Int): Int {
+    override suspend fun getPlaylistSize(playlistId: Int): String {
         return playlistDao.getPlaylistSize(playlistId)
     }
 

@@ -21,7 +21,7 @@ class BottomSheetPlaylistViewHolder(itemView: View): RecyclerView.ViewHolder(ite
         val imagePath = item.playlistCoverPath
 
         playlistName.text = item.playlistName
-        playlistSize.text = getPlaylistSize()
+        playlistSize.text = convertPlaylistSizeValue(item.playlistSize)
 
         if (imagePath == "null") {
             Glide.with(itemView)
@@ -36,8 +36,15 @@ class BottomSheetPlaylistViewHolder(itemView: View): RecyclerView.ViewHolder(ite
         }
     }
 
-    private fun getPlaylistSize(): String {
-        return "0 треков"
+    private fun convertPlaylistSizeValue(playlistSize: String): String {
+        val size = playlistSize.toInt()
+        return if (size % 10 == 1) {
+            "$size трек"
+        } else if (size % 10 in 2..4) {
+            "$size трека"
+        } else {
+            "$size треков"
+        }
     }
 
     companion object {

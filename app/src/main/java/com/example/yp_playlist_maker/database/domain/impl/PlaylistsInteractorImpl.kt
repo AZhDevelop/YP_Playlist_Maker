@@ -21,7 +21,7 @@ class PlaylistsInteractorImpl(
         repository.updatePlaylistSize(playlist)
     }
 
-    override suspend fun getPlaylistSize(playlistId: Int): Int {
+    override suspend fun getPlaylistSize(playlistId: Int): String {
         return repository.getPlaylistSize(playlistId)
     }
 

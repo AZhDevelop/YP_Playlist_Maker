@@ -3,13 +3,13 @@ package com.example.yp_playlist_maker.player.ui
 import android.animation.ArgbEvaluator
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +24,9 @@ import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.State
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerFragment : Fragment() {
@@ -35,6 +38,8 @@ class AudioPlayerFragment : Fragment() {
     private var _adapter: BottomSheetPlaylistAdapter? = null
     private val adapter get() = _adapter!!
     private var isTrackFavourite: Boolean = false
+    private var isClickAllowed = true
+    private var clickDebounceJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,12 +104,15 @@ class AudioPlayerFragment : Fragment() {
         }
 
         adapter.onPlaylistClick = {
-            val trackName = binding.trackName.text
-            val playlistName = it.playlistName
-            val toastMessage = "Track \"$trackName\" added to playlist \"$playlistName\""
-            Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_LONG).show()
-            viewModel.saveTrackToPlaylist(playlistName)
-            viewModel.addTrackToPlaylist(track, it)
+            if (clickDebounce()) {
+                val trackName = binding.trackName.text
+                val playlistName = it.playlistName
+                val toastMessage = "Track \"$trackName\" added to playlist \"$playlistName\""
+                Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_LONG).show()
+                viewModel.saveTrackToPlaylist(playlistName)
+                viewModel.addTrackToPlaylist(track, it)
+                adapter.notifyDataSetChanged()
+            }
         }
 
     }
@@ -165,6 +173,7 @@ class AudioPlayerFragment : Fragment() {
         viewModel.getPlaylistList().observe(viewLifecycleOwner) { playlistsList ->
             handlePlaylistsList(playlistsList)
         }
+
         viewModel.getBottomSheetState().observe(viewLifecycleOwner) { bottomSheetState ->
             handleFragmentState(bottomSheetState)
         }
@@ -228,6 +237,19 @@ class AudioPlayerFragment : Fragment() {
         binding.rvBottomSheet.adapter = adapter
     }
 
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            clickDebounceJob?.cancel()
+            clickDebounceJob = lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
+        }
+        return current
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -235,6 +257,7 @@ class AudioPlayerFragment : Fragment() {
     }
 
     companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val PLAYER_IMAGE_RADIUS: Int = 8
         private const val ALPHA_25 = 0.25F
         private const val ALPHA_100 = 1F
