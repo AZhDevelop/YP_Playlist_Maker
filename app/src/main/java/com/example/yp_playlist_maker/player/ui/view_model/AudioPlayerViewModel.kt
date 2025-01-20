@@ -1,7 +1,6 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
 import android.graphics.Color
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,8 +14,6 @@ import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
 import com.example.yp_playlist_maker.util.State
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -28,8 +25,7 @@ class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
     private val favouriteTracksInteractor: FavouriteTracksInteractor,
     private val playlistsInteractor: PlaylistsInteractor,
-    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor,
-    private val gson: Gson
+    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor
 ) : ViewModel() {
 
     private var trackTime: String = EMPTY_STRING
