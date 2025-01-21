@@ -3,6 +3,7 @@ package com.example.yp_playlist_maker.player.ui
 import android.animation.ArgbEvaluator
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -276,6 +277,8 @@ class AudioPlayerFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         _adapter = null
+        _bottomSheetContainer = null
+        _bottomSheetBehavior = null
     }
 
     companion object {
