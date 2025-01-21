@@ -22,6 +22,11 @@ class TracksInPlaylistsRepositoryImpl(
         emit(convertFromTracksInPlaylistsEntity(tracksInPlaylists))
     }
 
+    override fun checkTrackInPlaylist(trackId: String): Flow<List<Int>> = flow {
+        val playlistsList = tracksInPlaylistsDao.checkTrackInPlaylist(trackId)
+        emit(playlistsList)
+    }
+
     private fun convertFromTracksInPlaylistsEntity(tracksInPlaylistsEntity: List<TracksInPlaylistsEntity>): List<TracksInPlaylists> {
         return tracksInPlaylistsEntity.map { tracksInPlaylists ->
             converter.convertToTracksInPlaylist(tracksInPlaylists)

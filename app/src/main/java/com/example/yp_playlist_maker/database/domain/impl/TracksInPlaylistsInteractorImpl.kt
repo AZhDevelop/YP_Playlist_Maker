@@ -16,4 +16,8 @@ class TracksInPlaylistsInteractorImpl(
     override fun getTracksFromPlaylist(playlistId: Int): Flow<List<TracksInPlaylists>> {
         return repository.getTracksFromPlaylist(playlistId)
     }
+
+    override fun checkTrackInPlaylist(trackId: String): Flow<List<Int>> {
+        return repository.checkTrackInPlaylist(trackId)
+    }
 }

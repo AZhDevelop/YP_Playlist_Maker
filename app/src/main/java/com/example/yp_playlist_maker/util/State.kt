@@ -30,4 +30,9 @@ object State {
         SUCCESS,
         EMPTY
     }
+
+    enum class AddToPlaylistState {
+        SUCCESS,
+        ERROR
+    }
 }

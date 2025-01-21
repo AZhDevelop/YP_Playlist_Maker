@@ -47,6 +47,9 @@ class AudioPlayerViewModel(
     private val _backgroundColor = MutableLiveData<Int>()
     val backgroundColor: LiveData<Int> get() = _backgroundColor
 
+    private val addToPlaylistState = MutableLiveData<State.AddToPlaylistState>()
+    fun getAddToPlaylistState(): LiveData<State.AddToPlaylistState> = addToPlaylistState
+
     fun setBackgroundColor(color: Int) {
         _backgroundColor.value = color
     }
@@ -114,15 +117,6 @@ class AudioPlayerViewModel(
                 favouriteTracksInteractor.deleteTrack(it)
             }
             _isFavourite.value = false
-        }
-    }
-
-    fun saveTrackToPlaylist(playlistName: String) {
-        viewModelScope.launch {
-            trackData.value?.let {
-                it.playlistName = playlistName
-                favouriteTracksInteractor.insertTrack(it)
-            }
         }
     }
 
@@ -202,12 +196,23 @@ class AudioPlayerViewModel(
 
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         viewModelScope.launch {
-            val trackToPlaylist = setTrackToPlaylist(playlist, track)
-            var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId).toInt()
-            tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
-            playlistSize += 1
-            playlist.playlistSize = playlistSize.toString()
-            playlistsInteractor.updatePlaylistSize(playlist)
+            var trackInPlaylists: List<Int> = listOf()
+            tracksInPlaylistsInteractor
+                .checkTrackInPlaylist(track.trackId)
+                .collect { playlistsId ->
+                    trackInPlaylists = playlistsId
+                }
+            if (playlist.playlistId in trackInPlaylists) {
+                addToPlaylistState.value = State.AddToPlaylistState.ERROR
+            } else {
+                val trackToPlaylist = setTrackToPlaylist(playlist, track)
+                var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId).toInt()
+                tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
+                playlistSize += 1
+                playlist.playlistSize = playlistSize.toString()
+                playlistsInteractor.updatePlaylistSize(playlist)
+                addToPlaylistState.value = State.AddToPlaylistState.SUCCESS
+            }
         }
     }
 

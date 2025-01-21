@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -40,6 +41,12 @@ class AudioPlayerFragment : Fragment() {
     private var isTrackFavourite: Boolean = false
     private var isClickAllowed = true
     private var clickDebounceJob: Job? = null
+    private var playlistName: String = ""
+    private var trackName: String = ""
+    private var _bottomSheetContainer: LinearLayout? = null
+    private val bottomSheetContainer get() = _bottomSheetContainer!!
+    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private val bottomSheetBehavior get() = _bottomSheetBehavior!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,8 +68,8 @@ class AudioPlayerFragment : Fragment() {
         val track = trackArgs.track
         viewModel.setTrackData(track)
 
-        val bottomSheetContainer = binding.bottomSheet
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+        _bottomSheetContainer = binding.bottomSheet
+        _bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         setRecyclerView()
@@ -106,13 +113,9 @@ class AudioPlayerFragment : Fragment() {
 
         adapter.onPlaylistClick = {
             if (clickDebounce()) {
-                val trackName = binding.trackName.text
-                val playlistName = it.playlistName
-                val toastMessage = "Track \"$trackName\"\nadded to playlist \"$playlistName\""
-                Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
-                viewModel.saveTrackToPlaylist(playlistName)
+                trackName = binding.trackName.text.toString()
+                playlistName = it.playlistName
                 viewModel.addTrackToPlaylist(track, it)
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
 
@@ -178,6 +181,10 @@ class AudioPlayerFragment : Fragment() {
         viewModel.getBottomSheetState().observe(viewLifecycleOwner) { bottomSheetState ->
             handleFragmentState(bottomSheetState)
         }
+
+        viewModel.getAddToPlaylistState().observe(viewLifecycleOwner) { addToPlaylistState ->
+            handleAddToPlaylistState(addToPlaylistState)
+        }
     }
 
     private fun handlePlaylistsList(playlistsList: List<Playlist>) {
@@ -221,6 +228,20 @@ class AudioPlayerFragment : Fragment() {
         } else {
             binding.like.setBackgroundResource(R.drawable.btn_like_non_active)
             isTrackFavourite = false
+        }
+    }
+
+    private fun handleAddToPlaylistState(playlistState: State.AddToPlaylistState) {
+        val toastSuccessMessage = "Добавлено в плейлист \"$playlistName\""
+        val toastErrorMessage = "Трек уже добавлен в плейлист \"$playlistName\""
+        when (playlistState) {
+            State.AddToPlaylistState.SUCCESS -> {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                Toast.makeText(requireContext(), toastSuccessMessage, Toast.LENGTH_SHORT).show()
+            }
+            State.AddToPlaylistState.ERROR -> {
+                Toast.makeText(requireContext(), toastErrorMessage, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
