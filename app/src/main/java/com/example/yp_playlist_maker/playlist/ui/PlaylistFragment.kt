@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,8 @@ class PlaylistFragment : Fragment() {
     private val viewModel by viewModel<PlaylistViewModel>()
     private var isCoverSet: Boolean = false
     private var isTextSet: Boolean = false
+    private var _imageUri: Uri? = null
+    private val imageUri get() = _imageUri!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,13 +71,10 @@ class PlaylistFragment : Fragment() {
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 loadTrackImage(uri)
-                // Надо пересмотреть возможность сохранения только при нажатии на кнопку,
-                // а не каждый раз при выборе изображения
-                // Сделать проверку на null
-                viewModel.saveImageToPrivateStorage(uri)
+                _imageUri = uri
                 isCoverSet = true
             } else {
-                Toast.makeText(activity, "Изображение не выбрано", Toast.LENGTH_LONG).show()
+                isCoverSet = false
             }
         }
 
@@ -83,12 +83,7 @@ class PlaylistFragment : Fragment() {
         }
 
         binding.btnCreatePlaylist.setOnClickListener {
-            viewModel.createPlaylist(
-                playlistName = binding.etPlaylistName.text.toString(),
-                playlistDescription = binding.etPlaylistDescription.text.toString()
-            )
-            findNavController().navigateUp()
-            Toast.makeText(activity, "Плейлист успешно создан", Toast.LENGTH_LONG).show()
+            savePlaylist(isCoverSet)
         }
 
     }
@@ -168,6 +163,25 @@ class PlaylistFragment : Fragment() {
         } else {
             findNavController().navigateUp()
         }
+    }
+
+    private fun savePlaylist(isCoverSet: Boolean) {
+        val playListName = binding.etPlaylistName.text.toString()
+        val playListDescription = binding.etPlaylistDescription.text.toString()
+        if (isCoverSet) {
+            viewModel.saveImageToPrivateStorage(imageUri)
+            viewModel.createPlaylist(
+                playlistName = playListName,
+                playlistDescription = playListDescription
+            )
+        } else {
+            viewModel.createPlaylist(
+                playlistName = playListName,
+                playlistDescription = playListDescription
+            )
+        }
+        findNavController().navigateUp()
+        Toast.makeText(activity, "Плейлист \"$playListName\" успешно создан", Toast.LENGTH_LONG).show()
     }
 
     private fun showCancelDialog() {

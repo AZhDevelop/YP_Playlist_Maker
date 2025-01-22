@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yp_playlist_maker.database.domain.api.PlaylistsInteractor
@@ -43,6 +44,7 @@ class PlaylistViewModel(
     }
 
     fun saveImageToPrivateStorage(uri: Uri) {
+        Log.d("log", "Viewmodel image uri: $uri")
         viewModelScope.launch {
             if (!playlistsDirectory.exists()){
                 playlistsDirectory.mkdirs()
