@@ -15,6 +15,7 @@ import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
 import com.example.yp_playlist_maker.util.State
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -47,11 +48,20 @@ class AudioPlayerViewModel(
     private val _backgroundColor = MutableLiveData<Int>()
     val backgroundColor: LiveData<Int> get() = _backgroundColor
 
+    private val _bottomSheetStateValue = MutableLiveData<Int>()
+    val bottomSheetStateValue: LiveData<Int> get() = _bottomSheetStateValue
+
     private val addToPlaylistState = MutableLiveData<State.AddToPlaylistState>()
     fun getAddToPlaylistState(): LiveData<State.AddToPlaylistState> = addToPlaylistState
 
     fun setBackgroundColor(color: Int) {
         _backgroundColor.value = color
+    }
+
+    fun setBottomSheetStateValue(state: Int) {
+        if (state == BottomSheetBehavior.STATE_HIDDEN || state == BottomSheetBehavior.STATE_EXPANDED) {
+            _bottomSheetStateValue.value = state
+        }
     }
 
     private val playlistList = MutableLiveData<List<Playlist>>()

@@ -61,17 +61,17 @@ class AudioPlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (viewModel.backgroundColor.value == Color.TRANSPARENT) {
-            val defaultColor = ContextCompat.getColor(requireContext(), R.color.main_background)
-            viewModel.setBackgroundColor(defaultColor)
-        }
-
         val track = trackArgs.track
         viewModel.setTrackData(track)
 
         _bottomSheetContainer = binding.bottomSheet
         _bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior.state = viewModel.bottomSheetStateValue.value ?: BottomSheetBehavior.STATE_HIDDEN
+
+        if (viewModel.backgroundColor.value == Color.TRANSPARENT) {
+            val defaultColor = ContextCompat.getColor(requireContext(), R.color.main_background)
+            viewModel.setBackgroundColor(defaultColor)
+        }
 
         setRecyclerView()
         setupPlayerObservers()
@@ -95,7 +95,8 @@ class AudioPlayerFragment : Fragment() {
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-
+                Log.d("log", "State: $newState")
+                viewModel.setBottomSheetStateValue(newState)
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -185,6 +186,10 @@ class AudioPlayerFragment : Fragment() {
 
         viewModel.getAddToPlaylistState().observe(viewLifecycleOwner) { addToPlaylistState ->
             handleAddToPlaylistState(addToPlaylistState)
+        }
+
+        viewModel.bottomSheetStateValue.observe(viewLifecycleOwner) { state ->
+            bottomSheetBehavior.state = state
         }
     }
 
