@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
@@ -86,6 +87,40 @@ class PlaylistFragment : Fragment() {
             savePlaylist(isCoverSet)
         }
 
+        binding.etPlaylistName.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.etPlaylistName.setBackgroundResource(R.drawable.playlist_text_drawable)
+                binding.etPlaylistName.hint = EMPTY_STRING
+                binding.tvPlaylistName.visible()
+                binding.tvPlaylistName.setTextColor(requireContext().getColor(R.color.yp_blue))
+            } else {
+                binding.etPlaylistName.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
+                if (binding.etPlaylistName.text.isEmpty()) {
+                    binding.tvPlaylistName.gone()
+                    binding.etPlaylistName.hint = getString(R.string.playlist_name)
+                } else {
+                    binding.tvPlaylistName.setTextColor(requireContext().getColor(R.color.yp_gray))
+                }
+            }
+        }
+
+        binding.etPlaylistDescription.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.etPlaylistDescription.setBackgroundResource(R.drawable.playlist_text_drawable)
+                binding.etPlaylistDescription.hint = EMPTY_STRING
+                binding.tvPlaylistDescription.visible()
+                binding.tvPlaylistDescription.setTextColor(requireContext().getColor(R.color.yp_blue))
+            } else {
+                binding.etPlaylistDescription.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
+                if (binding.etPlaylistDescription.text.isEmpty()) {
+                    binding.tvPlaylistDescription.gone()
+                    binding.etPlaylistDescription.hint = getString(R.string.playlist_description)
+                } else {
+                    binding.tvPlaylistDescription.setTextColor(requireContext().getColor(R.color.yp_gray))
+                }
+            }
+        }
+
     }
 
     private fun setTextWatcher(editText: EditText, textView: TextView): TextWatcher {
@@ -96,13 +131,9 @@ class PlaylistFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (editText.text.isEmpty()) {
-                    editText.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
-                    textView.gone()
                     checkButtonIsAvailable()
                     isTextSet = false
                 } else {
-                    editText.setBackgroundResource(R.drawable.playlist_text_drawable)
-                    textView.visible()
                     checkButtonIsAvailable()
                     isTextSet = true
                 }
@@ -151,8 +182,10 @@ class PlaylistFragment : Fragment() {
     private fun loadTrackImage(uri: Uri) {
         Glide.with(this)
             .load(uri)
-            .centerCrop()
-            .transform(RoundedCorners(viewModel.getRoundedCorners(PLAYER_IMAGE_RADIUS)))
+            .transform(
+                CenterCrop(),
+                RoundedCorners(viewModel.getRoundedCorners(PLAYER_IMAGE_RADIUS))
+            )
             .placeholder(R.drawable.img_placeholder_audio_player)
             .into(binding.imgPlaceholder)
     }
@@ -187,6 +220,7 @@ class PlaylistFragment : Fragment() {
     private fun showCancelDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Завершить создание плейлиста?")
+            .setMessage("Все несохраненные данные будут потеряны")
             .setNeutralButton("Отмена") { _, _ -> }
             .setPositiveButton("Завершить") { _, _ ->
                 findNavController().navigateUp()
@@ -202,6 +236,7 @@ class PlaylistFragment : Fragment() {
     }
 
     companion object {
+        private const val EMPTY_STRING = ""
         private const val PLAYER_IMAGE_RADIUS: Int = 8
     }
 

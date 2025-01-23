@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.database.domain.models.Playlist
@@ -30,8 +31,10 @@ class PlaylistViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         } else {
             Glide.with(itemView)
                 .load(item.playlistCoverPath)
-                .centerCrop()
-                .transform(RoundedCorners(Converter.dpToPx(PLAYLIST_COVER_RADIUS)))
+                .transform(
+                    CenterCrop(),
+                    RoundedCorners(Converter.dpToPx(PLAYLIST_COVER_RADIUS))
+                )
                 .into(playlistCover)
         }
     }
