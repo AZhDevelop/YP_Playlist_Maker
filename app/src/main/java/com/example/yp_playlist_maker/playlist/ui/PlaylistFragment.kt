@@ -215,7 +215,7 @@ class PlaylistFragment : Fragment() {
             editText.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
             if (editText.text.isEmpty()) {
                 textView.gone()
-                editText.hint = getString(R.string.playlist_name)
+                editText.hint = textView.text
             } else {
                 textView.setTextColor(requireContext().getColor(R.color.yp_gray))
             }

@@ -24,7 +24,9 @@
             android:id="@+id/playlist_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:fontFamily="@font/ys_display_regular"
+            android:maxLines="1"
             android:textColor="@color/bottom_sheet_playlist_name"
             android:textSize="16sp"
             tools:text="Название плейлиста" />
