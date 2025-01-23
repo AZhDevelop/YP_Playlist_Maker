@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
@@ -84,37 +85,19 @@ class PlaylistFragment : Fragment() {
         }
 
         binding.etPlaylistName.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.etPlaylistName.setBackgroundResource(R.drawable.playlist_text_drawable)
-                binding.etPlaylistName.hint = EMPTY_STRING
-                binding.tvPlaylistName.visible()
-                binding.tvPlaylistName.setTextColor(requireContext().getColor(R.color.yp_blue))
-            } else {
-                binding.etPlaylistName.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
-                if (binding.etPlaylistName.text.isEmpty()) {
-                    binding.tvPlaylistName.gone()
-                    binding.etPlaylistName.hint = getString(R.string.playlist_name)
-                } else {
-                    binding.tvPlaylistName.setTextColor(requireContext().getColor(R.color.yp_gray))
-                }
-            }
+            checkOnFocus(
+                editText = binding.etPlaylistName,
+                textView = binding.tvPlaylistName,
+                hasFocus = hasFocus
+            )
         }
 
         binding.etPlaylistDescription.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.etPlaylistDescription.setBackgroundResource(R.drawable.playlist_text_drawable)
-                binding.etPlaylistDescription.hint = EMPTY_STRING
-                binding.tvPlaylistDescription.visible()
-                binding.tvPlaylistDescription.setTextColor(requireContext().getColor(R.color.yp_blue))
-            } else {
-                binding.etPlaylistDescription.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
-                if (binding.etPlaylistDescription.text.isEmpty()) {
-                    binding.tvPlaylistDescription.gone()
-                    binding.etPlaylistDescription.hint = getString(R.string.playlist_description)
-                } else {
-                    binding.tvPlaylistDescription.setTextColor(requireContext().getColor(R.color.yp_gray))
-                }
-            }
+            checkOnFocus(
+                editText = binding.etPlaylistDescription,
+                textView = binding.tvPlaylistDescription,
+                hasFocus = hasFocus
+            )
         }
 
     }
@@ -191,6 +174,7 @@ class PlaylistFragment : Fragment() {
     private fun savePlaylist(isCoverSet: Boolean) {
         val playListName = binding.etPlaylistName.text.toString()
         val playListDescription = binding.etPlaylistDescription.text.toString()
+        val toastMessage = "Плейлист \"$playListName\" успешно создан"
         if (isCoverSet) {
             viewModel.saveImageToPrivateStorage(imageUri)
             viewModel.createPlaylist(
@@ -204,7 +188,7 @@ class PlaylistFragment : Fragment() {
             )
         }
         findNavController().navigateUp()
-        Toast.makeText(activity, "Плейлист \"$playListName\" успешно создан", Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show()
     }
 
     private fun showCancelDialog() {
@@ -216,6 +200,23 @@ class PlaylistFragment : Fragment() {
                 findNavController().navigateUp()
             }
             .show()
+    }
+
+    private fun checkOnFocus(editText: EditText, textView: TextView, hasFocus: Boolean) {
+        if (hasFocus) {
+            editText.setBackgroundResource(R.drawable.playlist_text_drawable)
+            editText.hint = EMPTY_STRING
+            textView.visible()
+            textView.setTextColor(requireContext().getColor(R.color.yp_blue))
+        } else {
+            editText.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
+            if (editText.text.isEmpty()) {
+                textView.gone()
+                editText.hint = getString(R.string.playlist_name)
+            } else {
+                textView.setTextColor(requireContext().getColor(R.color.yp_gray))
+            }
+        }
     }
 
     override fun onDestroyView() {
