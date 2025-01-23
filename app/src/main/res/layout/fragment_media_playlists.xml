@@ -7,11 +7,11 @@
 
     <Button
         android:id="@+id/btn_placeholder"
-        style="@style/PlaceholderButton"
+        style="@style/PlaylistCreateButton"
+        android:layout_marginTop="34dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/new_playlist" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/img_placeholder"
@@ -35,11 +35,11 @@
         android:id="@+id/rv_playlists"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/margin_base_16"
         android:layout_marginHorizontal="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/margin_base_16"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_placeholder"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_placeholder" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
