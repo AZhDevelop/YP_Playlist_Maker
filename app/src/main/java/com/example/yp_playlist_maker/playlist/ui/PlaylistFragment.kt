@@ -4,12 +4,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
@@ -34,8 +32,6 @@ class PlaylistFragment : Fragment() {
     private val binding get() = _binding!!
     private var _playlistNameTextWatcher: TextWatcher? = null
     private val playlistNameTextWatcher get() = _playlistNameTextWatcher
-    private var _playlistDescriptionTextWatcher: TextWatcher? = null
-    private val playlistDescriptionTextWatcher get() = _playlistDescriptionTextWatcher
     private val viewModel by viewModel<PlaylistViewModel>()
     private var isCoverSet: Boolean = false
     private var isTextSet: Boolean = false
@@ -123,7 +119,7 @@ class PlaylistFragment : Fragment() {
 
     }
 
-    private fun setTextWatcher(editText: EditText, textView: TextView): TextWatcher {
+    private fun setTextWatcher(editText: EditText): TextWatcher {
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 //
@@ -149,14 +145,8 @@ class PlaylistFragment : Fragment() {
 
     private fun setEditTextWatchers() {
         val etPlaylistName = binding.etPlaylistName
-        val etPlaylistDescription = binding.etPlaylistDescription
-        val tvPlaylistName = binding.tvPlaylistName
-        val tvPlaylistDescription = binding.tvPlaylistDescription
-        _playlistNameTextWatcher = setTextWatcher(etPlaylistName, tvPlaylistName)
-        _playlistDescriptionTextWatcher =
-            setTextWatcher(etPlaylistDescription, tvPlaylistDescription)
+        _playlistNameTextWatcher = setTextWatcher(etPlaylistName)
         etPlaylistName.addTextChangedListener(playlistNameTextWatcher)
-        etPlaylistDescription.addTextChangedListener(playlistDescriptionTextWatcher)
     }
 
     private fun setFragmentElements() {
@@ -166,7 +156,7 @@ class PlaylistFragment : Fragment() {
     }
 
     private fun checkButtonIsAvailable() {
-        if (binding.etPlaylistName.text.isNotEmpty() && binding.etPlaylistDescription.text.isNotEmpty()) {
+        if (binding.etPlaylistName.text.isNotEmpty()) {
             binding.btnCreatePlaylist.apply {
                 isEnabled = true
                 setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
@@ -219,10 +209,10 @@ class PlaylistFragment : Fragment() {
 
     private fun showCancelDialog() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNeutralButton("Отмена") { _, _ -> }
-            .setPositiveButton("Завершить") { _, _ ->
+            .setTitle(getString(R.string.cancel_dialog_title))
+            .setMessage(getString(R.string.cancel_dialog_message))
+            .setNeutralButton(getString(R.string.cancel_dialog_neutral_button)) { _, _ -> }
+            .setPositiveButton(getString(R.string.cancel_dialog_positive_button)) { _, _ ->
                 findNavController().navigateUp()
             }
             .show()
@@ -232,7 +222,6 @@ class PlaylistFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         _playlistNameTextWatcher = null
-        _playlistDescriptionTextWatcher = null
     }
 
     companion object {

@@ -51,6 +51,10 @@
     <string name="playlist_name">Название*</string>
     <string name="playlist_description">Описание</string>
     <string name="button_create">Создать</string>
+    <string name="cancel_dialog_title">Завершить создание плейлиста?</string>
+    <string name="cancel_dialog_message">Все несохраненные данные будут потеряны</string>
+    <string name="cancel_dialog_neutral_button">Отмена</string>
+    <string name="cancel_dialog_positive_button">Завершить</string>
 
     <!-- Ссылки -->
     <string name="license_agreement_link">https://yandex.ru/legal/practicum_offer</string>

@@ -95,7 +95,6 @@ class AudioPlayerFragment : Fragment() {
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                Log.d("log", "State: $newState")
                 viewModel.setBottomSheetStateValue(newState)
             }
 
