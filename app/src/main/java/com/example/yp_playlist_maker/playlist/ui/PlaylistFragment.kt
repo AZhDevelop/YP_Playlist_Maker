@@ -177,7 +177,7 @@ class PlaylistFragment : Fragment() {
     private fun savePlaylist(isCoverSet: Boolean) {
         val playListName = binding.etPlaylistName.text.toString()
         val playListDescription = binding.etPlaylistDescription.text.toString()
-        val toastMessage = "Плейлист \"$playListName\" успешно создан"
+        val toastMessage = "Плейлист \"$playListName\" создан"
         if (isCoverSet) {
             viewModel.saveImageToPrivateStorage(imageUri)
             viewModel.createPlaylist(

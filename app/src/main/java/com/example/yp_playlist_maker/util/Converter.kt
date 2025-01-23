@@ -33,10 +33,10 @@ object Converter {
 
     fun convertPlaylistSizeValue(playlistSize: String): String {
         val size = playlistSize.toInt()
-        return if (size % 10 == 1) {
-            "$size трек"
-        } else if (size in 12 .. 14) {
+        return if (size in 11 .. 14) {
             "$size треков"
+        } else if (size % 10 == 1) {
+            "$size трек"
         } else if (size % 10 in 2..4) {
             "$size трека"
         } else {
