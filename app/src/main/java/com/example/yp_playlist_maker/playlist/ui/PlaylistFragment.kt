@@ -59,13 +59,13 @@ class PlaylistFragment : Fragment() {
             }
         })
 
-        binding.toolbar.setNavigationOnClickListener {
-            checkPlaylistCreation()
-        }
-
         setFragmentElements()
         setEditTextWatchers()
+        setBinding()
 
+    }
+
+    private fun setBinding() {
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 loadTrackImage(uri)
@@ -76,30 +76,31 @@ class PlaylistFragment : Fragment() {
             }
         }
 
-        binding.imgPlaceholder.setOnClickListener {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        binding.apply {
+            toolbar.setNavigationOnClickListener {
+                checkPlaylistCreation()
+            }
+            imgPlaceholder.setOnClickListener {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
+            btnCreatePlaylist.setOnClickListener {
+                savePlaylist(isCoverSet)
+            }
+            etPlaylistName.setOnFocusChangeListener { _, hasFocus ->
+                checkOnFocus(
+                    editText = etPlaylistName,
+                    textView = tvPlaylistName,
+                    hasFocus = hasFocus
+                )
+            }
+            etPlaylistDescription.setOnFocusChangeListener { _, hasFocus ->
+                checkOnFocus(
+                    editText = etPlaylistDescription,
+                    textView = tvPlaylistDescription,
+                    hasFocus = hasFocus
+                )
+            }
         }
-
-        binding.btnCreatePlaylist.setOnClickListener {
-            savePlaylist(isCoverSet)
-        }
-
-        binding.etPlaylistName.setOnFocusChangeListener { _, hasFocus ->
-            checkOnFocus(
-                editText = binding.etPlaylistName,
-                textView = binding.tvPlaylistName,
-                hasFocus = hasFocus
-            )
-        }
-
-        binding.etPlaylistDescription.setOnFocusChangeListener { _, hasFocus ->
-            checkOnFocus(
-                editText = binding.etPlaylistDescription,
-                textView = binding.tvPlaylistDescription,
-                hasFocus = hasFocus
-            )
-        }
-
     }
 
     private fun setTextWatcher(editText: EditText): TextWatcher {
@@ -133,9 +134,11 @@ class PlaylistFragment : Fragment() {
     }
 
     private fun setFragmentElements() {
-        binding.btnCreatePlaylist.isEnabled = false
-        binding.tvPlaylistName.gone()
-        binding.tvPlaylistDescription.gone()
+        binding.apply {
+            btnCreatePlaylist.isEnabled = false
+            tvPlaylistName.gone()
+            tvPlaylistDescription.gone()
+        }
     }
 
     private fun checkButtonIsAvailable() {
