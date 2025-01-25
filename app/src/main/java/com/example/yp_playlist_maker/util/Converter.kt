@@ -56,8 +56,7 @@ object Converter {
             trackEntity.primaryGenreName,
             trackEntity.country,
             trackEntity.previewUrl,
-            trackEntity.isFavourite,
-            trackEntity.playlistName
+            trackEntity.isFavourite
         )
     }
 
@@ -73,8 +72,7 @@ object Converter {
             track.primaryGenreName,
             track.country,
             track.previewUrl,
-            track.isFavourite,
-            track.playlistName
+            track.isFavourite
         )
     }
 

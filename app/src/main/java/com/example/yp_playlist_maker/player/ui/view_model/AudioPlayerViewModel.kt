@@ -112,8 +112,20 @@ class AudioPlayerViewModel(
     fun saveTrackToFavourites() {
         viewModelScope.launch {
             trackData.value?.let {
-                it.isFavourite = true
-                favouriteTracksInteractor.insertTrack(it)
+                val track = Track(
+                    trackId = it.trackId,
+                    trackName = it.trackName,
+                    artistName = it.artistName,
+                    trackTimeMillis = it.trackTimeMillis,
+                    artworkUrl100 = it.artworkUrl100,
+                    collectionName = it.collectionName,
+                    releaseDate = it.releaseDate,
+                    primaryGenreName = it.primaryGenreName,
+                    country = it.country,
+                    previewUrl = it.previewUrl,
+                    isFavourite = true
+                )
+                favouriteTracksInteractor.insertTrack(track)
             }
             _isFavourite.value = true
         }
@@ -122,8 +134,20 @@ class AudioPlayerViewModel(
     fun deleteTrackFromFavourites() {
         viewModelScope.launch {
             trackData.value?.let {
-                it.isFavourite = false
-                favouriteTracksInteractor.deleteTrack(it)
+                val track = Track(
+                    trackId = it.trackId,
+                    trackName = it.trackName,
+                    artistName = it.artistName,
+                    trackTimeMillis = it.trackTimeMillis,
+                    artworkUrl100 = it.artworkUrl100,
+                    collectionName = it.collectionName,
+                    releaseDate = it.releaseDate,
+                    primaryGenreName = it.primaryGenreName,
+                    country = it.country,
+                    previewUrl = it.previewUrl,
+                    isFavourite = false
+                )
+                favouriteTracksInteractor.deleteTrack(track)
             }
             _isFavourite.value = false
         }
