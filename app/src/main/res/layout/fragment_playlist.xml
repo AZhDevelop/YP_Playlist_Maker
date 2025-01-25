@@ -15,52 +15,71 @@
         app:title="@string/playlist_activity_header"
         tools:ignore="MissingConstraints" />
 
-    <ImageView
-        android:id="@+id/img_placeholder"
-        style="@style/PlaylistCover"
+    <ScrollView
+        android:id="@+id/sv_fragment_playlist"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent" >
 
-    <EditText
-        android:id="@+id/et_playlist_name"
-        style="@style/PlaylistEditText"
-        android:layout_marginTop="32dp"
-        android:hint="@string/playlist_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_placeholder" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-    <EditText
-        android:id="@+id/et_playlist_description"
-        style="@style/PlaylistEditText"
-        android:layout_marginTop="16dp"
-        android:hint="@string/playlist_description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_playlist_name" />
+            <ImageView
+                android:id="@+id/img_placeholder"
+                style="@style/PlaylistCover"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_create_playlist"
-        style="@style/PlaylistButton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+            <EditText
+                android:id="@+id/et_playlist_name"
+                style="@style/PlaylistEditText"
+                android:layout_marginTop="32dp"
+                android:hint="@string/playlist_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/img_placeholder" />
 
-    <TextView
-        android:id="@+id/tv_playlist_name"
-        style="@style/PlaylistTextView"
-        android:text="@string/playlist_name"
-        app:layout_constraintBottom_toTopOf="@id/et_playlist_name"
-        app:layout_constraintStart_toStartOf="@id/et_playlist_name"
-        app:layout_constraintTop_toTopOf="@id/et_playlist_name" />
+            <EditText
+                android:id="@+id/et_playlist_description"
+                style="@style/PlaylistEditText"
+                android:layout_marginTop="16dp"
+                android:hint="@string/playlist_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_playlist_name" />
 
-    <TextView
-        android:id="@+id/tv_playlist_description"
-        style="@style/PlaylistTextView"
-        android:text="@string/playlist_description"
-        app:layout_constraintBottom_toTopOf="@id/et_playlist_description"
-        app:layout_constraintStart_toStartOf="@id/et_playlist_description"
-        app:layout_constraintTop_toTopOf="@id/et_playlist_description" />
+            <TextView
+                android:id="@+id/tv_playlist_name"
+                style="@style/PlaylistTextView"
+                android:text="@string/playlist_name"
+                app:layout_constraintBottom_toTopOf="@id/et_playlist_name"
+                app:layout_constraintStart_toStartOf="@id/et_playlist_name"
+                app:layout_constraintTop_toTopOf="@id/et_playlist_name" />
+
+            <TextView
+                android:id="@+id/tv_playlist_description"
+                style="@style/PlaylistTextView"
+                android:text="@string/playlist_description"
+                app:layout_constraintBottom_toTopOf="@id/et_playlist_description"
+                app:layout_constraintStart_toStartOf="@id/et_playlist_description"
+                app:layout_constraintTop_toTopOf="@id/et_playlist_description" />
+
+            <Button
+                android:id="@+id/btn_create_playlist"
+                style="@style/PlaylistButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_playlist_description"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
