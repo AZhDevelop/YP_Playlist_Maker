@@ -218,8 +218,15 @@ class AudioPlayerViewModel(
                 var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId).toInt()
                 tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
                 playlistSize += 1
-                playlist.playlistSize = playlistSize.toString()
-                playlistsInteractor.updatePlaylistSize(playlist)
+                playlistsInteractor.updatePlaylistSize(
+                    Playlist(
+                        playlistId = playlist.playlistId,
+                        playlistName = playlist.playlistName,
+                        playlistDescription = playlist.playlistDescription,
+                        playlistCoverPath = playlist.playlistCoverPath,
+                        playlistSize = playlistSize.toString()
+                    )
+                )
                 addToPlaylistState.value = State.AddToPlaylistState.SUCCESS
             }
         }
@@ -230,10 +237,10 @@ class AudioPlayerViewModel(
         viewModelScope.cancel()
     }
 
-    companion object {
-        private const val DEFAULT_TIME: String = "00:00"
-        private const val EMPTY_STRING: String = ""
-        private const val DASH: String = "-"
-        private const val MILLIS_300: Long = 300L
+    private companion object {
+        const val DEFAULT_TIME: String = "00:00"
+        const val EMPTY_STRING: String = ""
+        const val DASH: String = "-"
+        const val MILLIS_300: Long = 300L
     }
 }

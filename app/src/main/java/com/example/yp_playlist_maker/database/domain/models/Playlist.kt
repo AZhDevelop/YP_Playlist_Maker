@@ -8,5 +8,5 @@ data class Playlist(
     val playlistName: String,
     val playlistDescription: String,
     val playlistCoverPath: String,
-    var playlistSize: String
+    val playlistSize: String
 )

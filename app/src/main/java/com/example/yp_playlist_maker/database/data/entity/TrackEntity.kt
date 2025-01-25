@@ -16,6 +16,6 @@ data class TrackEntity(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,
-    var isFavourite: Boolean,
-    var playlistName: String
+    val isFavourite: Boolean,
+    val playlistName: String
 )
