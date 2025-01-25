@@ -31,7 +31,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                                 it.releaseDate,
                                 it.primaryGenreName,
                                 it.country,
-                                it.previewUrl
+                                it.previewUrl,
                             )
                         })
                     emit(if (responseData.data.isEmpty()) {

@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.yp_playlist_maker.R
+import com.example.yp_playlist_maker.app.gone
+import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +22,14 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.main) as NavHostFragment
         val navController = navHostFragment.navController
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.playlistFragment || destination.id == R.id.audioPlayerFragment) {
+                binding.bottomNavigationView.gone()
+            } else {
+                binding.bottomNavigationView.visible()
+            }
+        }
 
         binding.bottomNavigationView.setupWithNavController(navController)
     }

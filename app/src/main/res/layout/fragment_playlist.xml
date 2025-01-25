@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_playlist"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    tools:context="com.example.yp_playlist_maker.playlist.ui.PlaylistFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        style="@style/ToolBar"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="@string/playlist_activity_header"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/sv_fragment_playlist"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/img_placeholder"
+                style="@style/PlaylistCover"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/et_playlist_name"
+                style="@style/PlaylistEditText"
+                android:layout_marginTop="32dp"
+                android:hint="@string/playlist_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/img_placeholder" />
+
+            <EditText
+                android:id="@+id/et_playlist_description"
+                style="@style/PlaylistEditText"
+                android:layout_marginTop="16dp"
+                android:hint="@string/playlist_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_playlist_name" />
+
+            <TextView
+                android:id="@+id/tv_playlist_name"
+                style="@style/PlaylistTextView"
+                android:text="@string/playlist_name"
+                app:layout_constraintBottom_toTopOf="@id/et_playlist_name"
+                app:layout_constraintStart_toStartOf="@id/et_playlist_name"
+                app:layout_constraintTop_toTopOf="@id/et_playlist_name" />
+
+            <TextView
+                android:id="@+id/tv_playlist_description"
+                style="@style/PlaylistTextView"
+                android:text="@string/playlist_description"
+                app:layout_constraintBottom_toTopOf="@id/et_playlist_description"
+                app:layout_constraintStart_toStartOf="@id/et_playlist_description"
+                app:layout_constraintTop_toTopOf="@id/et_playlist_description" />
+
+            <Button
+                android:id="@+id/btn_create_playlist"
+                style="@style/PlaylistButton"
+                app:layout_constraintVertical_bias="1"
+                app:layout_constraintTop_toBottomOf="@id/et_playlist_description"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

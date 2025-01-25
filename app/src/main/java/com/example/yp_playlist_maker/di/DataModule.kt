@@ -1,14 +1,21 @@
 package com.example.yp_playlist_maker.di
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
+import android.os.Bundle
+import android.os.Environment
 import androidx.core.content.IntentCompat
+import androidx.core.os.BundleCompat
 import androidx.room.Room
 import com.example.yp_playlist_maker.database.data.AppDatabase
+import com.example.yp_playlist_maker.database.data.dao.PlaylistDao
 import com.example.yp_playlist_maker.database.data.dao.TrackDao
+import com.example.yp_playlist_maker.database.data.dao.TracksInPlaylistsDao
+import com.example.yp_playlist_maker.database.data.entity.TracksInPlaylistsEntity
 import com.example.yp_playlist_maker.search.data.network.NetworkClient
 import com.example.yp_playlist_maker.search.data.network.RetrofitNetworkClient
 import com.example.yp_playlist_maker.search.data.network.TrackApi
@@ -20,6 +27,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 
 private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
 private const val TRACK_LIST_KEY: String = "track_list_key"
@@ -61,15 +69,22 @@ val dataModule = module {
         MediaPlayer()
     }
 
-    factory<Track?> { (intent : Intent) ->
-        IntentCompat.getParcelableExtra(intent, INTENT_PUTTED_TRACK, Track::class.java)
-    }
-
     single<AppDatabase> {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
             .build()
     }
 
     single<TrackDao> { get<AppDatabase>().trackDao() }
+    single<PlaylistDao> { get<AppDatabase>().playlistDao() }
+
+    single<File> {
+        File(androidContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists_covers")
+    }
+
+    single<ContentResolver> {
+        androidContext().contentResolver
+    }
+
+    single<TracksInPlaylistsDao> { get<AppDatabase>().tracksInPlaylistsDao() }
 
 }

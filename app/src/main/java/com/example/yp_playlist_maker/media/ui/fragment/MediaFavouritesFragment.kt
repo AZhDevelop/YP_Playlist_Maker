@@ -7,13 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
-import com.example.yp_playlist_maker.databinding.ActivityMediaFavouritesFragmentBinding
-import com.example.yp_playlist_maker.media.ui.view_model.FavouritesFragmentViewModel
-import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
+import com.example.yp_playlist_maker.databinding.FragmentMediaFavouritesBinding
+import com.example.yp_playlist_maker.media.ui.MediaFragmentDirections
+import com.example.yp_playlist_maker.media.ui.view_model.MediaFavouritesFragmentViewModel
+import com.example.yp_playlist_maker.player.ui.AudioPlayerFragment
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.search.ui.TrackAdapter
 import com.example.yp_playlist_maker.util.State
@@ -22,13 +24,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FavouritesFragment: Fragment() {
+class MediaFavouritesFragment: Fragment() {
 
-    private var _binding: ActivityMediaFavouritesFragmentBinding? = null
+    private var _binding: FragmentMediaFavouritesBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModel<FavouritesFragmentViewModel>()
+    private val viewModel by viewModel<MediaFavouritesFragmentViewModel>()
     private var _adapter: TrackAdapter? = null
-    private val adapter get() = _adapter
+    private val adapter get() = _adapter!!
     private var isClickAllowed = true
     private var clickDebounceJob: Job? = null
 
@@ -37,7 +39,7 @@ class FavouritesFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = ActivityMediaFavouritesFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentMediaFavouritesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -53,13 +55,10 @@ class FavouritesFragment: Fragment() {
         setFavouritesFragmentObservers()
         viewModel.checkFavouriteTrackList()
 
-        adapter?.onTrackClick = {
+        adapter.onTrackClick = {
             if (clickDebounce()) {
-                val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
-                displayAudioPlayer.apply {
-                    putExtra(INTENT_PUTTED_TRACK, it)
-                }
-                startActivity(displayAudioPlayer)
+                val action = MediaFragmentDirections.actionMediaFragmentToAudioPlayerFragment2(it)
+                findNavController().navigate(action)
             }
         }
 
@@ -75,8 +74,8 @@ class FavouritesFragment: Fragment() {
     }
 
     private fun handleFavouriteTrackList(favouriteTracksList: List<Track>) {
-        adapter?.data = favouriteTracksList
-        adapter?.notifyDataSetChanged()
+        adapter.data = favouriteTracksList
+        adapter.notifyDataSetChanged()
     }
 
     private fun handleFragmentState(fragmentState: State.FragmentState) {
@@ -133,12 +132,12 @@ class FavouritesFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        adapter?.onTrackClick = null
+        adapter.onTrackClick = null
         _adapter = null
     }
 
     companion object {
-        fun newInstance() = FavouritesFragment()
+        fun newInstance() = MediaFavouritesFragment()
         private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }

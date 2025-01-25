@@ -8,6 +8,7 @@
     <string name="search_activity_header">Поиск</string>
     <string name="media_activity_header">Медиатека</string>
     <string name="settings_activity_header">Настройки</string>
+    <string name="playlist_activity_header">Новый плейлист</string>
 
     <!-- Экран поиска -->
     <string name="search_activity_back">Назад</string>
@@ -42,6 +43,18 @@
     <string name="track_genre">Жанр</string>
     <string name="track_country">Страна</string>
     <string name="default_time">00:00</string>
+
+    <!-- Экран плеера BottomSheet -->
+    <string name="add_to_playlist">Добавить в плейлист</string>
+
+    <!-- Экран создания плейлиста -->
+    <string name="playlist_name">Название*</string>
+    <string name="playlist_description">Описание</string>
+    <string name="button_create">Создать</string>
+    <string name="cancel_dialog_title">Завершить создание плейлиста?</string>
+    <string name="cancel_dialog_message">Все несохраненные данные будут потеряны</string>
+    <string name="cancel_dialog_neutral_button">Отмена</string>
+    <string name="cancel_dialog_positive_button">Завершить</string>
 
     <!-- Ссылки -->
     <string name="license_agreement_link">https://yandex.ru/legal/practicum_offer</string>

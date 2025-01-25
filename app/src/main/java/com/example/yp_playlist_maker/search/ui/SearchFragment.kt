@@ -19,7 +19,7 @@ import com.example.yp_playlist_maker.app.hideKeyboard
 import com.example.yp_playlist_maker.app.invisible
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentSearchBinding
-import com.example.yp_playlist_maker.player.ui.AudioPlayerActivity
+import com.example.yp_playlist_maker.player.ui.AudioPlayerFragment
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.util.State
 import kotlinx.coroutines.Job
@@ -29,13 +29,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
 
-    private lateinit var textWatcher: TextWatcher
-
+    private var _textWatcher: TextWatcher? = null
+    private val textWatcher get() = _textWatcher!!
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<SearchViewModel>()
     private var _adapter: TrackAdapter? = null
-    private val adapter get() = _adapter
+    private val adapter get() = _adapter!!
     private var updateTrackHistory: Boolean = false
     private var onRestoreError: String = EMPTY_STRING
     private var isClickAllowed = true
@@ -58,11 +58,7 @@ class SearchFragment: Fragment() {
         setRecyclerView()
         setSearchFragmentObservers()
 
-        textWatcher = setTextWatcher()
-
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
+        _textWatcher = setTextWatcher()
 
         binding.etSearch.addTextChangedListener(textWatcher)
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
@@ -104,14 +100,11 @@ class SearchFragment: Fragment() {
             enableSearchHistoryVisibility(false)
         }
 
-        adapter?.onTrackClick = {
+        adapter.onTrackClick = {
             if (clickDebounce()) {
                 viewModel.saveClickedTrack(it)
-                val displayAudioPlayer = Intent(requireContext(), AudioPlayerActivity::class.java)
-                displayAudioPlayer.apply {
-                    putExtra(INTENT_PUTTED_TRACK, it)
-                }
-                startActivity(displayAudioPlayer)
+                val action = SearchFragmentDirections.actionSearchFragmentToAudioPlayerFragment(it)
+                findNavController().navigate(action)
                 if (binding.etSearch.text.isEmpty()) {
                     updateTrackHistory = true
                 }
@@ -178,8 +171,8 @@ class SearchFragment: Fragment() {
         }
 
         viewModel.getTrackListLiveData().observe(viewLifecycleOwner) { trackListLiveData ->
-            adapter?.data = trackListLiveData
-            adapter?.notifyDataSetChanged()
+            adapter.data = trackListLiveData
+            adapter.notifyDataSetChanged()
         }
     }
 
@@ -295,12 +288,12 @@ class SearchFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        adapter?.onTrackClick = null
+        adapter.onTrackClick = null
         _adapter = null
+        _textWatcher = null
     }
 
     companion object {
-        private const val INTENT_PUTTED_TRACK: String = "PuttedTrack"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val EMPTY_STRING: String = ""

@@ -1,14 +1,20 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
+import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yp_playlist_maker.database.domain.api.FavouriteTracksInteractor
+import com.example.yp_playlist_maker.database.domain.api.PlaylistsInteractor
+import com.example.yp_playlist_maker.database.domain.api.TracksInPlaylistsInteractor
+import com.example.yp_playlist_maker.database.domain.models.Playlist
+import com.example.yp_playlist_maker.database.domain.models.TracksInPlaylists
 import com.example.yp_playlist_maker.player.domain.api.PlayTrackInteractor
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
 import com.example.yp_playlist_maker.util.State
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -18,8 +24,9 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
-    private val trackExtra: Track?,
-    private val favouriteTracksInteractor: FavouriteTracksInteractor
+    private val favouriteTracksInteractor: FavouriteTracksInteractor,
+    private val playlistsInteractor: PlaylistsInteractor,
+    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor
 ) : ViewModel() {
 
     private var trackTime: String = EMPTY_STRING
@@ -34,62 +41,125 @@ class AudioPlayerViewModel(
     private val trackData = MutableLiveData<Track>()
     fun getTrackData(): LiveData<Track> = trackData
 
-    private val isFavourite = MutableLiveData(false)
-    fun getIsFavourite(): LiveData<Boolean> = isFavourite
+    private val _isFavourite = MutableLiveData<Boolean>()
+    val isFavourite: LiveData<Boolean> get() = _isFavourite
 
-    private fun setTrackData() {
-        trackData.value = trackExtra?.let {
-            Track(
-                trackId = trackExtra.trackId,
-                trackName = trackExtra.trackName,
-                artistName = trackExtra.artistName,
-                trackTimeMillis = if (trackExtra.isFavourite) trackExtra.trackTimeMillis else Converter.convertMillis(trackExtra.trackTimeMillis),
-                artworkUrl100 = Converter.convertUrl(trackExtra.artworkUrl100),
-                collectionName = trackExtra.collectionName,
-                releaseDate = trackExtra.releaseDate
-                    .replaceAfter(DASH, EMPTY_STRING)
-                    .replace(DASH, EMPTY_STRING),
-                primaryGenreName = trackExtra.primaryGenreName,
-                country = trackExtra.country,
-                previewUrl = trackExtra.previewUrl,
-                isFavourite = trackExtra.isFavourite
-            )
+    private val _backgroundColor = MutableLiveData<Int>()
+    val backgroundColor: LiveData<Int> get() = _backgroundColor
+
+    private val _bottomSheetStateValue = MutableLiveData<Int>()
+    val bottomSheetStateValue: LiveData<Int> get() = _bottomSheetStateValue
+
+    private val addToPlaylistState = MutableLiveData<State.AddToPlaylistState>()
+    fun getAddToPlaylistState(): LiveData<State.AddToPlaylistState> = addToPlaylistState
+
+    fun setBackgroundColor(color: Int) {
+        _backgroundColor.value = color
+    }
+
+    fun setBottomSheetStateValue(state: Int) {
+        if (state == BottomSheetBehavior.STATE_HIDDEN || state == BottomSheetBehavior.STATE_EXPANDED) {
+            _bottomSheetStateValue.value = state
         }
     }
 
-    private fun checkIsFavouriteTrack(trackId: String) {
+    private val playlistList = MutableLiveData<List<Playlist>>()
+    fun getPlaylistList(): LiveData<List<Playlist>> = playlistList
+
+    private val bottomSheetState = MutableLiveData<State.BottomSheetState>()
+    fun getBottomSheetState(): LiveData<State.BottomSheetState> = bottomSheetState
+
+    fun setTrackData(track: Track) {
         viewModelScope.launch {
-            isFavourite.value = favouriteTracksInteractor.checkIsTrackFavourite(trackId)
+            _isFavourite.value = favouriteTracksInteractor.checkIsTrackFavourite(track.trackId)
+            _isFavourite.value?.let { isFav ->
+                trackData.value = track.copy(
+                    trackId = track.trackId,
+                    trackName = track.trackName,
+                    artistName = track.artistName,
+                    trackTimeMillis = Converter.convertMillis(track.trackTimeMillis),
+                    artworkUrl100 = Converter.convertUrl(track.artworkUrl100),
+                    releaseDate = track.releaseDate
+                        .replaceAfter(DASH, EMPTY_STRING)
+                        .replace(DASH, EMPTY_STRING),
+                    primaryGenreName = track.primaryGenreName,
+                    country = track.country,
+                    previewUrl = track.previewUrl,
+                    isFavourite = isFav
+                )
+                preparePlayer()
+            }
         }
+    }
+
+    private fun setTrackToPlaylist(playlist: Playlist, track: Track): TracksInPlaylists {
+        return TracksInPlaylists(
+            elementId = 0,
+            playlistId = playlist.playlistId,
+            trackId = track.trackId,
+            trackName = track.trackName,
+            artistName = track.artistName,
+            trackTimeMillis = track.trackTimeMillis,
+            artworkUrl100 = track.artworkUrl100,
+            collectionName = track.collectionName,
+            releaseDate = track.releaseDate,
+            primaryGenreName = track.primaryGenreName,
+            country = track.country,
+            previewUrl = track.previewUrl
+        )
     }
 
     fun saveTrackToFavourites() {
         viewModelScope.launch {
             trackData.value?.let {
-                it.isFavourite = true
-                favouriteTracksInteractor.insertTrack(it)
+                val track = Track(
+                    trackId = it.trackId,
+                    trackName = it.trackName,
+                    artistName = it.artistName,
+                    trackTimeMillis = it.trackTimeMillis,
+                    artworkUrl100 = it.artworkUrl100,
+                    collectionName = it.collectionName,
+                    releaseDate = it.releaseDate,
+                    primaryGenreName = it.primaryGenreName,
+                    country = it.country,
+                    previewUrl = it.previewUrl,
+                    isFavourite = true
+                )
+                favouriteTracksInteractor.insertTrack(track)
             }
-            isFavourite.value = true
+            _isFavourite.value = true
         }
     }
 
     fun deleteTrackFromFavourites() {
         viewModelScope.launch {
             trackData.value?.let {
-                it.isFavourite = false
-                favouriteTracksInteractor.deleteTrack(it)
+                val track = Track(
+                    trackId = it.trackId,
+                    trackName = it.trackName,
+                    artistName = it.artistName,
+                    trackTimeMillis = it.trackTimeMillis,
+                    artworkUrl100 = it.artworkUrl100,
+                    collectionName = it.collectionName,
+                    releaseDate = it.releaseDate,
+                    primaryGenreName = it.primaryGenreName,
+                    country = it.country,
+                    previewUrl = it.previewUrl,
+                    isFavourite = false
+                )
+                favouriteTracksInteractor.deleteTrack(track)
             }
-            isFavourite.value = false
+            _isFavourite.value = false
         }
     }
 
     init {
-        setTrackData()
-        trackData.value?.let { checkIsFavouriteTrack(it.trackId) }
+        _backgroundColor.value = Color.TRANSPARENT
         currentTime.value = DEFAULT_TIME
+        checkPlaylistList()
     }
 
-    fun preparePlayer() {
+    private fun preparePlayer() {
         trackData.value?.let {
             playTrackService.preparePlayer(
                 it.previewUrl,
@@ -125,11 +195,6 @@ class AudioPlayerViewModel(
         )
     }
 
-    override fun onCleared() {
-        playTrackService.releasePlayer()
-        viewModelScope.cancel()
-    }
-
     private fun updateTrackTime() {
         updateTrackTimeJob = viewModelScope.launch {
             while (audioPlayerStatus.value == State.PlayerState.START) {
@@ -146,10 +211,60 @@ class AudioPlayerViewModel(
         return Converter.dpToPx(playerImageRadius)
     }
 
-    companion object {
-        private const val DEFAULT_TIME: String = "00:00"
-        private const val EMPTY_STRING: String = ""
-        private const val DASH: String = "-"
-        private const val MILLIS_300: Long = 300L
+    fun checkPlaylistList() {
+        viewModelScope.launch {
+            playlistsInteractor
+                .getPlaylistList()
+                .collect{ plList ->
+                    if (plList.isEmpty()) {
+                        bottomSheetState.value = State.BottomSheetState.EMPTY
+                        playlistList.value = plList
+                    } else {
+                        bottomSheetState.value = State.BottomSheetState.SUCCESS
+                        playlistList.value = plList
+                    }
+                }
+        }
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            var trackInPlaylists: List<Int> = listOf()
+            tracksInPlaylistsInteractor
+                .checkTrackInPlaylist(track.trackId)
+                .collect { playlistsId ->
+                    trackInPlaylists = playlistsId
+                }
+            if (playlist.playlistId in trackInPlaylists) {
+                addToPlaylistState.value = State.AddToPlaylistState.ERROR
+            } else {
+                val trackToPlaylist = setTrackToPlaylist(playlist, track)
+                var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId).toInt()
+                tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
+                playlistSize += 1
+                playlistsInteractor.updatePlaylistSize(
+                    Playlist(
+                        playlistId = playlist.playlistId,
+                        playlistName = playlist.playlistName,
+                        playlistDescription = playlist.playlistDescription,
+                        playlistCoverPath = playlist.playlistCoverPath,
+                        playlistSize = playlistSize.toString()
+                    )
+                )
+                addToPlaylistState.value = State.AddToPlaylistState.SUCCESS
+            }
+        }
+    }
+
+    override fun onCleared() {
+        playTrackService.releasePlayer()
+        viewModelScope.cancel()
+    }
+
+    private companion object {
+        const val DEFAULT_TIME: String = "00:00"
+        const val EMPTY_STRING: String = ""
+        const val DASH: String = "-"
+        const val MILLIS_300: Long = 300L
     }
 }

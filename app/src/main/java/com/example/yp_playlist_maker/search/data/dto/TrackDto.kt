@@ -11,6 +11,5 @@ data class TrackDto(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,
-
-    var isFavourite: Boolean = false
+    val isFavourite: Boolean = false
 )

@@ -25,4 +25,14 @@ object State {
         SUCCESS,
         ERROR
     }
+
+    enum class BottomSheetState {
+        SUCCESS,
+        EMPTY
+    }
+
+    enum class AddToPlaylistState {
+        SUCCESS,
+        ERROR
+    }
 }
