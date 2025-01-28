@@ -21,4 +21,7 @@ interface PlaylistDao {
 
     @Query("SELECT playlistSize FROM playlist_table WHERE playlistId = :playlistId")
     suspend fun getPlaylistSize(playlistId: Int): String
+
+    @Query("SELECT playlistDuration FROM playlist_table WHERE playlistId = :playlistId")
+    suspend fun getPlaylistDuration(playlistId: Int): String
 }

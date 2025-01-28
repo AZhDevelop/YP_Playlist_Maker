@@ -30,6 +30,10 @@ class PlaylistRepositoryImpl(
         return playlistDao.getPlaylistSize(playlistId)
     }
 
+    override suspend fun getPlaylistDuration(playlistId: Int): String {
+        return playlistDao.getPlaylistDuration(playlistId)
+    }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> converter.convertPlaylistEntityToPlaylist(playlist) }
     }

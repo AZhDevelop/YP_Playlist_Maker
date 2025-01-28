@@ -240,15 +240,18 @@ class AudioPlayerViewModel(
             } else {
                 val trackToPlaylist = setTrackToPlaylist(playlist, track)
                 var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId).toInt()
+                var playlistDuration = playlistsInteractor.getPlaylistDuration(playlist.playlistId).toInt()
                 tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
                 playlistSize += 1
+                playlistDuration += track.trackTimeMillis.toInt()
                 playlistsInteractor.updatePlaylistSize(
                     Playlist(
                         playlistId = playlist.playlistId,
                         playlistName = playlist.playlistName,
                         playlistDescription = playlist.playlistDescription,
                         playlistCoverPath = playlist.playlistCoverPath,
-                        playlistSize = playlistSize.toString()
+                        playlistSize = playlistSize.toString(),
+                        playlistDuration = playlistDuration.toString()
                     )
                 )
                 addToPlaylistState.value = State.AddToPlaylistState.SUCCESS

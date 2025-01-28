@@ -36,7 +36,8 @@ class PlaylistEditorViewModel(
                     } else {
                         "${playlistsDirectory.path}/${fileName}.jpg"
                     },
-                    playlistSize = "0"
+                    playlistSize = "0",
+                    playlistDuration = "0"
                 )
             )
         }

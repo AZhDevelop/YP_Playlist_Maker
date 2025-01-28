@@ -9,5 +9,6 @@ interface PlaylistsInteractor {
     fun getPlaylistList(): Flow<List<Playlist>>
     suspend fun updatePlaylistSize(playlist: Playlist)
     suspend fun getPlaylistSize(playlistId: Int): String
+    suspend fun getPlaylistDuration(playlistId: Int): String
 
 }

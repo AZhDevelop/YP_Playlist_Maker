@@ -8,7 +8,7 @@
         android:id="@+id/mediaFragment"
         android:name="com.example.yp_playlist_maker.media.ui.MediaFragment"
         android:label="fragment_media"
-        tools:layout="@layout/fragment_media" >
+        tools:layout="@layout/fragment_media">
         <action
             android:id="@+id/action_mediaFragment_to_playlistFragmentEditor"
             app:destination="@id/playlistFragmentEditor" />
@@ -42,11 +42,11 @@
         android:id="@+id/audioPlayerFragment"
         android:name="com.example.yp_playlist_maker.player.ui.AudioPlayerFragment"
         android:label="fragment_audioplayer"
-        tools:layout="@layout/fragment_audioplayer" >
-            <argument
-                android:name="track"
-                app:argType="com.example.yp_playlist_maker.search.domain.models.Track"
-                app:nullable="false" />
+        tools:layout="@layout/fragment_audioplayer">
+        <argument
+            android:name="track"
+            app:argType="com.example.yp_playlist_maker.search.domain.models.Track"
+            app:nullable="false" />
         <action
             android:id="@+id/action_audioPlayerFragment_to_playlistFragmentEditor"
             app:destination="@id/playlistFragmentEditor" />
@@ -55,7 +55,11 @@
         android:id="@+id/playlistFragment"
         android:name="com.example.yp_playlist_maker.playlist.ui.PlaylistFragment"
         android:label="fragment_playlist"
-        tools:layout="@layout/fragment_playlist" >
+        tools:layout="@layout/fragment_playlist">
+        <argument
+            android:name="playlist"
+            app:argType="com.example.yp_playlist_maker.database.domain.models.Playlist"
+            app:nullable="false" />
         <action
             android:id="@+id/action_playlistFragment_to_playlistFragmentEditor"
             app:destination="@id/playlistFragmentEditor" />
