@@ -3,6 +3,7 @@ package com.example.yp_playlist_maker.di
 import com.example.yp_playlist_maker.media.ui.view_model.MediaFavouritesFragmentViewModel
 import com.example.yp_playlist_maker.media.ui.view_model.MediaPlaylistsFragmentViewModel
 import com.example.yp_playlist_maker.player.ui.view_model.AudioPlayerViewModel
+import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistFragmentViewModel
 import com.example.yp_playlist_maker.playlist_editor.ui.view_model.PlaylistEditorViewModel
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.settings.ui.view_model.SettingsViewModel
@@ -51,6 +52,10 @@ val appModule = module {
             playlistsDirectory = get(),
             contentResolver = get()
         )
+    }
+
+    viewModel<PlaylistFragmentViewModel> {
+        PlaylistFragmentViewModel()
     }
 
 }
