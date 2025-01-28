@@ -32,9 +32,9 @@
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/playlistFragment"
-        android:name="com.example.yp_playlist_maker.playlist.ui.PlaylistFragment"
+        android:name="com.example.yp_playlist_maker.playlist_editor.ui.PlaylistEditorFragment"
         android:label="fragment_playlist"
-        tools:layout="@layout/fragment_playlist" />
+        tools:layout="@layout/fragment_playlist_editor" />
     <fragment
         android:id="@+id/audioPlayerFragment"
         android:name="com.example.yp_playlist_maker.player.ui.AudioPlayerFragment"

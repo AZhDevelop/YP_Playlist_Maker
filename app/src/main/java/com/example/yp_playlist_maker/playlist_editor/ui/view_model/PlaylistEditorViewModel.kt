@@ -1,4 +1,4 @@
-package com.example.yp_playlist_maker.playlist.ui.view_model
+package com.example.yp_playlist_maker.playlist_editor.ui.view_model
 
 import android.content.ContentResolver
 import android.graphics.Bitmap
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
-class PlaylistViewModel(
+class PlaylistEditorViewModel(
     private val playlistsInteractor: PlaylistsInteractor,
     private val playlistsDirectory: File,
     private val contentResolver: ContentResolver

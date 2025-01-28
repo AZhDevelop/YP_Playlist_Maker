@@ -1,9 +1,7 @@
-package com.example.yp_playlist_maker.playlist.ui
+package com.example.yp_playlist_maker.playlist_editor.ui
 
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,16 +21,16 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
-import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
-import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistViewModel
+import com.example.yp_playlist_maker.databinding.FragmentPlaylistEditorBinding
+import com.example.yp_playlist_maker.playlist_editor.ui.view_model.PlaylistEditorViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistFragment : Fragment() {
+class PlaylistEditorFragment : Fragment() {
 
-    private var _binding: FragmentPlaylistBinding? = null
+    private var _binding: FragmentPlaylistEditorBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModel<PlaylistViewModel>()
+    private val viewModel by viewModel<PlaylistEditorViewModel>()
     private var isCoverSet: Boolean = false
     private var isTextSet: Boolean = false
     private var _imageUri: Uri? = null
@@ -43,7 +41,7 @@ class PlaylistFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPlaylistBinding.inflate(inflater, container, false)
+        _binding = FragmentPlaylistEditorBinding.inflate(inflater, container, false)
         return binding.root
     }
 
