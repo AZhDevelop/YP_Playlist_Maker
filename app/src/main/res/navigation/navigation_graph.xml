@@ -10,11 +10,14 @@
         android:label="fragment_media"
         tools:layout="@layout/fragment_media" >
         <action
+            android:id="@+id/action_mediaFragment_to_playlistFragmentEditor"
+            app:destination="@id/playlistFragmentEditor" />
+        <action
+            android:id="@+id/action_mediaFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
+        <action
             android:id="@+id/action_mediaFragment_to_playlistFragment"
             app:destination="@id/playlistFragment" />
-        <action
-            android:id="@+id/action_mediaFragment_to_audioPlayerFragment2"
-            app:destination="@id/audioPlayerFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -31,7 +34,7 @@
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
-        android:id="@+id/playlistFragment"
+        android:id="@+id/playlistFragmentEditor"
         android:name="com.example.yp_playlist_maker.playlist_editor.ui.PlaylistEditorFragment"
         android:label="fragment_playlist"
         tools:layout="@layout/fragment_playlist_editor" />
@@ -45,7 +48,16 @@
                 app:argType="com.example.yp_playlist_maker.search.domain.models.Track"
                 app:nullable="false" />
         <action
-            android:id="@+id/action_audioPlayerFragment_to_playlistFragment"
-            app:destination="@id/playlistFragment" />
+            android:id="@+id/action_audioPlayerFragment_to_playlistFragmentEditor"
+            app:destination="@id/playlistFragmentEditor" />
+    </fragment>
+    <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.example.yp_playlist_maker.playlist.ui.PlaylistFragment"
+        android:label="fragment_playlist"
+        tools:layout="@layout/fragment_playlist" >
+        <action
+            android:id="@+id/action_playlistFragment_to_playlistFragmentEditor"
+            app:destination="@id/playlistFragmentEditor" />
     </fragment>
 </navigation>

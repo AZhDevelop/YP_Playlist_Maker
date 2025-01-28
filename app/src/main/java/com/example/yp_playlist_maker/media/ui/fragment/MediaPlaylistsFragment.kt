@@ -50,6 +50,10 @@ class MediaPlaylistsFragment : Fragment() {
         viewModel.checkPlaylistList()
 
         binding.btnPlaceholder.setOnClickListener {
+            findNavController().navigate(R.id.action_mediaFragment_to_playlistFragmentEditor)
+        }
+
+        adapter.onPlaylistClick = {
             findNavController().navigate(R.id.action_mediaFragment_to_playlistFragment)
         }
 
