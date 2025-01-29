@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -12,6 +13,7 @@ import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
 import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistFragmentViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment: Fragment() {
@@ -20,6 +22,10 @@ class PlaylistFragment: Fragment() {
     private val binding get() = _binding!!
     private val viewmodel by viewModel<PlaylistFragmentViewModel>()
     private val playlistArgs by navArgs<PlaylistFragmentArgs>()
+    private var _bottomSheetContainer: LinearLayout? = null
+    private val bottomSheetContainer get() = _bottomSheetContainer!!
+    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private val bottomSheetBehavior get() = _bottomSheetBehavior!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +38,9 @@ class PlaylistFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        _bottomSheetContainer = binding.bottomSheet
+        _bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
 
         val playlist = playlistArgs.playlist
         viewmodel.setPlaylistData(playlist)

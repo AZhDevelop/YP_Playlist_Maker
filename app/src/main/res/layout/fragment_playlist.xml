@@ -128,7 +128,9 @@
     <LinearLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        app:behavior_peekHeight="266dp"
+        app:behavior_fitToContents="false"
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
         app:behavior_hideable="false"
