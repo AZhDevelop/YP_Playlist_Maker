@@ -50,6 +50,7 @@ class PlaylistFragment: Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+
     }
 
     private fun fillPlaylistData(playlist: Playlist) {

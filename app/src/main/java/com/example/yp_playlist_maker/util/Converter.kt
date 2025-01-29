@@ -19,6 +19,11 @@ object Converter {
         return (value * (displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT.toFloat())).roundToInt()
     }
 
+    fun pxToDp(value: Int): Int {
+        val displayMetrics = Resources.getSystem().displayMetrics
+        return (value / (displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT.toFloat())).roundToInt()
+    }
+
     fun convertMillis(time: String): String {
         return try{
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(time.toInt()).toString()
