@@ -23,7 +23,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         trackName.text = item.trackName
         artistName.text = item.artistName
         isFavourite = item.isFavourite
-        trackTimeMillis.text = if (item.isFavourite) item.trackTimeMillis else Converter.convertMillis(item.trackTimeMillis)
+        trackTimeMillis.text = Converter.convertMillis(item.trackTimeMillis)
 
         Glide.with(itemView)
             .load(item.artworkUrl100)

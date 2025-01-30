@@ -130,7 +130,7 @@ class AudioPlayerFragment : Fragment() {
         binding.apply {
             trackName.text = track.trackName
             artistName.text = track.artistName
-            durationValue.text = track.trackTimeMillis
+            durationValue.text = viewModel.convertTime(track.trackTimeMillis)
             if (track.collectionName.isEmpty()) {
                 albumText.gone()
                 albumValue.gone()

@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
 import android.graphics.Color
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -77,7 +78,7 @@ class AudioPlayerViewModel(
                     trackId = track.trackId,
                     trackName = track.trackName,
                     artistName = track.artistName,
-                    trackTimeMillis = Converter.convertMillis(track.trackTimeMillis),
+                    trackTimeMillis = track.trackTimeMillis,
                     artworkUrl100 = Converter.convertUrl(track.artworkUrl100),
                     releaseDate = track.releaseDate
                         .replaceAfter(DASH, EMPTY_STRING)
@@ -258,6 +259,10 @@ class AudioPlayerViewModel(
                 addToPlaylistState.value = State.AddToPlaylistState.SUCCESS
             }
         }
+    }
+
+    fun convertTime(time: String): String {
+        return Converter.convertMillis(time)
     }
 
     override fun onCleared() {
