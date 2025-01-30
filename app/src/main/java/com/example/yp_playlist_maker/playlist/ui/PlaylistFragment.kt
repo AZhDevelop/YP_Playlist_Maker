@@ -15,9 +15,10 @@ import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.database.domain.models.Playlist
-import com.example.yp_playlist_maker.database.domain.models.TracksInPlaylists
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
 import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistFragmentViewModel
+import com.example.yp_playlist_maker.search.domain.models.Track
+import com.example.yp_playlist_maker.search.ui.SearchFragmentDirections
 import com.example.yp_playlist_maker.search.ui.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,7 +33,7 @@ class PlaylistFragment: Fragment() {
     private val bottomSheetContainer get() = _bottomSheetContainer!!
     private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
     private val bottomSheetBehavior get() = _bottomSheetBehavior!!
-    private var _adapter: PlaylistAdapter? = null
+    private var _adapter: TrackAdapter? = null
     private val adapter get() = _adapter!!
 
     override fun onCreateView(
@@ -60,6 +61,11 @@ class PlaylistFragment: Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+
+//        adapter.onTrackClick = {
+//            val action = PlaylistFragmentDirections.actionPlaylistFragmentToAudioPlayerFragment(it)
+//            findNavController().navigate(action)
+//        }
 
     }
 
@@ -94,7 +100,7 @@ class PlaylistFragment: Fragment() {
         }
     }
 
-    private fun handleTracksInPlaylist(tracksInPlaylist: List<TracksInPlaylists>) {
+    private fun handleTracksInPlaylist(tracksInPlaylist: List<Track>) {
         if (tracksInPlaylist.isNotEmpty()) {
             adapter.data = tracksInPlaylist
             adapter.notifyDataSetChanged()
@@ -105,7 +111,7 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun setRecyclerView() {
-        _adapter = PlaylistAdapter()
+        _adapter = TrackAdapter()
         binding.rvBottomSheet.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBottomSheet.adapter = _adapter
     }

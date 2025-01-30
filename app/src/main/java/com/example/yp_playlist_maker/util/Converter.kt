@@ -116,7 +116,8 @@ object Converter {
             tracksInPlaylistsEntity.releaseDate,
             tracksInPlaylistsEntity.primaryGenreName,
             tracksInPlaylistsEntity.country,
-            tracksInPlaylistsEntity.previewUrl
+            tracksInPlaylistsEntity.previewUrl,
+            tracksInPlaylistsEntity.isFavourite
         )
     }
 
@@ -133,7 +134,24 @@ object Converter {
             tracksInPlaylists.releaseDate,
             tracksInPlaylists.primaryGenreName,
             tracksInPlaylists.country,
-            tracksInPlaylists.previewUrl
+            tracksInPlaylists.previewUrl,
+            tracksInPlaylists.isFavourite
+        )
+    }
+
+    fun convertTracksInPlaylistToTrack(tracksInPlaylists: TracksInPlaylists): Track {
+        return Track(
+            trackId = tracksInPlaylists.trackId,
+            trackName = tracksInPlaylists.trackName,
+            artistName = tracksInPlaylists.artistName,
+            trackTimeMillis = tracksInPlaylists.trackTimeMillis,
+            artworkUrl100 = tracksInPlaylists.artworkUrl100,
+            collectionName = tracksInPlaylists.collectionName,
+            releaseDate = tracksInPlaylists.releaseDate,
+            primaryGenreName = tracksInPlaylists.primaryGenreName,
+            country = tracksInPlaylists.country,
+            previewUrl = tracksInPlaylists.previewUrl,
+            isFavourite = tracksInPlaylists.isFavourite
         )
     }
 
