@@ -21,6 +21,7 @@ import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.search.ui.SearchFragmentDirections
 import com.example.yp_playlist_maker.search.ui.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment: Fragment() {
@@ -68,9 +69,8 @@ class PlaylistFragment: Fragment() {
         }
 
         adapter.onLongTrackClick = {
-            viewmodel.deleteTrackFromPlaylist(it, playlist)
-            adapter.notifyDataSetChanged()
-            viewmodel.setTracksInPlaylist(playlist.playlistId)
+//            viewmodel.deleteTrackFromPlaylist(it, playlist)
+            showDeleteTrackDialog()
         }
 
     }
@@ -101,7 +101,6 @@ class PlaylistFragment: Fragment() {
         }
 
         viewmodel.getTracksInPlaylist().observe(viewLifecycleOwner) { tracksInPlaylist ->
-            Log.d("log", "$tracksInPlaylist")
             handleTracksInPlaylist(tracksInPlaylist)
         }
     }
@@ -120,6 +119,15 @@ class PlaylistFragment: Fragment() {
         _adapter = TrackAdapter()
         binding.rvBottomSheet.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBottomSheet.adapter = _adapter
+    }
+
+    private fun showDeleteTrackDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.delete_dialog_title))
+            .setMessage(getString(R.string.delete_dialog_message))
+            .setNegativeButton(getString(R.string.delete_dialog_negative_button)) { _, _ -> }
+            .setPositiveButton(getString(R.string.delete_dialog_positive_button)) { _, _ -> }
+            .show()
     }
 
     override fun onDestroyView() {

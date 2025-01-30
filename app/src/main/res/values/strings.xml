@@ -56,6 +56,12 @@
     <string name="cancel_dialog_neutral_button">Отмена</string>
     <string name="cancel_dialog_positive_button">Завершить</string>
 
+    <!-- Экран плейлиста -->
+    <string name="delete_dialog_title">Удалить трек</string>
+    <string name="delete_dialog_message">Хотите удалить трек?</string>
+    <string name="delete_dialog_negative_button">Нет</string>
+    <string name="delete_dialog_positive_button">Да</string>
+
     <!-- Ссылки -->
     <string name="license_agreement_link">https://yandex.ru/legal/practicum_offer</string>
     <string name="share_link">https://practicum.yandex.ru/android-developer/?from=catalog</string>
