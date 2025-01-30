@@ -67,6 +67,10 @@ class PlaylistFragment: Fragment() {
             findNavController().navigate(action)
         }
 
+        adapter.onLongTrackClick = {
+            Log.d("log", "long click")
+        }
+
     }
 
     private fun fillPlaylistData(playlist: Playlist) {
