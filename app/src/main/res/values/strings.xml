@@ -63,6 +63,16 @@
     <string name="delete_dialog_positive_button">Да</string>
     <string name="share_error">В этом плейлисте нет списка треков, которым можно поделиться</string>
 
+    <string name="delete_playlist_title">Удалить плейлист</string>
+    <string name="delete_playlist_message">Хотите удалить плейлист?</string>
+    <string name="delete_playlist_negative_button">Нет</string>
+    <string name="delete_playlist_positive_button">Да</string>
+
+    <!-- Экран плейлиста BottomSheetMenu -->
+    <string name="menu_share">Поделиться</string>
+    <string name="menu_edit_playlist">Редактировать информацию</string>
+    <string name="menu_delete_playlist">Удалить плейлист</string>
+
     <!-- Ссылки -->
     <string name="license_agreement_link">https://yandex.ru/legal/practicum_offer</string>
     <string name="share_link">https://practicum.yandex.ru/android-developer/?from=catalog</string>

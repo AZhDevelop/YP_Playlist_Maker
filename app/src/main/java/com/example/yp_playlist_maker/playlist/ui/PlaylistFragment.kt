@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -20,6 +21,7 @@ import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
 import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistFragmentViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.search.ui.TrackAdapter
+import com.example.yp_playlist_maker.util.Converter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,6 +36,10 @@ class PlaylistFragment: Fragment() {
     private val bottomSheetContainer get() = _bottomSheetContainer!!
     private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
     private val bottomSheetBehavior get() = _bottomSheetBehavior!!
+    private var _menuBottomSheetContainer: LinearLayout? = null
+    private val menuBottomSheetContainer get() = _menuBottomSheetContainer!!
+    private var _menuBottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private val menuBottomSheetBehavior get() = _menuBottomSheetBehavior!!
     private var _adapter: TrackAdapter? = null
     private val adapter get() = _adapter!!
     private var sharedMessage: String = ""
@@ -53,6 +59,10 @@ class PlaylistFragment: Fragment() {
         _bottomSheetContainer = binding.bottomSheet
         _bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        _menuBottomSheetContainer = binding.bottomSheetMenu
+        _menuBottomSheetBehavior = BottomSheetBehavior.from(menuBottomSheetContainer)
+        menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         val playlist = playlistArgs.playlist
         viewmodel.setPlaylistData(playlist)
@@ -83,6 +93,44 @@ class PlaylistFragment: Fragment() {
             }
         }
 
+        binding.menuSharePlaylist.setOnClickListener {
+            if (sharedMessage == "0") {
+                Toast.makeText(requireContext(), getString(R.string.share_error), Toast.LENGTH_SHORT).show()
+            } else {
+                viewmodel.sharePlaylistData(requireContext(), sharedMessage)
+            }
+        }
+
+        binding.icMenuVert.setOnClickListener {
+            menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        binding.menuDeletePlaylist.setOnClickListener {
+            showDeletePlaylistDialog()
+        }
+
+        menuBottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                when (slideOffset) {
+                    0.0F -> {
+                        binding.bottomSheet.gone()
+                        binding.icShare.isEnabled = false
+                        binding.icMenuVert.isEnabled = false
+                    }
+                    else -> {
+                        binding.bottomSheet.visible()
+                        binding.icShare.isEnabled = true
+                        binding.icMenuVert.isEnabled = true
+                    }
+                }
+            }
+        })
+
     }
 
     private fun fillPlaylistData(playlist: Playlist) {
@@ -92,6 +140,9 @@ class PlaylistFragment: Fragment() {
             tvPlaylistDuration.text = playlist.playlistDuration
             tvPlaylistTracks.text = playlist.playlistSize
             loadPlaylistCover(playlist.playlistCoverPath)
+
+            menuPlaylistName.text = playlist.playlistName
+            menuPlaylistSize.text = Converter.convertPlaylistSizeValue(playlist.playlistSize)
         }
     }
 
@@ -102,6 +153,12 @@ class PlaylistFragment: Fragment() {
                 .centerCrop()
                 .placeholder(R.drawable.img_placeholder_audio_player)
                 .into(binding.ivPlaylistCover)
+
+            Glide.with(this)
+                .load(playlistCoverPath)
+                .centerCrop()
+                .placeholder(R.drawable.img_placeholder_audio_player)
+                .into(binding.menuPlaylistCover)
         }
     }
 
@@ -138,7 +195,7 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun showDeleteTrackDialog(track: Track, playlist: Playlist) {
-        MaterialAlertDialogBuilder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.delete_dialog_title))
             .setMessage(getString(R.string.delete_dialog_message))
             .setNegativeButton(getString(R.string.delete_dialog_negative_button)) { _, _ -> }
@@ -146,6 +203,19 @@ class PlaylistFragment: Fragment() {
                 viewmodel.deleteTrackFromPlaylist(track, playlist)
             }
             .show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
+    }
+
+    private fun showDeletePlaylistDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.delete_playlist_title))
+            .setMessage(getString(R.string.delete_playlist_message))
+            .setNegativeButton(getString(R.string.delete_playlist_negative_button)) { _, _ -> }
+            .setPositiveButton(getString(R.string.delete_playlist_positive_button)) { _, _ -> }
+            .show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
     }
 
     override fun onDestroyView() {

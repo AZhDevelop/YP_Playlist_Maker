@@ -10,5 +10,6 @@ interface PlaylistsRepository {
     suspend fun updatePlaylistSize(playlist: Playlist)
     suspend fun getPlaylistSize(playlistId: Int): String
     suspend fun getPlaylistDuration(playlistId: Int): String
+    suspend fun deletePlaylist(playlist: Playlist)
 
 }

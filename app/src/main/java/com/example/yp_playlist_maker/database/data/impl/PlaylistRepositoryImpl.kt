@@ -34,6 +34,10 @@ class PlaylistRepositoryImpl(
         return playlistDao.getPlaylistDuration(playlistId)
     }
 
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        playlistDao.deletePlaylist(converter.convertPlaylistToPlaylistEntity(playlist))
+    }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> converter.convertPlaylistEntityToPlaylist(playlist) }
     }

@@ -29,4 +29,8 @@ class PlaylistsInteractorImpl(
         return repository.getPlaylistSize(playlistId)
     }
 
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        repository.deletePlaylist(playlist)
+    }
+
 }

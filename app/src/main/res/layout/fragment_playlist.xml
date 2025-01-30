@@ -131,11 +131,12 @@
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:behavior_peekHeight="266dp"
-        app:behavior_fitToContents="false"
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
+        app:behavior_fitToContents="false"
         app:behavior_hideable="false"
+        app:behavior_peekHeight="266dp"
+
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View style="@style/BottomSheetLineView" />
@@ -152,5 +153,79 @@
             android:layout_marginTop="12dp" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_sheet_menu"
+        android:layout_width="match_parent"
+        android:layout_height="383dp"
+        android:background="@drawable/bottom_sheet_background"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <View style="@style/BottomSheetLineView" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:layout_marginTop="12dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="13dp">
+
+            <ImageView
+                android:id="@+id/menu_playlist_cover"
+                android:layout_width="@dimen/track_icon_size_45"
+                android:layout_height="@dimen/track_icon_size_45"
+                android:src="@drawable/image_placeholder" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_base_8"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/menu_playlist_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:maxLines="1"
+                    android:textColor="@color/bottom_sheet_playlist_name"
+                    android:textSize="16sp"
+                    tools:text="Название плейлиста" />
+
+                <TextView
+                    android:id="@+id/menu_playlist_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="@color/bottom_sheet_playlist_size"
+                    android:textSize="11sp"
+                    tools:text="Размер плейлиста" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/menu_share_playlist"
+            style="@style/SettingsMenuText"
+            android:text="@string/menu_share" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/menu_edit_playlist"
+            style="@style/SettingsMenuText"
+            android:text="@string/menu_edit_playlist" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/menu_delete_playlist"
+            style="@style/SettingsMenuText"
+            android:text="@string/menu_delete_playlist" />
+
+    </LinearLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

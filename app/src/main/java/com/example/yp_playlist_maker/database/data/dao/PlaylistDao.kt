@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.database.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -24,4 +25,7 @@ interface PlaylistDao {
 
     @Query("SELECT playlistDuration FROM playlist_table WHERE playlistId = :playlistId")
     suspend fun getPlaylistDuration(playlistId: Int): String
+
+    @Delete
+    suspend fun deletePlaylist(playlist: PlaylistEntity)
 }
