@@ -62,10 +62,10 @@ class PlaylistFragment: Fragment() {
             findNavController().navigateUp()
         }
 
-//        adapter.onTrackClick = {
-//            val action = PlaylistFragmentDirections.actionPlaylistFragmentToAudioPlayerFragment(it)
-//            findNavController().navigate(action)
-//        }
+        adapter.onTrackClick = {
+            val action = PlaylistFragmentDirections.actionPlaylistFragmentToAudioPlayerFragment(it)
+            findNavController().navigate(action)
+        }
 
     }
 
