@@ -68,7 +68,9 @@ class PlaylistFragment: Fragment() {
         }
 
         adapter.onLongTrackClick = {
-            Log.d("log", "long click")
+            viewmodel.deleteTrackFromPlaylist(it, playlist)
+            adapter.notifyDataSetChanged()
+            viewmodel.setTracksInPlaylist(playlist.playlistId)
         }
 
     }

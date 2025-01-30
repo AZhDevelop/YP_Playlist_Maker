@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.database.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -17,5 +18,11 @@ interface TracksInPlaylistsDao {
 
     @Query("SELECT * FROM tracks_in_playlists_table WHERE playlistId = :playlistId")
     suspend fun getTracksFromPlaylist(playlistId: Int): List<TracksInPlaylistsEntity>
+
+    @Delete
+    suspend fun deleteTrackFromPlaylist(tracksInPlaylistsEntity: TracksInPlaylistsEntity)
+
+    @Query("SELECT elementId FROM tracks_in_playlists_table WHERE playlistId = :playlistId AND trackId = :trackId")
+    suspend fun getElementId(playlistId: Int, trackId: String): Int
 
 }

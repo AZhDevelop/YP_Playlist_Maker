@@ -56,7 +56,8 @@ val appModule = module {
 
     viewModel<PlaylistFragmentViewModel> {
         PlaylistFragmentViewModel(
-            playlistService = get()
+            playlistsInteractor = get(),
+            tracksInPlaylistsInteractor = get()
         )
     }
 

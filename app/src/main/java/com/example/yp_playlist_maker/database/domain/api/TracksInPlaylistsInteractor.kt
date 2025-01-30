@@ -8,5 +8,7 @@ interface TracksInPlaylistsInteractor {
     suspend fun insertTrackToPlaylist(tracksInPlaylists: TracksInPlaylists)
     fun getTracksFromPlaylist(playlistId: Int): Flow<List<TracksInPlaylists>>
     fun checkTrackInPlaylist(trackId: String): Flow<List<Int>>
+    suspend fun deleteTrackFromPlaylist(tracksInPlaylists: TracksInPlaylists)
+    suspend fun getElementId(playlistId: Int, trackId: String): Int
 
 }

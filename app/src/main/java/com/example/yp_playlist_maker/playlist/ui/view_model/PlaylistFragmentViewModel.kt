@@ -1,18 +1,23 @@
 package com.example.yp_playlist_maker.playlist.ui.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yp_playlist_maker.database.domain.api.PlaylistsInteractor
 import com.example.yp_playlist_maker.database.domain.api.TracksInPlaylistsInteractor
 import com.example.yp_playlist_maker.database.domain.models.Playlist
+import com.example.yp_playlist_maker.database.domain.models.TracksInPlaylists
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
+import com.example.yp_playlist_maker.util.State
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class PlaylistFragmentViewModel(
-    private val playlistService: TracksInPlaylistsInteractor
+    private val playlistsInteractor: PlaylistsInteractor,
+    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor
 ): ViewModel() {
 
     private val playlistData = MutableLiveData<Playlist>()
@@ -36,13 +41,53 @@ class PlaylistFragmentViewModel(
 
     fun setTracksInPlaylist(playlistId: Int) {
         viewModelScope.launch {
-            playlistService
+            tracksInPlaylistsInteractor
                 .getTracksFromPlaylist(playlistId)
                 .collect { playlistTracks ->
                     val trackList = playlistTracks.map { Converter.convertTracksInPlaylistToTrack(it) }
                     tracksInPlaylist.value = trackList
                 }
         }
+    }
+
+    fun deleteTrackFromPlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            val elementId = tracksInPlaylistsInteractor.getElementId(playlist.playlistId, track.trackId)
+            val trackToPlaylist = setTrackToPlaylist(playlist, track, elementId)
+            Log.d("log", "trackToPlaylist: $trackToPlaylist")
+            var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId).toInt()
+            var playlistDuration = playlistsInteractor.getPlaylistDuration(playlist.playlistId).toInt()
+            tracksInPlaylistsInteractor.deleteTrackFromPlaylist(trackToPlaylist)
+            playlistSize -= 1
+            playlistDuration -= track.trackTimeMillis.toInt()
+            playlistsInteractor.updatePlaylistSize(
+                Playlist(
+                    playlistId = playlist.playlistId,
+                    playlistName = playlist.playlistName,
+                    playlistDescription = playlist.playlistDescription,
+                    playlistCoverPath = playlist.playlistCoverPath,
+                    playlistSize = playlistSize.toString(),
+                    playlistDuration = playlistDuration.toString()
+                )
+            )
+        }
+    }
+
+    private fun setTrackToPlaylist(playlist: Playlist, track: Track, elementId: Int): TracksInPlaylists {
+        return TracksInPlaylists(
+            elementId = elementId,
+            playlistId = playlist.playlistId,
+            trackId = track.trackId,
+            trackName = track.trackName,
+            artistName = track.artistName,
+            trackTimeMillis = track.trackTimeMillis,
+            artworkUrl100 = track.artworkUrl100,
+            collectionName = track.collectionName,
+            releaseDate = track.releaseDate,
+            primaryGenreName = track.primaryGenreName,
+            country = track.country,
+            previewUrl = track.previewUrl
+        )
     }
 
     override fun onCleared() {
