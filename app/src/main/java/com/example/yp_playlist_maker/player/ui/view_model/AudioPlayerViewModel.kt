@@ -106,8 +106,7 @@ class AudioPlayerViewModel(
             releaseDate = track.releaseDate,
             primaryGenreName = track.primaryGenreName,
             country = track.country,
-            previewUrl = track.previewUrl,
-            isFavourite = track.isFavourite
+            previewUrl = track.previewUrl
         )
     }
 

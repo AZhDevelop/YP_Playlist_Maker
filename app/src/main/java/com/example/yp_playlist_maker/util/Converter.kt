@@ -116,8 +116,7 @@ object Converter {
             tracksInPlaylistsEntity.releaseDate,
             tracksInPlaylistsEntity.primaryGenreName,
             tracksInPlaylistsEntity.country,
-            tracksInPlaylistsEntity.previewUrl,
-            tracksInPlaylistsEntity.isFavourite
+            tracksInPlaylistsEntity.previewUrl
         )
     }
 
@@ -134,8 +133,7 @@ object Converter {
             tracksInPlaylists.releaseDate,
             tracksInPlaylists.primaryGenreName,
             tracksInPlaylists.country,
-            tracksInPlaylists.previewUrl,
-            tracksInPlaylists.isFavourite
+            tracksInPlaylists.previewUrl
         )
     }
 
@@ -150,8 +148,7 @@ object Converter {
             releaseDate = tracksInPlaylists.releaseDate,
             primaryGenreName = tracksInPlaylists.primaryGenreName,
             country = tracksInPlaylists.country,
-            previewUrl = tracksInPlaylists.previewUrl,
-            isFavourite = tracksInPlaylists.isFavourite
+            previewUrl = tracksInPlaylists.previewUrl
         )
     }
 
