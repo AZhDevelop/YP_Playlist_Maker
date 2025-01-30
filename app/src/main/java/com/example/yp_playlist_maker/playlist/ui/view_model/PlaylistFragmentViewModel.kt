@@ -1,18 +1,26 @@
 package com.example.yp_playlist_maker.playlist.ui.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yp_playlist_maker.database.domain.api.TracksInPlaylistsInteractor
 import com.example.yp_playlist_maker.database.domain.models.Playlist
+import com.example.yp_playlist_maker.database.domain.models.TracksInPlaylists
 import com.example.yp_playlist_maker.util.Converter
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class PlaylistFragmentViewModel: ViewModel() {
+class PlaylistFragmentViewModel(
+    private val playlistService: TracksInPlaylistsInteractor
+): ViewModel() {
 
     private val playlistData = MutableLiveData<Playlist>()
     fun getPlaylistData(): LiveData<Playlist> = playlistData
+
+    private val tracksInPlaylist = MutableLiveData<List<TracksInPlaylists>>()
+    fun getTracksInPlaylist(): LiveData<List<TracksInPlaylists>> = tracksInPlaylist
 
     fun setPlaylistData(playlist: Playlist) {
         viewModelScope.launch {
@@ -24,6 +32,17 @@ class PlaylistFragmentViewModel: ViewModel() {
                 playlistSize = playlist.playlistSize,
                 playlistDuration = Converter.convertMillis(playlist.playlistDuration)
             )
+        }
+    }
+
+    fun setTracksInPlaylist(playlistId: Int) {
+        viewModelScope.launch {
+            playlistService
+                .getTracksFromPlaylist(playlistId)
+                .collect { playlistTracks ->
+                    Log.d("log", "playlistTracks: $playlistTracks")
+                    tracksInPlaylist.value = playlistTracks
+                }
         }
     }
 

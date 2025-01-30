@@ -26,7 +26,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             style="@style/ToolBar"
-            app:navigationIcon="@drawable/ic_back"
+            app:navigationIcon="@drawable/ic_back_playlist"
             tools:ignore="MissingConstraints" />
 
         <TextView
@@ -141,8 +141,9 @@
         <View style="@style/BottomSheetLineView" />
 
         <TextView
+            android:id="@+id/tv_bottom_sheet"
             style="@style/BottomSheetTitle"
-            android:text="В этом плейлисте нет списка треков" />
+            android:text="В этом плейлисте нет треков" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_bottom_sheet"

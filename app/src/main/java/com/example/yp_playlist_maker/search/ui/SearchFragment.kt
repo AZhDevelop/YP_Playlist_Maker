@@ -1,6 +1,5 @@
 package com.example.yp_playlist_maker.search.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,7 +18,6 @@ import com.example.yp_playlist_maker.app.hideKeyboard
 import com.example.yp_playlist_maker.app.invisible
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.databinding.FragmentSearchBinding
-import com.example.yp_playlist_maker.player.ui.AudioPlayerFragment
 import com.example.yp_playlist_maker.search.ui.view_model.SearchViewModel
 import com.example.yp_playlist_maker.util.State
 import kotlinx.coroutines.Job

@@ -19,7 +19,6 @@ class SearchViewModel(
     private val trackList: MutableList<Track> = mutableListOf()
     private val trackHistoryList: MutableList<Track> = mutableListOf()
     private val trackListData = MutableLiveData<MutableList<Track>>()
-
     fun getTrackListLiveData(): LiveData<MutableList<Track>> = trackListData
 
     fun getTrackList() : List<Track> {
