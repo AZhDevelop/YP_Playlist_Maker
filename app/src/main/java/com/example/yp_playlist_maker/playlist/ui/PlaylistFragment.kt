@@ -79,7 +79,7 @@ class PlaylistFragment: Fragment() {
             if (sharedMessage == "0") {
                 Toast.makeText(requireContext(), getString(R.string.share_error), Toast.LENGTH_SHORT).show()
             } else {
-                Log.d("log", sharedMessage)
+                viewmodel.sharePlaylistData(requireContext(), sharedMessage)
             }
         }
 

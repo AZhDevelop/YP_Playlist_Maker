@@ -1,9 +1,13 @@
 package com.example.yp_playlist_maker.playlist.ui.view_model
 
+import android.content.Context
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.database.domain.api.PlaylistsInteractor
 import com.example.yp_playlist_maker.database.domain.api.TracksInPlaylistsInteractor
 import com.example.yp_playlist_maker.database.domain.models.Playlist
@@ -118,6 +122,19 @@ class PlaylistFragmentViewModel(
                 sharedMessage.value = message
             }
         }
+    }
+
+    fun sharePlaylistData(context: Context, message: String) {
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, message)
+        }
+
+        val createChooser = Intent.createChooser(shareIntent, context.getString(R.string.share_with))
+        createChooser.addFlags(FLAG_ACTIVITY_NEW_TASK)
+
+        context.startActivity(createChooser)
     }
 
     override fun onCleared() {
