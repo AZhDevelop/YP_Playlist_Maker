@@ -12,7 +12,6 @@ import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlaylistFragmentViewModel(
@@ -21,12 +20,16 @@ class PlaylistFragmentViewModel(
 ): ViewModel() {
 
     private var updatePlaylistJob: Job? = null
+    private var setSharedMessageJob: Job? = null
 
     private val playlistData = MutableLiveData<Playlist>()
     fun getPlaylistData(): LiveData<Playlist> = playlistData
 
     private val tracksInPlaylist = MutableLiveData<List<Track>>()
     fun getTracksInPlaylist(): LiveData<List<Track>> = tracksInPlaylist
+
+    private val sharedMessage = MutableLiveData<String>()
+    fun getSharedMessage(): LiveData<String> = sharedMessage
 
     fun setPlaylistData(playlist: Playlist) {
         viewModelScope.launch {
@@ -61,18 +64,18 @@ class PlaylistFragmentViewModel(
             tracksInPlaylistsInteractor.deleteTrackFromPlaylist(trackToPlaylist)
             playlistSize -= 1
             playlistDuration -= track.trackTimeMillis.toInt()
-            playlistsInteractor.updatePlaylistSize(
-                Playlist(
-                    playlistId = playlist.playlistId,
-                    playlistName = playlist.playlistName,
-                    playlistDescription = playlist.playlistDescription,
-                    playlistCoverPath = playlist.playlistCoverPath,
-                    playlistSize = playlistSize.toString(),
-                    playlistDuration = playlistDuration.toString()
-                )
+            val newPlaylistData = Playlist(
+                playlistId = playlist.playlistId,
+                playlistName = playlist.playlistName,
+                playlistDescription = playlist.playlistDescription,
+                playlistCoverPath = playlist.playlistCoverPath,
+                playlistSize = playlistSize.toString(),
+                playlistDuration = playlistDuration.toString()
             )
-            delay(100L)
-            setTracksInPlaylist(playlist.playlistId)
+            playlistsInteractor.updatePlaylistSize(newPlaylistData)
+            setPlaylistData(newPlaylistData)
+            setTracksInPlaylist(newPlaylistData.playlistId)
+            setTrackListMessage(newPlaylistData)
         }
     }
 
@@ -91,6 +94,30 @@ class PlaylistFragmentViewModel(
             country = track.country,
             previewUrl = track.previewUrl
         )
+    }
+
+    fun setTrackListMessage(playlist: Playlist) {
+        if (playlist.playlistSize == "0") {
+            sharedMessage.value = "0"
+        } else {
+            val playlistName = "Название плейлиста: ${playlist.playlistName}\n"
+            val playlistDescription = "Описание: ${playlist.playlistDescription.ifEmpty { "Нет описания" }}\n"
+            val playlistSize = "Количество треков: ${Converter.convertPlaylistSizeValue(playlist.playlistSize)}\n"
+            var message = playlistName + playlistDescription + playlistSize
+            var counter = 1
+            setSharedMessageJob = viewModelScope.launch {
+                tracksInPlaylistsInteractor
+                    .getTracksFromPlaylist(playlist.playlistId)
+                    .collect { playlistTracks ->
+                        for (track in playlistTracks) {
+                            message += "$counter. ${track.artistName} - ${track.trackName} " +
+                                    "(${Converter.convertMillis(track.trackTimeMillis)})\n"
+                            counter++
+                        }
+                    }
+                sharedMessage.value = message
+            }
+        }
     }
 
     override fun onCleared() {

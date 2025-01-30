@@ -61,6 +61,7 @@
     <string name="delete_dialog_message">Хотите удалить трек?</string>
     <string name="delete_dialog_negative_button">Нет</string>
     <string name="delete_dialog_positive_button">Да</string>
+    <string name="share_error">В этом плейлисте нет списка треков, которым можно поделиться</string>
 
     <!-- Ссылки -->
     <string name="license_agreement_link">https://yandex.ru/legal/practicum_offer</string>

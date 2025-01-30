@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -18,7 +19,6 @@ import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
 import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistFragmentViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
-import com.example.yp_playlist_maker.search.ui.SearchFragmentDirections
 import com.example.yp_playlist_maker.search.ui.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -36,6 +36,7 @@ class PlaylistFragment: Fragment() {
     private val bottomSheetBehavior get() = _bottomSheetBehavior!!
     private var _adapter: TrackAdapter? = null
     private val adapter get() = _adapter!!
+    private var sharedMessage: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,12 +52,14 @@ class PlaylistFragment: Fragment() {
 
         _bottomSheetContainer = binding.bottomSheet
         _bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         val playlist = playlistArgs.playlist
         viewmodel.setPlaylistData(playlist)
 
         setUpPlaylistObservers()
         setRecyclerView()
+        viewmodel.setTrackListMessage(playlist)
         viewmodel.setTracksInPlaylist(playlist.playlistId)
 
         binding.toolbar.setNavigationOnClickListener {
@@ -70,6 +73,14 @@ class PlaylistFragment: Fragment() {
 
         adapter.onLongTrackClick = {
             showDeleteTrackDialog(it, playlist)
+        }
+
+        binding.icShare.setOnClickListener {
+            if (sharedMessage == "0") {
+                Toast.makeText(requireContext(), getString(R.string.share_error), Toast.LENGTH_SHORT).show()
+            } else {
+                Log.d("log", sharedMessage)
+            }
         }
 
     }
@@ -101,6 +112,10 @@ class PlaylistFragment: Fragment() {
 
         viewmodel.getTracksInPlaylist().observe(viewLifecycleOwner) { tracksInPlaylist ->
             handleTracksInPlaylist(tracksInPlaylist)
+        }
+
+        viewmodel.getSharedMessage().observe(viewLifecycleOwner) { message ->
+            sharedMessage = message
         }
     }
 
@@ -136,5 +151,7 @@ class PlaylistFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        _bottomSheetBehavior = null
+        _bottomSheetContainer = null
     }
 }
