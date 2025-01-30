@@ -105,9 +105,9 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun handleTracksInPlaylist(tracksInPlaylist: List<Track>) {
+        adapter.data = tracksInPlaylist
+        adapter.notifyDataSetChanged()
         if (tracksInPlaylist.isNotEmpty()) {
-            adapter.data = tracksInPlaylist
-            adapter.notifyDataSetChanged()
             binding.tvBottomSheet.gone()
             binding.rvBottomSheet.visible()
         } else {
