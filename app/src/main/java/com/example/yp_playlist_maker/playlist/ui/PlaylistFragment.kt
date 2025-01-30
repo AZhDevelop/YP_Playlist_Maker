@@ -174,6 +174,14 @@ class PlaylistFragment: Fragment() {
         viewmodel.getSharedMessage().observe(viewLifecycleOwner) { message ->
             sharedMessage = message
         }
+
+        viewmodel.getDeletePlaylistStatus().observe(viewLifecycleOwner) { status ->
+            handleDeletePlaylistStatus(status)
+        }
+    }
+
+    private fun handleDeletePlaylistStatus(status: Boolean) {
+        if (status) findNavController().navigateUp()
     }
 
     private fun handleTracksInPlaylist(tracksInPlaylist: List<Track>) {

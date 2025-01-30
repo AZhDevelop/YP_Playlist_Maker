@@ -36,6 +36,9 @@ class PlaylistFragmentViewModel(
     private val sharedMessage = MutableLiveData<String>()
     fun getSharedMessage(): LiveData<String> = sharedMessage
 
+    private val deletePlaylistStatus = MutableLiveData(false)
+    fun getDeletePlaylistStatus(): LiveData<Boolean> = deletePlaylistStatus
+
     fun setPlaylistData(playlist: Playlist) {
         viewModelScope.launch {
             playlistData.value = Playlist(
@@ -135,6 +138,7 @@ class PlaylistFragmentViewModel(
                     }
                 }
             playlistsInteractor.deletePlaylist(playlist)
+            deletePlaylistStatus.value = true
         }
     }
 
