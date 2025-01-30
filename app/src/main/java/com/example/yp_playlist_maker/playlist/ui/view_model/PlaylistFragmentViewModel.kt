@@ -1,6 +1,5 @@
 package com.example.yp_playlist_maker.playlist.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,14 +10,17 @@ import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.database.domain.models.TracksInPlaylists
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.util.Converter
-import com.example.yp_playlist_maker.util.State
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlaylistFragmentViewModel(
     private val playlistsInteractor: PlaylistsInteractor,
     private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor
 ): ViewModel() {
+
+    private var updatePlaylistJob: Job? = null
 
     private val playlistData = MutableLiveData<Playlist>()
     fun getPlaylistData(): LiveData<Playlist> = playlistData
@@ -45,16 +47,15 @@ class PlaylistFragmentViewModel(
                 .getTracksFromPlaylist(playlistId)
                 .collect { playlistTracks ->
                     val trackList = playlistTracks.map { Converter.convertTracksInPlaylistToTrack(it) }
-                    tracksInPlaylist.value = trackList
+                    tracksInPlaylist.value = trackList.reversed()
                 }
         }
     }
 
     fun deleteTrackFromPlaylist(track: Track, playlist: Playlist) {
-        viewModelScope.launch {
+        updatePlaylistJob = viewModelScope.launch {
             val elementId = tracksInPlaylistsInteractor.getElementId(playlist.playlistId, track.trackId)
             val trackToPlaylist = setTrackToPlaylist(playlist, track, elementId)
-            Log.d("log", "trackToPlaylist: $trackToPlaylist")
             var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId).toInt()
             var playlistDuration = playlistsInteractor.getPlaylistDuration(playlist.playlistId).toInt()
             tracksInPlaylistsInteractor.deleteTrackFromPlaylist(trackToPlaylist)
@@ -70,6 +71,8 @@ class PlaylistFragmentViewModel(
                     playlistDuration = playlistDuration.toString()
                 )
             )
+            delay(100L)
+            setTracksInPlaylist(playlist.playlistId)
         }
     }
 

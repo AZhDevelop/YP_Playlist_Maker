@@ -69,8 +69,7 @@ class PlaylistFragment: Fragment() {
         }
 
         adapter.onLongTrackClick = {
-//            viewmodel.deleteTrackFromPlaylist(it, playlist)
-            showDeleteTrackDialog()
+            showDeleteTrackDialog(it, playlist)
         }
 
     }
@@ -110,8 +109,10 @@ class PlaylistFragment: Fragment() {
             adapter.data = tracksInPlaylist
             adapter.notifyDataSetChanged()
             binding.tvBottomSheet.gone()
+            binding.rvBottomSheet.visible()
         } else {
             binding.tvBottomSheet.visible()
+            binding.rvBottomSheet.gone()
         }
     }
 
@@ -121,12 +122,14 @@ class PlaylistFragment: Fragment() {
         binding.rvBottomSheet.adapter = _adapter
     }
 
-    private fun showDeleteTrackDialog() {
+    private fun showDeleteTrackDialog(track: Track, playlist: Playlist) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.delete_dialog_title))
             .setMessage(getString(R.string.delete_dialog_message))
             .setNegativeButton(getString(R.string.delete_dialog_negative_button)) { _, _ -> }
-            .setPositiveButton(getString(R.string.delete_dialog_positive_button)) { _, _ -> }
+            .setPositiveButton(getString(R.string.delete_dialog_positive_button)) { _, _ ->
+                viewmodel.deleteTrackFromPlaylist(track, playlist)
+            }
             .show()
     }
 
