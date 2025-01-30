@@ -25,6 +25,7 @@ class PlaylistFragmentViewModel(
 
     private var updatePlaylistJob: Job? = null
     private var setSharedMessageJob: Job? = null
+    private var deletePlaylistJob: Job? = null
 
     private val playlistData = MutableLiveData<Playlist>()
     fun getPlaylistData(): LiveData<Playlist> = playlistData
@@ -121,6 +122,19 @@ class PlaylistFragmentViewModel(
                     }
                 sharedMessage.value = message
             }
+        }
+    }
+
+    fun deletePlaylist(playlist: Playlist) {
+        deletePlaylistJob = viewModelScope.launch {
+            tracksInPlaylistsInteractor
+                .getTracksFromPlaylist(playlist.playlistId)
+                .collect { playlistTracks ->
+                    for (track in playlistTracks) {
+                        tracksInPlaylistsInteractor.deleteTrackFromPlaylist(track)
+                    }
+                }
+            playlistsInteractor.deletePlaylist(playlist)
         }
     }
 

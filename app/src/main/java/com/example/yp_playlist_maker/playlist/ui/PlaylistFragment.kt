@@ -106,7 +106,7 @@ class PlaylistFragment: Fragment() {
         }
 
         binding.menuDeletePlaylist.setOnClickListener {
-            showDeletePlaylistDialog()
+            showDeletePlaylistDialog(playlist)
         }
 
         menuBottomSheetBehavior.addBottomSheetCallback(object :
@@ -207,12 +207,14 @@ class PlaylistFragment: Fragment() {
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
     }
 
-    private fun showDeletePlaylistDialog() {
+    private fun showDeletePlaylistDialog(playlist: Playlist) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.delete_playlist_title))
             .setMessage(getString(R.string.delete_playlist_message))
             .setNegativeButton(getString(R.string.delete_playlist_negative_button)) { _, _ -> }
-            .setPositiveButton(getString(R.string.delete_playlist_positive_button)) { _, _ -> }
+            .setPositiveButton(getString(R.string.delete_playlist_positive_button)) { _, _ ->
+                viewmodel.deletePlaylist(playlist)
+            }
             .show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
