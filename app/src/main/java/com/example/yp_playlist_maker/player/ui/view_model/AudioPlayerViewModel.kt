@@ -27,7 +27,8 @@ class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
     private val favouriteTracksInteractor: FavouriteTracksInteractor,
     private val playlistsInteractor: PlaylistsInteractor,
-    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor
+    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor,
+    private val converter: Converter
 ) : ViewModel() {
 
     private var trackTime: String = EMPTY_STRING
@@ -79,7 +80,7 @@ class AudioPlayerViewModel(
                     trackName = track.trackName,
                     artistName = track.artistName,
                     trackTimeMillis = track.trackTimeMillis,
-                    artworkUrl100 = Converter.convertUrl(track.artworkUrl100),
+                    artworkUrl100 = converter.convertUrl(track.artworkUrl100),
                     releaseDate = track.releaseDate
                         .replaceAfter(DASH, EMPTY_STRING)
                         .replace(DASH, EMPTY_STRING),
@@ -209,7 +210,7 @@ class AudioPlayerViewModel(
     }
 
     fun getRoundedCorners(playerImageRadius: Int): Int {
-        return Converter.dpToPx(playerImageRadius)
+        return converter.dpToPx(playerImageRadius)
     }
 
     fun checkPlaylistList() {
@@ -261,7 +262,7 @@ class AudioPlayerViewModel(
     }
 
     fun convertTime(time: String): String {
-        return Converter.convertMillis(time)
+        return converter.convertMillis(time)
     }
 
     override fun onCleared() {

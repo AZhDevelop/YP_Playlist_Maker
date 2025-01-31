@@ -21,7 +21,8 @@ import kotlinx.coroutines.launch
 
 class PlaylistFragmentViewModel(
     private val playlistsInteractor: PlaylistsInteractor,
-    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor
+    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor,
+    private val converter: Converter
 ): ViewModel() {
 
     private var updatePlaylistJob: Job? = null
@@ -75,7 +76,7 @@ class PlaylistFragmentViewModel(
             tracksInPlaylistsInteractor
                 .getTracksFromPlaylist(playlistId)
                 .collect { playlistTracks ->
-                    val trackList = playlistTracks.map { Converter.convertTracksInPlaylistToTrack(it) }
+                    val trackList = playlistTracks.map { converter.convertTracksInPlaylistToTrack(it) }
                     tracksInPlaylist.value = trackList.reversed()
                 }
         }
@@ -174,7 +175,7 @@ class PlaylistFragmentViewModel(
     }
 
     fun convertTime(time: String): String {
-        return Converter.convertMillis(time)
+        return converter.convertMillis(time)
     }
 
     override fun onCleared() {

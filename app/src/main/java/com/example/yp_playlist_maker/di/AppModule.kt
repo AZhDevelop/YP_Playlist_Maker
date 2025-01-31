@@ -30,7 +30,8 @@ val appModule = module {
             playTrackService = get(),
             favouriteTracksInteractor = get(),
             playlistsInteractor = get(),
-            tracksInPlaylistsInteractor = get()
+            tracksInPlaylistsInteractor = get(),
+            converter = get()
         )
     }
 
@@ -57,7 +58,8 @@ val appModule = module {
     viewModel<PlaylistFragmentViewModel> {
         PlaylistFragmentViewModel(
             playlistsInteractor = get(),
-            tracksInPlaylistsInteractor = get()
+            tracksInPlaylistsInteractor = get(),
+            converter = get()
         )
     }
 
