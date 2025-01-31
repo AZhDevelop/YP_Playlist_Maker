@@ -42,6 +42,7 @@ class PlaylistEditorFragment : Fragment() {
     private var _imageUri: Uri? = null
     private val imageUri get() = _imageUri!!
     private var playlist: Playlist? = null
+    private var showCancelDialog: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -171,12 +172,14 @@ class PlaylistEditorFragment : Fragment() {
                 binding.btnCreatePlaylist.setOnClickListener {
                     updatePlaylist()
                 }
+                showCancelDialog = false
             }
             State.PlaylistEditorState.CREATOR -> {
                 setFragmentElements()
                 binding.btnCreatePlaylist.setOnClickListener {
                     savePlaylist()
                 }
+                showCancelDialog = true
             }
         }
     }
@@ -193,8 +196,12 @@ class PlaylistEditorFragment : Fragment() {
     }
 
     private fun checkPlaylistCreation() {
-        if (isCoverSet || isTextSet) {
-            showCancelDialog()
+        if (showCancelDialog) {
+            if (isCoverSet || isTextSet) {
+                showCancelDialog()
+            } else {
+                findNavController().navigateUp()
+            }
         } else {
             findNavController().navigateUp()
         }
@@ -264,6 +271,8 @@ class PlaylistEditorFragment : Fragment() {
             binding.etPlaylistDescription.hint = EMPTY_STRING
             binding.tvPlaylistDescription.visible()
             binding.tvPlaylistDescription.setTextColor(requireContext().getColor(R.color.yp_gray))
+        } else {
+            binding.tvPlaylistDescription.gone()
         }
     }
 
