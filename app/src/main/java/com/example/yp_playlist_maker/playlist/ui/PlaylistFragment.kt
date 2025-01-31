@@ -42,6 +42,8 @@ class PlaylistFragment: Fragment() {
     private var _adapter: TrackAdapter? = null
     private val adapter get() = _adapter!!
     private var sharedMessage: String = ""
+    private var _playlist: Playlist? = null
+    private val playlist get() = _playlist!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,7 +65,7 @@ class PlaylistFragment: Fragment() {
         _menuBottomSheetBehavior = BottomSheetBehavior.from(menuBottomSheetContainer)
         menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-        val playlist = playlistArgs.playlist
+        _playlist = playlistArgs.playlist
         viewmodel.setPlaylistData(playlist)
 
         setUpPlaylistObservers()
@@ -169,6 +171,7 @@ class PlaylistFragment: Fragment() {
     private fun setUpPlaylistObservers() {
         viewmodel.getPlaylistData().observe(viewLifecycleOwner) { playlistData ->
             fillPlaylistData(playlistData)
+            _playlist = playlistData
         }
 
         viewmodel.getTracksInPlaylist().observe(viewLifecycleOwner) { tracksInPlaylist ->
@@ -234,11 +237,14 @@ class PlaylistFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
+        viewmodel.updatePlaylistData(playlist)
+        menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        _playlist = null
         _bottomSheetBehavior = null
         _bottomSheetContainer = null
     }

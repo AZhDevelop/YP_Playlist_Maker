@@ -38,6 +38,11 @@ class PlaylistRepositoryImpl(
         playlistDao.deletePlaylist(converter.convertPlaylistToPlaylistEntity(playlist))
     }
 
+    override fun getPlaylistData(playlistId: Int): Flow<List<Playlist>> = flow {
+        val playlist = playlistDao.getPlaylistData(playlistId)
+        emit(convertFromPlaylistEntity(playlist))
+    }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> converter.convertPlaylistEntityToPlaylist(playlist) }
     }

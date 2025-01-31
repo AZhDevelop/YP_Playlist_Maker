@@ -29,6 +29,10 @@ class PlaylistsInteractorImpl(
         return repository.getPlaylistSize(playlistId)
     }
 
+    override fun getPlaylistData(playlistId: Int): Flow<List<Playlist>> {
+        return repository.getPlaylistData(playlistId)
+    }
+
     override suspend fun deletePlaylist(playlist: Playlist) {
         repository.deletePlaylist(playlist)
     }

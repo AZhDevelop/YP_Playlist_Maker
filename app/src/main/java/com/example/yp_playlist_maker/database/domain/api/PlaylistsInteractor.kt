@@ -11,5 +11,6 @@ interface PlaylistsInteractor {
     suspend fun getPlaylistSize(playlistId: Int): String
     suspend fun getPlaylistDuration(playlistId: Int): String
     suspend fun deletePlaylist(playlist: Playlist)
+    fun getPlaylistData(playlistId: Int): Flow<List<Playlist>>
 
 }

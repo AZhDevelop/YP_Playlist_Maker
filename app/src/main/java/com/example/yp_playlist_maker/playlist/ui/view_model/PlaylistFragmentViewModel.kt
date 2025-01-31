@@ -3,6 +3,7 @@ package com.example.yp_playlist_maker.playlist.ui.view_model
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,6 +39,23 @@ class PlaylistFragmentViewModel(
 
     private val deletePlaylistStatus = MutableLiveData(false)
     fun getDeletePlaylistStatus(): LiveData<Boolean> = deletePlaylistStatus
+
+    fun updatePlaylistData(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistsInteractor
+                .getPlaylistData(playlist.playlistId)
+                .collect { playlist ->
+                    playlistData.value = Playlist(
+                        playlistId = playlist[0].playlistId,
+                        playlistName = playlist[0].playlistName,
+                        playlistDescription = playlist[0].playlistDescription,
+                        playlistCoverPath = playlist[0].playlistCoverPath,
+                        playlistSize = playlist[0].playlistSize,
+                        playlistDuration = Converter.convertMillis(playlist[0].playlistDuration)
+                    )
+                }
+        }
+    }
 
     fun setPlaylistData(playlist: Playlist) {
         viewModelScope.launch {
