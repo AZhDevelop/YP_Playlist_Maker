@@ -143,7 +143,7 @@ class PlaylistFragment: Fragment() {
         binding.apply {
             tvPlaylistName.text = playlist.playlistName
             tvPlaylistDescription.text = playlist.playlistDescription
-            tvPlaylistDuration.text = playlist.playlistDuration
+            tvPlaylistDuration.text = viewmodel.convertTime(playlist.playlistDuration)
             tvPlaylistTracks.text = playlist.playlistSize
             loadPlaylistCover(playlist.playlistCoverPath)
 

@@ -51,7 +51,7 @@ class PlaylistFragmentViewModel(
                         playlistDescription = playlist[0].playlistDescription,
                         playlistCoverPath = playlist[0].playlistCoverPath,
                         playlistSize = playlist[0].playlistSize,
-                        playlistDuration = Converter.convertMillis(playlist[0].playlistDuration)
+                        playlistDuration = playlist[0].playlistDuration
                     )
                 }
         }
@@ -65,7 +65,7 @@ class PlaylistFragmentViewModel(
                 playlistDescription = playlist.playlistDescription,
                 playlistCoverPath = playlist.playlistCoverPath,
                 playlistSize = playlist.playlistSize,
-                playlistDuration = Converter.convertMillis(playlist.playlistDuration)
+                playlistDuration = playlist.playlistDuration
             )
         }
     }
@@ -128,7 +128,7 @@ class PlaylistFragmentViewModel(
         } else {
             val playlistName = "Название плейлиста: ${playlist.playlistName}\n"
             val playlistDescription = "Описание: ${playlist.playlistDescription.ifEmpty { "Нет описания" }}\n"
-            val playlistSize = "Количество треков: ${Converter.convertPlaylistSizeValue(playlist.playlistSize)}\n"
+            val playlistSize = "Количество треков: ${convertTime(playlist.playlistSize)}\n"
             var message = playlistName + playlistDescription + playlistSize
             var counter = 1
             setSharedMessageJob = viewModelScope.launch {
@@ -137,7 +137,7 @@ class PlaylistFragmentViewModel(
                     .collect { playlistTracks ->
                         for (track in playlistTracks) {
                             message += "$counter. ${track.artistName} - ${track.trackName} " +
-                                    "(${Converter.convertMillis(track.trackTimeMillis)})\n"
+                                    "(${convertTime(track.trackTimeMillis)})\n"
                             counter++
                         }
                     }
@@ -171,6 +171,10 @@ class PlaylistFragmentViewModel(
         createChooser.addFlags(FLAG_ACTIVITY_NEW_TASK)
 
         context.startActivity(createChooser)
+    }
+
+    fun convertTime(time: String): String {
+        return Converter.convertMillis(time)
     }
 
     override fun onCleared() {
