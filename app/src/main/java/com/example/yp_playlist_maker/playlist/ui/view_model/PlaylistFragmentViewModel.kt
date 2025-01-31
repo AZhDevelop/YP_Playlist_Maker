@@ -80,7 +80,7 @@ class PlaylistFragmentViewModel(
                 playlistSize = playlistSize.toString(),
                 playlistDuration = playlistDuration.toString()
             )
-            playlistsInteractor.updatePlaylistSize(newPlaylistData)
+            playlistsInteractor.updatePlaylist(newPlaylistData)
             setPlaylistData(newPlaylistData)
             setTracksInPlaylist(newPlaylistData.playlistId)
             setTrackListMessage(newPlaylistData)

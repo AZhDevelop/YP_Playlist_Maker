@@ -232,6 +232,10 @@ class PlaylistFragment: Fragment() {
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

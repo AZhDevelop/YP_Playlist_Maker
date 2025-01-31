@@ -245,7 +245,7 @@ class AudioPlayerViewModel(
                 tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
                 playlistSize += 1
                 playlistDuration += track.trackTimeMillis.toInt()
-                playlistsInteractor.updatePlaylistSize(
+                playlistsInteractor.updatePlaylist(
                     Playlist(
                         playlistId = playlist.playlistId,
                         playlistName = playlist.playlistName,

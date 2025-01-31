@@ -18,7 +18,7 @@ interface PlaylistDao {
     suspend fun getPlaylistList(): List<PlaylistEntity>
 
     @Update
-    suspend fun updatePlaylistSize(playlist: PlaylistEntity)
+    suspend fun updatePlaylist(playlist: PlaylistEntity)
 
     @Query("SELECT playlistSize FROM playlist_table WHERE playlistId = :playlistId")
     suspend fun getPlaylistSize(playlistId: Int): String

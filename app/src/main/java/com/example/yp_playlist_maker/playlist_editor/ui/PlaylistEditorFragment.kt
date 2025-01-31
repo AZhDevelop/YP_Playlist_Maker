@@ -23,8 +23,10 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
+import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistEditorBinding
 import com.example.yp_playlist_maker.playlist_editor.ui.view_model.PlaylistEditorViewModel
+import com.example.yp_playlist_maker.util.State
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -35,9 +37,11 @@ class PlaylistEditorFragment : Fragment() {
     private val viewModel by viewModel<PlaylistEditorViewModel>()
     private val playlistArgs by navArgs<PlaylistEditorFragmentArgs>()
     private var isCoverSet: Boolean = false
+    private var isCoverUpdated: Boolean = false
     private var isTextSet: Boolean = false
     private var _imageUri: Uri? = null
     private val imageUri get() = _imageUri!!
+    private var playlist: Playlist? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,27 +63,27 @@ class PlaylistEditorFragment : Fragment() {
             }
         })
 
-        val playlist = playlistArgs.playlist
+        playlist = playlistArgs.playlist
+        viewModel.checkPlaylist(playlist)
 
-        setFragmentElements()
+        setPlaylistEditorFragmentObservers()
         setBinding()
 
         if (playlist != null) {
-            binding.etPlaylistName.setText(playlist.playlistName)
-            binding.etPlaylistDescription.setText(playlist.playlistDescription)
-            if (playlist.playlistCoverPath != "null") {
+            binding.etPlaylistName.setText(playlist!!.playlistName)
+            binding.etPlaylistDescription.setText(playlist!!.playlistDescription)
+            if (playlist!!.playlistCoverPath != "null") {
                 Glide.with(this)
-                    .load(playlist.playlistCoverPath)
+                    .load(playlist!!.playlistCoverPath)
                     .transform(
                         CenterCrop(),
                         RoundedCorners(viewModel.getRoundedCorners(PLAYER_IMAGE_RADIUS))
                     )
                     .placeholder(R.drawable.img_placeholder_audio_player)
                     .into(binding.imgPlaceholder)
+                isCoverSet = true
+                isCoverUpdated = false
             }
-            binding.btnCreatePlaylist.text = "Сохранить"
-            binding.toolbar.title = "Редактировать"
-            checkTextIsNotEmpty()
         }
 
     }
@@ -90,8 +94,9 @@ class PlaylistEditorFragment : Fragment() {
                 loadTrackImage(uri)
                 _imageUri = uri
                 isCoverSet = true
+                isCoverUpdated = true
             } else {
-                isCoverSet = false
+                isCoverUpdated = false
             }
         }
         binding.apply {
@@ -100,9 +105,6 @@ class PlaylistEditorFragment : Fragment() {
             }
             imgPlaceholder.setOnClickListener {
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
-            btnCreatePlaylist.setOnClickListener {
-                savePlaylist(isCoverSet)
             }
             etPlaylistName.setOnFocusChangeListener { _, hasFocus ->
                 checkOnFocus(
@@ -154,6 +156,31 @@ class PlaylistEditorFragment : Fragment() {
         }
     }
 
+    private fun setPlaylistEditorFragmentObservers() {
+        viewModel.getPlaylistEditorState().observe(viewLifecycleOwner) { state ->
+            handlePlaylistEditorState(state)
+        }
+    }
+
+    private fun handlePlaylistEditorState(state: State.PlaylistEditorState) {
+        when (state) {
+            State.PlaylistEditorState.EDITOR -> {
+                binding.btnCreatePlaylist.text = "Сохранить"
+                binding.toolbar.title = "Редактировать"
+                checkTextIsNotEmpty()
+                binding.btnCreatePlaylist.setOnClickListener {
+                    updatePlaylist()
+                }
+            }
+            State.PlaylistEditorState.CREATOR -> {
+                setFragmentElements()
+                binding.btnCreatePlaylist.setOnClickListener {
+                    savePlaylist()
+                }
+            }
+        }
+    }
+
     private fun loadTrackImage(uri: Uri) {
         Glide.with(this)
             .load(uri)
@@ -173,24 +200,30 @@ class PlaylistEditorFragment : Fragment() {
         }
     }
 
-    private fun savePlaylist(isCoverSet: Boolean) {
+    private fun savePlaylist() {
         val playListName = binding.etPlaylistName.text.toString()
         val playListDescription = binding.etPlaylistDescription.text.toString()
         val toastMessage = "Плейлист \"$playListName\" создан"
-        if (isCoverSet) {
-            viewModel.saveImageToPrivateStorage(imageUri)
-            viewModel.createPlaylist(
-                playlistName = playListName,
-                playlistDescription = playListDescription
-            )
-        } else {
-            viewModel.createPlaylist(
-                playlistName = playListName,
-                playlistDescription = playListDescription
-            )
-        }
+        if (isCoverSet) { viewModel.saveImageToPrivateStorage(imageUri) }
+        viewModel.createPlaylist(
+            playlistName = playListName,
+            playlistDescription = playListDescription
+        )
         findNavController().navigateUp()
         Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show()
+    }
+
+    private fun updatePlaylist() {
+        val playListName = binding.etPlaylistName.text.toString()
+        val playListDescription = binding.etPlaylistDescription.text.toString()
+        if (isCoverSet && isCoverUpdated) viewModel.saveImageToPrivateStorage(imageUri)
+        viewModel.updatePlaylist(
+            playlist = playlist!!,
+            playlistName = playListName,
+            playlistDescription = playListDescription,
+            isCoverUpdated = isCoverUpdated
+        )
+        findNavController().navigateUp()
     }
 
     private fun showCancelDialog() {
