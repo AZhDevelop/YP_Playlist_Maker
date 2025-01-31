@@ -1,5 +1,7 @@
 package com.example.yp_playlist_maker.playlist.ui
 
+import android.animation.ArgbEvaluator
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -134,6 +137,12 @@ class PlaylistFragment: Fragment() {
                         binding.icMenuVert.isEnabled = true
                     }
                 }
+                val startColor = ContextCompat.getColor(requireContext(), R.color.main_background)
+                val endColor = TRANSPARENT_BACKGROUND
+                val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
+                val blendedColor = ArgbEvaluator().evaluate(normalizedOffset, startColor, endColor) as Int
+                binding.constraintPlaylist.setBackgroundColor(blendedColor)
+                viewmodel.setBackgroundColor(blendedColor)
             }
         })
 
@@ -247,5 +256,9 @@ class PlaylistFragment: Fragment() {
         _playlist = null
         _bottomSheetBehavior = null
         _bottomSheetContainer = null
+    }
+
+    companion object {
+        private val TRANSPARENT_BACKGROUND = Color.argb(128, 26, 27, 34)
     }
 }

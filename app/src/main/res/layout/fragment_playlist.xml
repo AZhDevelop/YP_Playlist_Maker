@@ -9,6 +9,7 @@
     tools:context="com.example.yp_playlist_maker.playlist.ui.PlaylistFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_playlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/yp_light_gray">
