@@ -1,7 +1,6 @@
 package com.example.yp_playlist_maker.playlist.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,6 +106,11 @@ class PlaylistFragment: Fragment() {
 
         binding.menuDeletePlaylist.setOnClickListener {
             showDeletePlaylistDialog(playlist)
+        }
+
+        binding.menuEditPlaylist.setOnClickListener {
+            val action = PlaylistFragmentDirections.actionPlaylistFragmentToPlaylistFragmentEditor(playlist)
+            findNavController().navigate(action)
         }
 
         menuBottomSheetBehavior.addBottomSheetCallback(object :

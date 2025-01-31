@@ -2,6 +2,7 @@ package com.example.yp_playlist_maker.playlist_editor.ui
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -31,6 +33,7 @@ class PlaylistEditorFragment : Fragment() {
     private var _binding: FragmentPlaylistEditorBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<PlaylistEditorViewModel>()
+    private val playlistArgs by navArgs<PlaylistEditorFragmentArgs>()
     private var isCoverSet: Boolean = false
     private var isTextSet: Boolean = false
     private var _imageUri: Uri? = null
@@ -56,8 +59,28 @@ class PlaylistEditorFragment : Fragment() {
             }
         })
 
+        val playlist = playlistArgs.playlist
+
         setFragmentElements()
         setBinding()
+
+        if (playlist != null) {
+            binding.etPlaylistName.setText(playlist.playlistName)
+            binding.etPlaylistDescription.setText(playlist.playlistDescription)
+            if (playlist.playlistCoverPath != "null") {
+                Glide.with(this)
+                    .load(playlist.playlistCoverPath)
+                    .transform(
+                        CenterCrop(),
+                        RoundedCorners(viewModel.getRoundedCorners(PLAYER_IMAGE_RADIUS))
+                    )
+                    .placeholder(R.drawable.img_placeholder_audio_player)
+                    .into(binding.imgPlaceholder)
+            }
+            binding.btnCreatePlaylist.text = "Сохранить"
+            binding.toolbar.title = "Редактировать"
+            checkTextIsNotEmpty()
+        }
 
     }
 
@@ -195,6 +218,19 @@ class PlaylistEditorFragment : Fragment() {
             } else {
                 textView.setTextColor(requireContext().getColor(R.color.yp_gray))
             }
+        }
+    }
+
+    private fun checkTextIsNotEmpty() {
+        if (binding.etPlaylistName.text.isNotEmpty()) {
+            binding.etPlaylistName.hint = EMPTY_STRING
+            binding.tvPlaylistName.visible()
+            binding.tvPlaylistName.setTextColor(requireContext().getColor(R.color.yp_gray))
+        }
+        if (binding.etPlaylistDescription.text.isNotEmpty()) {
+            binding.etPlaylistDescription.hint = EMPTY_STRING
+            binding.tvPlaylistDescription.visible()
+            binding.tvPlaylistDescription.setTextColor(requireContext().getColor(R.color.yp_gray))
         }
     }
 

@@ -88,7 +88,8 @@ class AudioPlayerFragment : Fragment() {
         }
 
         binding.btnBottomSheet.setOnClickListener {
-            findNavController().navigate(R.id.action_audioPlayerFragment_to_playlistFragmentEditor)
+            val action = AudioPlayerFragmentDirections.actionAudioPlayerFragmentToPlaylistFragmentEditor(null)
+            findNavController().navigate(action)
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object :
