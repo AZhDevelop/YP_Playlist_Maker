@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -233,7 +234,7 @@ class PlaylistEditorFragment : Fragment() {
     }
 
     private fun showCancelDialog() {
-        MaterialAlertDialogBuilder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.cancel_dialog_title))
             .setMessage(getString(R.string.cancel_dialog_message))
             .setNeutralButton(getString(R.string.cancel_dialog_neutral_button)) { _, _ ->
@@ -242,6 +243,9 @@ class PlaylistEditorFragment : Fragment() {
                 findNavController().navigateUp()
             }
             .show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(requireContext().getColor(R.color.yp_blue))
     }
 
     private fun checkOnFocus(editText: EditText, textView: TextView, hasFocus: Boolean) {
