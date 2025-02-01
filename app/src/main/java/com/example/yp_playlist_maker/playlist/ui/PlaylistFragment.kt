@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
+import com.example.yp_playlist_maker.app.invisible
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
@@ -155,9 +156,14 @@ class PlaylistFragment: Fragment() {
     private fun fillPlaylistData(playlist: Playlist) {
         binding.apply {
             tvPlaylistName.text = playlist.playlistName
-            tvPlaylistDescription.text = playlist.playlistDescription
+            if (playlist.playlistDescription == "") {
+                tvPlaylistDescription.gone()
+            } else {
+                tvPlaylistDescription.visible()
+                tvPlaylistDescription.text = playlist.playlistDescription
+            }
             tvPlaylistDuration.text = viewmodel.convertTime(playlist.playlistDuration)
-            tvPlaylistTracks.text = playlist.playlistSize
+            tvPlaylistTracks.text = Converter.convertPlaylistSizeValue(playlist.playlistSize)
             loadPlaylistCover(playlist.playlistCoverPath)
 
             menuPlaylistName.text = playlist.playlistName
@@ -184,6 +190,7 @@ class PlaylistFragment: Fragment() {
     private fun setUpPlaylistObservers() {
         viewmodel.getPlaylistData().observe(viewLifecycleOwner) { playlistData ->
             fillPlaylistData(playlistData)
+            setBottomSheetHeight()
             _playlist = playlistData
         }
 
@@ -251,6 +258,7 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun setBottomSheetHeight() {
+        binding.bottomSheet.invisible()
         val viewBottomSheetHeight = binding.viewBottomSheetHeight
         viewBottomSheetHeight.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -268,6 +276,7 @@ class PlaylistFragment: Fragment() {
                 }
             }
         })
+        binding.bottomSheet.visible()
     }
 
     override fun onResume() {
