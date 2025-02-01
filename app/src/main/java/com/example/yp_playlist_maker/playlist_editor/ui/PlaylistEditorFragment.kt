@@ -2,7 +2,6 @@ package com.example.yp_playlist_maker.playlist_editor.ui
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -237,7 +236,8 @@ class PlaylistEditorFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.cancel_dialog_title))
             .setMessage(getString(R.string.cancel_dialog_message))
-            .setNeutralButton(getString(R.string.cancel_dialog_neutral_button)) { _, _ -> }
+            .setNeutralButton(getString(R.string.cancel_dialog_neutral_button)) { _, _ ->
+            }
             .setPositiveButton(getString(R.string.cancel_dialog_positive_button)) { _, _ ->
                 findNavController().navigateUp()
             }

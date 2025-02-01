@@ -1,7 +1,5 @@
 package com.example.yp_playlist_maker.playlist.ui
 
-import android.animation.ArgbEvaluator
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -121,10 +118,19 @@ class PlaylistFragment: Fragment() {
         menuBottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.gone()
+                    }
+                    else -> {
+                        binding.overlay.visible()
+                    }
+                }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
+                binding.overlay.alpha = normalizedOffset
                 when (slideOffset) {
                     0.0F -> {
                         binding.bottomSheet.gone()
@@ -137,12 +143,6 @@ class PlaylistFragment: Fragment() {
                         binding.icMenuVert.isEnabled = true
                     }
                 }
-                val startColor = ContextCompat.getColor(requireContext(), R.color.main_background)
-                val endColor = TRANSPARENT_BACKGROUND
-                val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
-                val blendedColor = ArgbEvaluator().evaluate(normalizedOffset, startColor, endColor) as Int
-                binding.constraintPlaylist.setBackgroundColor(blendedColor)
-                viewmodel.setBackgroundColor(blendedColor)
             }
         })
 
@@ -222,7 +222,8 @@ class PlaylistFragment: Fragment() {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.delete_dialog_title))
             .setMessage(getString(R.string.delete_dialog_message))
-            .setNegativeButton(getString(R.string.delete_dialog_negative_button)) { _, _ -> }
+            .setNegativeButton(getString(R.string.delete_dialog_negative_button)) { _, _ ->
+            }
             .setPositiveButton(getString(R.string.delete_dialog_positive_button)) { _, _ ->
                 viewmodel.deleteTrackFromPlaylist(track, playlist)
             }
@@ -235,7 +236,8 @@ class PlaylistFragment: Fragment() {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.delete_playlist_title))
             .setMessage(getString(R.string.delete_playlist_message))
-            .setNegativeButton(getString(R.string.delete_playlist_negative_button)) { _, _ -> }
+            .setNegativeButton(getString(R.string.delete_playlist_negative_button)) { _, _ ->
+            }
             .setPositiveButton(getString(R.string.delete_playlist_positive_button)) { _, _ ->
                 viewmodel.deletePlaylist(playlist)
             }
@@ -256,9 +258,5 @@ class PlaylistFragment: Fragment() {
         _playlist = null
         _bottomSheetBehavior = null
         _bottomSheetContainer = null
-    }
-
-    companion object {
-        private val TRANSPARENT_BACKGROUND = Color.argb(128, 26, 27, 34)
     }
 }

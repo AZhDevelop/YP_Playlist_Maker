@@ -46,18 +46,11 @@ class AudioPlayerViewModel(
     private val _isFavourite = MutableLiveData<Boolean>()
     val isFavourite: LiveData<Boolean> get() = _isFavourite
 
-    private val _backgroundColor = MutableLiveData<Int>()
-    val backgroundColor: LiveData<Int> get() = _backgroundColor
-
     private val _bottomSheetStateValue = MutableLiveData<Int>()
     val bottomSheetStateValue: LiveData<Int> get() = _bottomSheetStateValue
 
     private val addToPlaylistState = MutableLiveData<State.AddToPlaylistState>()
     fun getAddToPlaylistState(): LiveData<State.AddToPlaylistState> = addToPlaylistState
-
-    fun setBackgroundColor(color: Int) {
-        _backgroundColor.value = color
-    }
 
     fun setBottomSheetStateValue(state: Int) {
         if (state == BottomSheetBehavior.STATE_HIDDEN || state == BottomSheetBehavior.STATE_EXPANDED) {
@@ -156,7 +149,6 @@ class AudioPlayerViewModel(
     }
 
     init {
-        _backgroundColor.value = Color.TRANSPARENT
         currentTime.value = DEFAULT_TIME
         checkPlaylistList()
     }

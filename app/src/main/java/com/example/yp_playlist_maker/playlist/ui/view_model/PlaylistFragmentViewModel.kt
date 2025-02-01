@@ -41,13 +41,6 @@ class PlaylistFragmentViewModel(
     private val deletePlaylistStatus = MutableLiveData(false)
     fun getDeletePlaylistStatus(): LiveData<Boolean> = deletePlaylistStatus
 
-    private val _backgroundColor = MutableLiveData<Int>()
-    val backgroundColor: LiveData<Int> get() = _backgroundColor
-
-    fun setBackgroundColor(color: Int) {
-        _backgroundColor.value = color
-    }
-
     fun updatePlaylistData(playlist: Playlist) {
         viewModelScope.launch {
             playlistsInteractor
