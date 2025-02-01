@@ -178,6 +178,10 @@ class PlaylistFragmentViewModel(
         return converter.convertMillisToMinutes(time)
     }
 
+    fun convertPlaylistSizeValue(value: String): String {
+        return converter.convertPlaylistSizeValue(value)
+    }
+
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()

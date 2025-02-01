@@ -1,7 +1,6 @@
 package com.example.yp_playlist_maker.playlist.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
 import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistFragmentViewModel
 import com.example.yp_playlist_maker.search.domain.models.Track
 import com.example.yp_playlist_maker.search.ui.TrackAdapter
-import com.example.yp_playlist_maker.util.Converter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -163,11 +161,11 @@ class PlaylistFragment: Fragment() {
                 tvPlaylistDescription.text = playlist.playlistDescription
             }
             tvPlaylistDuration.text = viewmodel.convertTime(playlist.playlistDuration)
-            tvPlaylistTracks.text = Converter.convertPlaylistSizeValue(playlist.playlistSize)
+            tvPlaylistTracks.text = viewmodel.convertPlaylistSizeValue(playlist.playlistSize)
             loadPlaylistCover(playlist.playlistCoverPath)
 
             menuPlaylistName.text = playlist.playlistName
-            menuPlaylistSize.text = Converter.convertPlaylistSizeValue(playlist.playlistSize)
+            menuPlaylistSize.text = viewmodel.convertPlaylistSizeValue(playlist.playlistSize)
         }
     }
 
