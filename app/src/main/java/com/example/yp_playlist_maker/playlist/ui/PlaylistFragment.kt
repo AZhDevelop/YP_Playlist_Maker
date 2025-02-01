@@ -1,9 +1,11 @@
 package com.example.yp_playlist_maker.playlist.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -60,6 +62,8 @@ class PlaylistFragment: Fragment() {
         _bottomSheetContainer = binding.bottomSheet
         _bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        setBottomSheetHeight()
 
         _menuBottomSheetContainer = binding.bottomSheetMenu
         _menuBottomSheetBehavior = BottomSheetBehavior.from(menuBottomSheetContainer)
@@ -244,6 +248,26 @@ class PlaylistFragment: Fragment() {
             .show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
+    }
+
+    private fun setBottomSheetHeight() {
+        val viewBottomSheetHeight = binding.viewBottomSheetHeight
+        viewBottomSheetHeight.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+
+                viewBottomSheetHeight.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val requiredHeight = 266
+                val marginHeight = 24
+                val playlistFragmentLayoutHeight = binding.fragmentPlaylist.height
+                val scrollViewHeight = binding.scrollView.height
+                val currentHeight = viewBottomSheetHeight.height + playlistFragmentLayoutHeight - scrollViewHeight - marginHeight
+                if (currentHeight < requiredHeight) {
+                    bottomSheetBehavior.peekHeight = requiredHeight
+                } else {
+                    bottomSheetBehavior.peekHeight = currentHeight
+                }
+            }
+        })
     }
 
     override fun onResume() {
