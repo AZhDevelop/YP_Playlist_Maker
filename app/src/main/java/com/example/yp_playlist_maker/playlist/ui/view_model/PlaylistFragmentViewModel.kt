@@ -129,7 +129,7 @@ class PlaylistFragmentViewModel(
         } else {
             val playlistName = "Название плейлиста: ${playlist.playlistName}\n"
             val playlistDescription = "Описание: ${playlist.playlistDescription.ifEmpty { "Нет описания" }}\n"
-            val playlistSize = "Количество треков: ${convertTime(playlist.playlistSize)}\n"
+            val playlistSize = "Количество треков: ${converter.convertPlaylistSizeValue(playlist.playlistSize)}\n"
             var message = playlistName + playlistDescription + playlistSize
             var counter = 1
             setSharedMessageJob = viewModelScope.launch {
@@ -175,7 +175,7 @@ class PlaylistFragmentViewModel(
     }
 
     fun convertTime(time: String): String {
-        return converter.convertMillis(time)
+        return converter.convertMillisToMinutes(time)
     }
 
     override fun onCleared() {
