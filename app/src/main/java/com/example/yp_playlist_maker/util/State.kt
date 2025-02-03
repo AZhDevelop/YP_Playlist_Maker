@@ -35,4 +35,9 @@ object State {
         SUCCESS,
         ERROR
     }
+
+    enum class PlaylistEditorState {
+        CREATOR,
+        EDITOR
+    }
 }

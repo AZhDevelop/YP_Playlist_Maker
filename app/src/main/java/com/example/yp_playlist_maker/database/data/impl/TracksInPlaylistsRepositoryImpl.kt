@@ -27,6 +27,14 @@ class TracksInPlaylistsRepositoryImpl(
         emit(playlistsList)
     }
 
+    override suspend fun deleteTrackFromPlaylist(tracksInPlaylists: TracksInPlaylists) {
+        tracksInPlaylistsDao.deleteTrackFromPlaylist(converter.convertToTracksInPlaylistsEntity(tracksInPlaylists))
+    }
+
+    override suspend fun getElementId(playlistId: Int, trackId: String): Int {
+        return tracksInPlaylistsDao.getElementId(playlistId, trackId)
+    }
+
     private fun convertFromTracksInPlaylistsEntity(tracksInPlaylistsEntity: List<TracksInPlaylistsEntity>): List<TracksInPlaylists> {
         return tracksInPlaylistsEntity.map { tracksInPlaylists ->
             converter.convertToTracksInPlaylist(tracksInPlaylists)

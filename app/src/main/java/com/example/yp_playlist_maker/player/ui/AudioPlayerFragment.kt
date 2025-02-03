@@ -1,14 +1,11 @@
 package com.example.yp_playlist_maker.player.ui
 
-import android.animation.ArgbEvaluator
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -67,11 +64,6 @@ class AudioPlayerFragment : Fragment() {
         _bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
         bottomSheetBehavior.state = viewModel.bottomSheetStateValue.value ?: BottomSheetBehavior.STATE_HIDDEN
 
-        if (viewModel.backgroundColor.value == Color.TRANSPARENT) {
-            val defaultColor = ContextCompat.getColor(requireContext(), R.color.main_background)
-            viewModel.setBackgroundColor(defaultColor)
-        }
-
         setRecyclerView()
         setupPlayerObservers()
         viewModel.checkPlaylistList()
@@ -88,22 +80,27 @@ class AudioPlayerFragment : Fragment() {
         }
 
         binding.btnBottomSheet.setOnClickListener {
-            findNavController().navigate(R.id.action_audioPlayerFragment_to_playlistFragment)
+            val action = AudioPlayerFragmentDirections.actionAudioPlayerFragmentToPlaylistFragmentEditor(null)
+            findNavController().navigate(action)
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 viewModel.setBottomSheetStateValue(newState)
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.gone()
+                    }
+                    else -> {
+                        binding.overlay.visible()
+                    }
+                }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                val startColor = ContextCompat.getColor(requireContext(), R.color.main_background)
-                val endColor = TRANSPARENT_BACKGROUND
                 val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
-                val blendedColor = ArgbEvaluator().evaluate(normalizedOffset, startColor, endColor) as Int
-                binding.audioplayerFragment.setBackgroundColor(blendedColor)
-                viewModel.setBackgroundColor(blendedColor)
+                binding.overlay.alpha = normalizedOffset
             }
         })
 
@@ -130,7 +127,7 @@ class AudioPlayerFragment : Fragment() {
         binding.apply {
             trackName.text = track.trackName
             artistName.text = track.artistName
-            durationValue.text = track.trackTimeMillis
+            durationValue.text = viewModel.convertTime(track.trackTimeMillis)
             if (track.collectionName.isEmpty()) {
                 albumText.gone()
                 albumValue.gone()
@@ -168,10 +165,6 @@ class AudioPlayerFragment : Fragment() {
 
         viewModel.isFavourite.observe(viewLifecycleOwner) { isFavourite ->
             handleIsFavourite(isFavourite)
-        }
-
-        viewModel.backgroundColor.observe(viewLifecycleOwner) { color ->
-            binding.audioplayerFragment.setBackgroundColor(color)
         }
 
         viewModel.getPlaylistList().observe(viewLifecycleOwner) { playlistsList ->
@@ -289,7 +282,6 @@ class AudioPlayerFragment : Fragment() {
         private const val PLAYER_IMAGE_RADIUS: Int = 8
         private const val ALPHA_25 = 0.25F
         private const val ALPHA_100 = 1F
-        private val TRANSPARENT_BACKGROUND = Color.argb(128, 26, 27, 34)
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.player.ui.view_model
 
 import android.graphics.Color
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,7 +27,8 @@ class AudioPlayerViewModel(
     private val playTrackService: PlayTrackInteractor,
     private val favouriteTracksInteractor: FavouriteTracksInteractor,
     private val playlistsInteractor: PlaylistsInteractor,
-    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor
+    private val tracksInPlaylistsInteractor: TracksInPlaylistsInteractor,
+    private val converter: Converter
 ) : ViewModel() {
 
     private var trackTime: String = EMPTY_STRING
@@ -44,18 +46,11 @@ class AudioPlayerViewModel(
     private val _isFavourite = MutableLiveData<Boolean>()
     val isFavourite: LiveData<Boolean> get() = _isFavourite
 
-    private val _backgroundColor = MutableLiveData<Int>()
-    val backgroundColor: LiveData<Int> get() = _backgroundColor
-
     private val _bottomSheetStateValue = MutableLiveData<Int>()
     val bottomSheetStateValue: LiveData<Int> get() = _bottomSheetStateValue
 
     private val addToPlaylistState = MutableLiveData<State.AddToPlaylistState>()
     fun getAddToPlaylistState(): LiveData<State.AddToPlaylistState> = addToPlaylistState
-
-    fun setBackgroundColor(color: Int) {
-        _backgroundColor.value = color
-    }
 
     fun setBottomSheetStateValue(state: Int) {
         if (state == BottomSheetBehavior.STATE_HIDDEN || state == BottomSheetBehavior.STATE_EXPANDED) {
@@ -77,8 +72,8 @@ class AudioPlayerViewModel(
                     trackId = track.trackId,
                     trackName = track.trackName,
                     artistName = track.artistName,
-                    trackTimeMillis = Converter.convertMillis(track.trackTimeMillis),
-                    artworkUrl100 = Converter.convertUrl(track.artworkUrl100),
+                    trackTimeMillis = track.trackTimeMillis,
+                    artworkUrl100 = converter.convertUrl(track.artworkUrl100),
                     releaseDate = track.releaseDate
                         .replaceAfter(DASH, EMPTY_STRING)
                         .replace(DASH, EMPTY_STRING),
@@ -154,7 +149,6 @@ class AudioPlayerViewModel(
     }
 
     init {
-        _backgroundColor.value = Color.TRANSPARENT
         currentTime.value = DEFAULT_TIME
         checkPlaylistList()
     }
@@ -208,7 +202,7 @@ class AudioPlayerViewModel(
     }
 
     fun getRoundedCorners(playerImageRadius: Int): Int {
-        return Converter.dpToPx(playerImageRadius)
+        return converter.dpToPx(playerImageRadius)
     }
 
     fun checkPlaylistList() {
@@ -240,20 +234,27 @@ class AudioPlayerViewModel(
             } else {
                 val trackToPlaylist = setTrackToPlaylist(playlist, track)
                 var playlistSize = playlistsInteractor.getPlaylistSize(playlist.playlistId).toInt()
+                var playlistDuration = playlistsInteractor.getPlaylistDuration(playlist.playlistId).toInt()
                 tracksInPlaylistsInteractor.insertTrackToPlaylist(trackToPlaylist)
                 playlistSize += 1
-                playlistsInteractor.updatePlaylistSize(
+                playlistDuration += track.trackTimeMillis.toInt()
+                playlistsInteractor.updatePlaylist(
                     Playlist(
                         playlistId = playlist.playlistId,
                         playlistName = playlist.playlistName,
                         playlistDescription = playlist.playlistDescription,
                         playlistCoverPath = playlist.playlistCoverPath,
-                        playlistSize = playlistSize.toString()
+                        playlistSize = playlistSize.toString(),
+                        playlistDuration = playlistDuration.toString()
                     )
                 )
                 addToPlaylistState.value = State.AddToPlaylistState.SUCCESS
             }
         }
+    }
+
+    fun convertTime(time: String): String {
+        return converter.convertMillis(time)
     }
 
     override fun onCleared() {

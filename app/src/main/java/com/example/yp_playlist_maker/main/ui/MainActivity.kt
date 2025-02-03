@@ -24,10 +24,12 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.playlistFragment || destination.id == R.id.audioPlayerFragment) {
-                binding.bottomNavigationView.gone()
-            } else {
-                binding.bottomNavigationView.visible()
+
+            when (destination.id) {
+                R.id.playlistFragment -> binding.bottomNavigationView.gone()
+                R.id.playlistFragmentEditor -> binding.bottomNavigationView.gone()
+                R.id.audioPlayerFragment -> binding.bottomNavigationView.gone()
+                else -> binding.bottomNavigationView.visible()
             }
         }
 

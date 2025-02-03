@@ -9,6 +9,7 @@ import com.example.yp_playlist_maker.search.domain.models.Track
 class TrackAdapter : RecyclerView.Adapter<TrackViewHolder>() {
 
     var onTrackClick: ((Track) -> Unit)? = null
+    var onLongTrackClick: ((Track) -> Unit)? = null
     var data: List<Track> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
@@ -24,6 +25,10 @@ class TrackAdapter : RecyclerView.Adapter<TrackViewHolder>() {
         holder.bind(data[position])
         holder.itemView.setOnClickListener {
             onTrackClick?.invoke(data[position])
+        }
+        holder.itemView.setOnLongClickListener {
+            onLongTrackClick?.invoke(data[position])
+            false
         }
     }
 }

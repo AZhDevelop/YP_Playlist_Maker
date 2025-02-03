@@ -1,6 +1,7 @@
 package com.example.yp_playlist_maker.database.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -17,8 +18,17 @@ interface PlaylistDao {
     suspend fun getPlaylistList(): List<PlaylistEntity>
 
     @Update
-    suspend fun updatePlaylistSize(playlist: PlaylistEntity)
+    suspend fun updatePlaylist(playlist: PlaylistEntity)
 
     @Query("SELECT playlistSize FROM playlist_table WHERE playlistId = :playlistId")
     suspend fun getPlaylistSize(playlistId: Int): String
+
+    @Query("SELECT playlistDuration FROM playlist_table WHERE playlistId = :playlistId")
+    suspend fun getPlaylistDuration(playlistId: Int): String
+
+    @Delete
+    suspend fun deletePlaylist(playlist: PlaylistEntity)
+
+    @Query("SELECT * FROM playlist_table WHERE playlistId = :playlistId")
+    suspend fun getPlaylistData(playlistId: Int): List<PlaylistEntity>
 }

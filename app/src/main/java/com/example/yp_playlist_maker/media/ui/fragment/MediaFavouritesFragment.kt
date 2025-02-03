@@ -57,7 +57,7 @@ class MediaFavouritesFragment: Fragment() {
 
         adapter.onTrackClick = {
             if (clickDebounce()) {
-                val action = MediaFragmentDirections.actionMediaFragmentToAudioPlayerFragment2(it)
+                val action = MediaFragmentDirections.actionMediaFragmentToAudioPlayerFragment(it)
                 findNavController().navigate(action)
             }
         }

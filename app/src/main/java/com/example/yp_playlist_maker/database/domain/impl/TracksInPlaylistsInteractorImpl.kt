@@ -20,4 +20,12 @@ class TracksInPlaylistsInteractorImpl(
     override fun checkTrackInPlaylist(trackId: String): Flow<List<Int>> {
         return repository.checkTrackInPlaylist(trackId)
     }
+
+    override suspend fun deleteTrackFromPlaylist(tracksInPlaylists: TracksInPlaylists) {
+        repository.deleteTrackFromPlaylist(tracksInPlaylists)
+    }
+
+    override suspend fun getElementId(playlistId: Int, trackId: String): Int {
+        return repository.getElementId(playlistId, trackId)
+    }
 }

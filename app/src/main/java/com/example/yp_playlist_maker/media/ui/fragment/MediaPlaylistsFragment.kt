@@ -14,6 +14,7 @@ import com.example.yp_playlist_maker.app.gone
 import com.example.yp_playlist_maker.app.visible
 import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.databinding.FragmentMediaPlaylistsBinding
+import com.example.yp_playlist_maker.media.ui.MediaFragmentDirections
 import com.example.yp_playlist_maker.media.ui.PlaylistAdapter
 import com.example.yp_playlist_maker.media.ui.view_model.MediaPlaylistsFragmentViewModel
 import com.example.yp_playlist_maker.search.ui.TrackAdapter
@@ -50,7 +51,13 @@ class MediaPlaylistsFragment : Fragment() {
         viewModel.checkPlaylistList()
 
         binding.btnPlaceholder.setOnClickListener {
-            findNavController().navigate(R.id.action_mediaFragment_to_playlistFragment)
+            val action = MediaFragmentDirections.actionMediaFragmentToPlaylistFragmentEditor(null)
+            findNavController().navigate(action)
+        }
+
+        adapter.onPlaylistClick = {
+            val action = MediaFragmentDirections.actionMediaFragmentToPlaylistFragment(it)
+            findNavController().navigate(action)
         }
 
     }

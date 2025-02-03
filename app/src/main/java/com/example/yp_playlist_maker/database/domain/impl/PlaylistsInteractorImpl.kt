@@ -17,12 +17,24 @@ class PlaylistsInteractorImpl(
         return repository.getPlaylistList()
     }
 
-    override suspend fun updatePlaylistSize(playlist: Playlist) {
-        repository.updatePlaylistSize(playlist)
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        repository.updatePlaylist(playlist)
+    }
+
+    override suspend fun getPlaylistDuration(playlistId: Int): String {
+        return repository.getPlaylistDuration(playlistId)
     }
 
     override suspend fun getPlaylistSize(playlistId: Int): String {
         return repository.getPlaylistSize(playlistId)
+    }
+
+    override fun getPlaylistData(playlistId: Int): Flow<List<Playlist>> {
+        return repository.getPlaylistData(playlistId)
+    }
+
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        repository.deletePlaylist(playlist)
     }
 
 }

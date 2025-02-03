@@ -1,42 +1,50 @@
 package com.example.yp_playlist_maker.playlist.ui
 
-import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
+import android.view.ViewTreeObserver
+import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.yp_playlist_maker.R
 import com.example.yp_playlist_maker.app.gone
+import com.example.yp_playlist_maker.app.invisible
 import com.example.yp_playlist_maker.app.visible
+import com.example.yp_playlist_maker.database.domain.models.Playlist
 import com.example.yp_playlist_maker.databinding.FragmentPlaylistBinding
-import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistViewModel
+import com.example.yp_playlist_maker.playlist.ui.view_model.PlaylistFragmentViewModel
+import com.example.yp_playlist_maker.search.domain.models.Track
+import com.example.yp_playlist_maker.search.ui.TrackAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistFragment : Fragment() {
+class PlaylistFragment: Fragment() {
 
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModel<PlaylistViewModel>()
-    private var isCoverSet: Boolean = false
-    private var isTextSet: Boolean = false
-    private var _imageUri: Uri? = null
-    private val imageUri get() = _imageUri!!
+    private val viewmodel by viewModel<PlaylistFragmentViewModel>()
+    private val playlistArgs by navArgs<PlaylistFragmentArgs>()
+    private var _bottomSheetContainer: LinearLayout? = null
+    private val bottomSheetContainer get() = _bottomSheetContainer!!
+    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private val bottomSheetBehavior get() = _bottomSheetBehavior!!
+    private var _menuBottomSheetContainer: LinearLayout? = null
+    private val menuBottomSheetContainer get() = _menuBottomSheetContainer!!
+    private var _menuBottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private val menuBottomSheetBehavior get() = _menuBottomSheetBehavior!!
+    private var _adapter: TrackAdapter? = null
+    private val adapter get() = _adapter!!
+    private var sharedMessage: String = ""
+    private var _playlist: Playlist? = null
+    private val playlist get() = _playlist!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,164 +58,236 @@ class PlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity()
-            .onBackPressedDispatcher
-            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                checkPlaylistCreation()
+        _bottomSheetContainer = binding.bottomSheet
+        _bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        setBottomSheetHeight()
+
+        _menuBottomSheetContainer = binding.bottomSheetMenu
+        _menuBottomSheetBehavior = BottomSheetBehavior.from(menuBottomSheetContainer)
+        menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        _playlist = playlistArgs.playlist
+        viewmodel.setPlaylistData(playlist)
+
+        setUpPlaylistObservers()
+        setRecyclerView()
+        viewmodel.setTrackListMessage(playlist)
+        viewmodel.setTracksInPlaylist(playlist.playlistId)
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        adapter.onTrackClick = {
+            val action = PlaylistFragmentDirections.actionPlaylistFragmentToAudioPlayerFragment(it)
+            findNavController().navigate(action)
+        }
+
+        adapter.onLongTrackClick = {
+            showDeleteTrackDialog(it, playlist)
+        }
+
+        binding.icShare.setOnClickListener {
+            if (sharedMessage == "0") {
+                Toast.makeText(requireContext(), getString(R.string.share_error), Toast.LENGTH_SHORT).show()
+            } else {
+                viewmodel.sharePlaylistData(requireContext(), sharedMessage)
+            }
+        }
+
+        binding.menuSharePlaylist.setOnClickListener {
+            if (sharedMessage == "0") {
+                Toast.makeText(requireContext(), getString(R.string.share_error), Toast.LENGTH_SHORT).show()
+            } else {
+                viewmodel.sharePlaylistData(requireContext(), sharedMessage)
+            }
+        }
+
+        binding.icMenuVert.setOnClickListener {
+            menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        binding.menuDeletePlaylist.setOnClickListener {
+            showDeletePlaylistDialog(playlist)
+        }
+
+        binding.menuEditPlaylist.setOnClickListener {
+            val action = PlaylistFragmentDirections.actionPlaylistFragmentToPlaylistFragmentEditor(playlist)
+            findNavController().navigate(action)
+        }
+
+        menuBottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.gone()
+                    }
+                    else -> {
+                        binding.overlay.visible()
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                val normalizedOffset = (slideOffset + 1).coerceIn(0f, 1f)
+                binding.overlay.alpha = normalizedOffset
+                when (slideOffset) {
+                    0.0F -> {
+                        binding.bottomSheet.gone()
+                        binding.icShare.isEnabled = false
+                        binding.icMenuVert.isEnabled = false
+                    }
+                    else -> {
+                        binding.bottomSheet.visible()
+                        binding.icShare.isEnabled = true
+                        binding.icMenuVert.isEnabled = true
+                    }
+                }
             }
         })
 
-        setFragmentElements()
-        setBinding()
-
     }
 
-    private fun setBinding() {
-        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            if (uri != null) {
-                loadTrackImage(uri)
-                _imageUri = uri
-                isCoverSet = true
+    private fun fillPlaylistData(playlist: Playlist) {
+        binding.apply {
+            tvPlaylistName.text = playlist.playlistName
+            if (playlist.playlistDescription == "") {
+                tvPlaylistDescription.gone()
             } else {
-                isCoverSet = false
+                tvPlaylistDescription.visible()
+                tvPlaylistDescription.text = playlist.playlistDescription
             }
-        }
-        binding.apply {
-            toolbar.setNavigationOnClickListener {
-                checkPlaylistCreation()
-            }
-            imgPlaceholder.setOnClickListener {
-                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
-            btnCreatePlaylist.setOnClickListener {
-                savePlaylist(isCoverSet)
-            }
-            etPlaylistName.setOnFocusChangeListener { _, hasFocus ->
-                checkOnFocus(
-                    editText = etPlaylistName,
-                    textView = tvPlaylistName,
-                    hasFocus = hasFocus
-                )
-            }
-            etPlaylistDescription.setOnFocusChangeListener { _, hasFocus ->
-                checkOnFocus(
-                    editText = etPlaylistDescription,
-                    textView = tvPlaylistDescription,
-                    hasFocus = hasFocus
-                )
-            }
-            etPlaylistName.addTextChangedListener(
-                onTextChanged = { _, _, _, _ ->
-                    if (etPlaylistName.text.isEmpty()) {
-                        checkButtonIsAvailable()
-                        isTextSet = false
-                    } else {
-                        checkButtonIsAvailable()
-                        isTextSet = true
-                    }
-                }
-            )
+            tvPlaylistDuration.text = viewmodel.convertTime(playlist.playlistDuration)
+            tvPlaylistTracks.text = viewmodel.convertPlaylistSizeValue(playlist.playlistSize)
+            loadPlaylistCover(playlist.playlistCoverPath)
+
+            menuPlaylistName.text = playlist.playlistName
+            menuPlaylistSize.text = viewmodel.convertPlaylistSizeValue(playlist.playlistSize)
         }
     }
 
-    private fun setFragmentElements() {
-        binding.apply {
-            btnCreatePlaylist.isEnabled = false
-            tvPlaylistName.gone()
-            tvPlaylistDescription.gone()
+    private fun loadPlaylistCover(playlistCoverPath: String) {
+        if (playlistCoverPath != "null") {
+            Glide.with(this)
+                .load(playlistCoverPath)
+                .centerCrop()
+                .placeholder(R.drawable.img_placeholder_audio_player)
+                .into(binding.ivPlaylistCover)
+
+            Glide.with(this)
+                .load(playlistCoverPath)
+                .centerCrop()
+                .placeholder(R.drawable.img_placeholder_audio_player)
+                .into(binding.menuPlaylistCover)
         }
     }
 
-    private fun checkButtonIsAvailable() {
-        if (binding.etPlaylistName.text.isNotEmpty()) {
-            binding.btnCreatePlaylist.apply {
-                isEnabled = true
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
-            }
+    private fun setUpPlaylistObservers() {
+        viewmodel.getPlaylistData().observe(viewLifecycleOwner) { playlistData ->
+            fillPlaylistData(playlistData)
+            setBottomSheetHeight()
+            _playlist = playlistData
+        }
+
+        viewmodel.getTracksInPlaylist().observe(viewLifecycleOwner) { tracksInPlaylist ->
+            handleTracksInPlaylist(tracksInPlaylist)
+        }
+
+        viewmodel.getSharedMessage().observe(viewLifecycleOwner) { message ->
+            sharedMessage = message
+        }
+
+        viewmodel.getDeletePlaylistStatus().observe(viewLifecycleOwner) { status ->
+            handleDeletePlaylistStatus(status)
+        }
+    }
+
+    private fun handleDeletePlaylistStatus(status: Boolean) {
+        if (status) findNavController().navigateUp()
+    }
+
+    private fun handleTracksInPlaylist(tracksInPlaylist: List<Track>) {
+        adapter.data = tracksInPlaylist
+        adapter.notifyDataSetChanged()
+        if (tracksInPlaylist.isNotEmpty()) {
+            binding.tvBottomSheet.gone()
+            binding.rvBottomSheet.visible()
         } else {
-            binding.btnCreatePlaylist.apply {
-                isEnabled = false
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.yp_gray))
+            binding.tvBottomSheet.visible()
+            binding.rvBottomSheet.gone()
+        }
+    }
+
+    private fun setRecyclerView() {
+        _adapter = TrackAdapter()
+        binding.rvBottomSheet.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvBottomSheet.adapter = _adapter
+    }
+
+    private fun showDeleteTrackDialog(track: Track, playlist: Playlist) {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.delete_dialog_title))
+            .setMessage(getString(R.string.delete_dialog_message))
+            .setNegativeButton(getString(R.string.delete_dialog_negative_button)) { _, _ ->
             }
-        }
-    }
-
-    private fun loadTrackImage(uri: Uri) {
-        Glide.with(this)
-            .load(uri)
-            .transform(
-                CenterCrop(),
-                RoundedCorners(viewModel.getRoundedCorners(PLAYER_IMAGE_RADIUS))
-            )
-            .placeholder(R.drawable.img_placeholder_audio_player)
-            .into(binding.imgPlaceholder)
-    }
-
-    private fun checkPlaylistCreation() {
-        if (isCoverSet || isTextSet) {
-            showCancelDialog()
-        } else {
-            findNavController().navigateUp()
-        }
-    }
-
-    private fun savePlaylist(isCoverSet: Boolean) {
-        val playListName = binding.etPlaylistName.text.toString()
-        val playListDescription = binding.etPlaylistDescription.text.toString()
-        val toastMessage = "Плейлист \"$playListName\" создан"
-        if (isCoverSet) {
-            viewModel.saveImageToPrivateStorage(imageUri)
-            viewModel.createPlaylist(
-                playlistName = playListName,
-                playlistDescription = playListDescription
-            )
-        } else {
-            viewModel.createPlaylist(
-                playlistName = playListName,
-                playlistDescription = playListDescription
-            )
-        }
-        findNavController().navigateUp()
-        Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show()
-    }
-
-    private fun showCancelDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.cancel_dialog_title))
-            .setMessage(getString(R.string.cancel_dialog_message))
-            .setNeutralButton(getString(R.string.cancel_dialog_neutral_button)) { _, _ -> }
-            .setPositiveButton(getString(R.string.cancel_dialog_positive_button)) { _, _ ->
-                findNavController().navigateUp()
+            .setPositiveButton(getString(R.string.delete_dialog_positive_button)) { _, _ ->
+                viewmodel.deleteTrackFromPlaylist(track, playlist)
             }
             .show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
     }
 
-    private fun checkOnFocus(editText: EditText, textView: TextView, hasFocus: Boolean) {
-        if (hasFocus) {
-            editText.setBackgroundResource(R.drawable.playlist_text_drawable)
-            editText.hint = EMPTY_STRING
-            textView.visible()
-            textView.setTextColor(requireContext().getColor(R.color.yp_blue))
-        } else {
-            editText.setBackgroundResource(R.drawable.playlist_empty_text_drawable)
-            if (editText.text.isEmpty()) {
-                textView.gone()
-                editText.hint = textView.text
-            } else {
-                textView.setTextColor(requireContext().getColor(R.color.yp_gray))
+    private fun showDeletePlaylistDialog(playlist: Playlist) {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.delete_playlist_title))
+            .setMessage(getString(R.string.delete_playlist_message))
+            .setNegativeButton(getString(R.string.delete_playlist_negative_button)) { _, _ ->
             }
-        }
+            .setPositiveButton(getString(R.string.delete_playlist_positive_button)) { _, _ ->
+                viewmodel.deletePlaylist(playlist)
+            }
+            .show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(requireContext().getColor(R.color.yp_blue))
+    }
+
+    private fun setBottomSheetHeight() {
+        binding.bottomSheet.invisible()
+        val viewBottomSheetHeight = binding.viewBottomSheetHeight
+        viewBottomSheetHeight.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+
+                viewBottomSheetHeight.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val requiredHeight = 266
+                val marginHeight = 24
+                val playlistFragmentLayoutHeight = binding.fragmentPlaylist.height
+                val scrollViewHeight = binding.scrollView.height
+                val currentHeight = viewBottomSheetHeight.height + playlistFragmentLayoutHeight - scrollViewHeight - marginHeight
+                if (currentHeight < requiredHeight) {
+                    bottomSheetBehavior.peekHeight = requiredHeight
+                } else {
+                    bottomSheetBehavior.peekHeight = currentHeight
+                }
+            }
+        })
+        binding.bottomSheet.visible()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewmodel.updatePlaylistData(playlist)
+        menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        _playlist = null
+        _bottomSheetBehavior = null
+        _bottomSheetContainer = null
     }
-
-    companion object {
-        private const val EMPTY_STRING = ""
-        private const val PLAYER_IMAGE_RADIUS: Int = 8
-    }
-
 }

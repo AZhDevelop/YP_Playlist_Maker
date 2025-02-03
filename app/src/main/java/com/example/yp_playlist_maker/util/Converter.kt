@@ -27,6 +27,24 @@ object Converter {
         }
     }
 
+    fun convertMillisToMinutes(time: String): String {
+        return try {
+            val minutes = time.toLong() / 60000
+            val timeValue = if (minutes in 11 .. 14) {
+                " минут"
+            } else if ((minutes % 10).toInt() == 1) {
+                " минута"
+            } else if (minutes % 10 in 2..4) {
+                " минуты"
+            } else {
+                " минут"
+            }
+            minutes.toString() + timeValue
+        } catch (e: Exception) {
+            time
+        }
+    }
+
     fun convertUrl(url: String): String {
         return url.replaceAfterLast('/',"512x512bb.jpg")
     }
@@ -82,7 +100,8 @@ object Converter {
             playlistEntity.playlistName,
             playlistEntity.playlistDescription,
             playlistEntity.playlistCoverPath,
-            playlistEntity.playlistSize
+            playlistEntity.playlistSize,
+            playlistEntity.playlistDuration
         )
     }
 
@@ -92,7 +111,8 @@ object Converter {
             playlist.playlistName,
             playlist.playlistDescription,
             playlist.playlistCoverPath,
-            playlist.playlistSize
+            playlist.playlistSize,
+            playlist.playlistDuration
         )
     }
 
@@ -127,6 +147,21 @@ object Converter {
             tracksInPlaylists.primaryGenreName,
             tracksInPlaylists.country,
             tracksInPlaylists.previewUrl
+        )
+    }
+
+    fun convertTracksInPlaylistToTrack(tracksInPlaylists: TracksInPlaylists): Track {
+        return Track(
+            trackId = tracksInPlaylists.trackId,
+            trackName = tracksInPlaylists.trackName,
+            artistName = tracksInPlaylists.artistName,
+            trackTimeMillis = tracksInPlaylists.trackTimeMillis,
+            artworkUrl100 = tracksInPlaylists.artworkUrl100,
+            collectionName = tracksInPlaylists.collectionName,
+            releaseDate = tracksInPlaylists.releaseDate,
+            primaryGenreName = tracksInPlaylists.primaryGenreName,
+            country = tracksInPlaylists.country,
+            previewUrl = tracksInPlaylists.previewUrl
         )
     }
 
